@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'field_struct'
+require 'field_struct_avro_schema'
 
 require 'pry'
 Pry.start

@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    image: field_struct
+    image: field_struct_avro_schema
     command: ls
     environment:
       CI:                     "true"

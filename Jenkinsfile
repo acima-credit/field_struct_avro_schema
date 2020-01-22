@@ -1,7 +1,7 @@
 pipeline {
   agent { label 'docker' }
   environment {
-    SERVICE              = "field_struct"
+    SERVICE              = "field_struct_avro_schema"
     SLACK_CHANNEL        = "#funding_fathers_n"
   }
 
