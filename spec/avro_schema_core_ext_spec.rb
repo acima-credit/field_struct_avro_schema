@@ -24,25 +24,25 @@ end
 
 RSpec.describe Hash do
   describe '#as_avro' do
-    it { expect(hsh.as_avro).to eq hsh }
+    it { expect(original_hsh.as_avro).to eq converted_hsh }
   end
 end
 
 RSpec.describe Time do
   describe '#as_avro' do
-    it { expect(time.as_avro).to eq '2019-01-02T03:04:05-07:00' }
+    it { expect(time.as_avro).to eq time.iso8601 }
   end
 end
 
 RSpec.describe Date do
   describe '#as_avro' do
-    it { expect(date.as_avro).to eq '2019-01-02' }
+    it { expect(date.as_avro).to eq date.iso8601 }
   end
 end
 
 RSpec.describe Symbol do
   describe '#as_avro' do
-    it { expect(sym.as_avro).to eq 'sym' }
+    it { expect(sym.as_avro).to eq sym.to_s }
   end
 end
 
