@@ -78,6 +78,30 @@ RSpec.describe FieldStruct::FlexibleExamples::User do
         it('type') { expect(result).to be_a Avro::Schema }
         it('to_s') { expect(result.to_s).to eq exp_json }
       end
+      context 'build' do
+        context 'with version' do
+          let(:avro_schema_hash) do
+            exp_hsh.tap { |x| x[:doc] = "version #{subject.version}" }
+          end
+          let(:result) { FieldStruct::Metadata.from_avro_schema avro_schema_hash }
+          it 'builds a valid metadata', :focus do
+            expect { result }.to_not raise_error
+            expect(result).to be_a FieldStruct::Metadata
+            expect(result.name).to eq 'FieldStruct::FlexibleExamples::User::V245178bc'
+            expect(result.schema_name).to eq 'field_struct.flexible_examples.user.v245178bc'
+            expect(result.version).to eq '245178bc'
+
+            expect(result[:username]).to eq type: :string, required: true, description: 'login'
+            expect(result[:password]).to eq type: :string
+            expect(result[:age]).to eq type: :integer, required: true
+            expect(result[:owed]).to eq type: :float, required: true, description: 'amount owed to the company'
+            expect(result[:source]).to eq type: :string, required: true # @todo Add enum support | enum: %w[A B C]
+            expect(result[:level]).to eq type: :integer, required: true
+            expect(result[:at]).to eq type: :string
+            expect(result[:active]).to eq type: :boolean, default: false
+          end
+        end
+      end
     end
   end
 end
