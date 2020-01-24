@@ -3,24 +3,22 @@
 module FieldStruct
   module AvroSchema
     class MetadataBuilder
-      class << self
-        def build(schema)
-          new(schema).build
-        end
+      def self.build(schema)
+        new(schema).build
+      end
 
-        def default_options
-          {
-            type: :flexible,
-            extras: :ignore
-          }
-        end
+      def self.default_options
+        {
+          type: :flexible,
+          extras: :ignore
+        }
       end
 
       attr_reader :schema, :options
 
       def initialize(schema, options = {})
         @schema  = schema
-        @options = options
+        @options = self.class.default_options.merge options
       end
 
       def build
@@ -61,21 +59,30 @@ module FieldStruct
         name   = attr.delete :name
         fields = {}
 
-        build_attribute_type attr, fields
-        fields[:default]     = attr[:default] if attr.key?(:default)
-        fields[:description] = attr[:doc] if attr.key?(:doc)
+        build_attribute_doc attr, fields
+        fields[:required] = true unless attr[:type].is_a?(Array)
+        fields[:default]  = attr[:default] if attr.key?(:default)
 
         [name, fields]
       end
 
-      def build_attribute_type(attr, fields)
-        if attr[:type].is_a?(Array)
-          type = attr[:type].reject { |x| x == 'null' }.first.to_sym
-        else
-          type              = attr[:type].to_sym
-          fields[:required] = true
-        end
-        fields[:type] = AVRO_TYPES[type].first if AVRO_TYPES.key?(type)
+      def build_attribute_doc(attr, fields)
+        return unless attr[:doc]
+
+        doc, meta            = attr[:doc].to_s.split('|')
+        fields[:description] = doc.strip if doc.present?
+        match                = meta.match(/ type ([\w:]+)/)
+        return unless match
+
+        build_attribute_type_from attr, fields, match
+      end
+
+      def build_attribute_type_from(_attr, fields, match)
+        main, extra = match[1].to_s.split(':')
+        return unless ACTIVE_MODEL_TYPES.include?(main.to_sym)
+
+        fields[:type] = main.to_sym
+        fields[:of]   = extra if extra.present? && ACTIVE_MODEL_TYPES.include?(extra.to_sym)
       end
     end
   end

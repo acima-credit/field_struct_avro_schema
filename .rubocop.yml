@@ -51,3 +51,8 @@ Metrics/CyclomaticComplexity:
   Enabled: true
   Exclude:
     - 'lib/field_struct/avro_schema/avro_schema.rb'
+
+Metrics/AbcSize:
+  Enabled: true
+  Exclude:
+    - 'lib/field_struct/avro_schema/builders/avro_builder.rb'

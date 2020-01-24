@@ -51,13 +51,13 @@ module FieldStruct
       end
 
       def build_schema_for(meta)
-        names = meta.schema_name.split('.')
-        hsh = {}
-        hsh[:type] = 'record'
-        hsh[:name] = names.last
+        names           = meta.schema_name.split('.')
+        hsh             = {}
+        hsh[:type]      = 'record'
+        hsh[:name]      = names.last
         hsh[:namespace] = names[0..-2].join('.')
-        hsh[:doc] = "version #{meta.version}"
-        hsh[:fields] = meta.attributes.map { |name, attr| build_field_for name, attr }
+        hsh[:doc]       = "| version #{meta.version}"
+        hsh[:fields]    = meta.attributes.map { |name, attr| build_field_for name, attr }
         hsh
       end
 
@@ -93,7 +93,15 @@ module FieldStruct
       end
 
       def add_field_doc_for(attr, hsh)
-        hsh[:doc] = attr.description if attr.description?
+        hsh[:doc] = ''
+        hsh[:doc] += format('%s ', attr.description) if attr.description?
+        hsh[:doc] += '| type '
+        if attr.of
+          hsh[:doc] += 'array:'
+          hsh[:doc] +=  attr.of.field_struct? ? attr.of.metadata.schema_name : attr.of.to_s
+        else
+          hsh[:doc] +=  attr.type.field_struct? ? attr.type.metadata.schema_name : attr.type.to_s
+        end
       end
     end
   end
