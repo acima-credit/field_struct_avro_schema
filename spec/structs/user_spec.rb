@@ -91,28 +91,30 @@ RSpec.describe Examples::User do
   context 'to and from Avro' do
     let(:original) { described_class.new user_attrs }
     let(:clone) { blt_klas.new user_attrs }
-    let(:exp_attrs) do
-      {
-        'active' => false,
-        'age' => 45,
-        'at' => '2019-03-04T05:06:07.000-07:00',
-        'level' => 2,
-        'owed' => 1537.25,
-        'password' => 'some_password',
-        'source' => 'B',
-        'username' => 'some_user'
-      }
-    end
     it 'works' do
       expect { original }.to_not raise_error
+
       expect(original).to be_valid
-      expect(original.to_hash).to eq(exp_attrs)
+      expect(original.username).to eq 'some_user'
+      expect(original.password).to eq 'some_password'
+      expect(original.age).to eq 45
+      expect(original.owed).to eq 1537.25
+      expect(original.source).to eq 'B'
+      expect(original.level).to eq 2
+      expect(original.at).to eq past_time
 
       expect { blt_klas }.to_not raise_error
 
       expect { clone }.to_not raise_error
+
       expect(clone).to be_valid
-      expect(clone.to_hash).to eq(exp_attrs)
+      expect(clone.username).to eq 'some_user'
+      expect(clone.password).to eq 'some_password'
+      expect(clone.age).to eq 45
+      expect(clone.owed).to eq 1537.25
+      expect(clone.source).to eq 'B'
+      expect(clone.level).to eq 2
+      expect(clone.at).to eq past_time
     end
   end
 end
