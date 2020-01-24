@@ -41,34 +41,31 @@ RSpec.describe Examples::User do
     }
   end
   let(:exp_version_meta) do
-    {
-      name: 'Examples::User::V5cf8302f',
-      schema_name: 'examples.user.v5cf8302f',
-      version: '5cf8302f',
-      attributes: {
-        username: { type: :string, required: true, description: 'login' },
-        password: { type: :string },
-        age: { type: :integer, required: true },
-        owed: { type: :currency, required: true, description: 'amount owed to the company' },
-        source: { type: :string, required: true },
-        level: { type: :integer, required: true },
-        at: { type: :time },
-        active: { type: :boolean, default: false }
+    [
+      {
+        name: 'Schemas::Examples::User::V5cf8302f',
+        schema_name: 'schemas.examples.user.v5cf8302f',
+        version: '5cf8302f',
+        attributes: {
+          username: { type: :string, required: true, description: 'login' },
+          password: { type: :string },
+          age: { type: :integer, required: true },
+          owed: { type: :currency, required: true, description: 'amount owed to the company' },
+          source: { type: :string, required: true },
+          level: { type: :integer, required: true },
+          at: { type: :time },
+          active: { type: :boolean, default: false }
+        }
       }
-    }
+    ]
   end
 
   let(:act_meta) { subject.to_hash }
   let(:act_avro) { subject.as_avro_schema }
   let(:blt_meta) { FieldStruct::Metadata.from_avro_schema act_avro }
-  let(:blt_klas) { FieldStruct.from_metadata blt_meta, 'My::Schemas' }
+  let(:blt_klas) { FieldStruct.from_metadata blt_meta.last }
 
-  it('matches') do
-    # puts "act_meta | (#{act_meta.class.name}) #{act_meta.inspect}"
-    # puts "act_avro | (#{act_avro.class.name}) #{act_avro.inspect}"
-    # puts "blt_meta | (#{blt_meta.class.name}) #{blt_meta.to_hash.inspect}"
-    expect(act_meta).to eq exp_meta
-  end
+  it('matches') { expect(act_meta).to eq exp_meta }
 
   context 'to Avro' do
     it('#as_avro_schema') { expect(act_avro).to eq exp_schema }
@@ -81,10 +78,12 @@ RSpec.describe Examples::User do
   end
 
   context 'from Avro' do
-    it 'builds a valid metadata' do
+    it 'builds a valid metadata array' do
       expect { blt_meta }.to_not raise_error
-      expect(blt_meta).to be_a FieldStruct::Metadata
-      expect(blt_meta.to_hash).to eq exp_version_meta
+      expect(blt_meta).to be_a Array
+      expect(blt_meta.size).to eq 1
+      expect(blt_meta.first).to be_a FieldStruct::Metadata
+      expect(blt_meta.map(&:to_hash)).to eq exp_version_meta
     end
   end
 

@@ -111,8 +111,8 @@ module FieldStruct
       AvroSchema::AvroBuilder.build self
     end
 
-    def to_avro_json
-      as_avro_schema.to_json
+    def to_avro_json(pretty = false)
+      pretty ? JSON.pretty_generate(as_avro_schema) : as_avro_schema.to_json
     end
 
     def to_avro_schema

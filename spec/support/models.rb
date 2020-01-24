@@ -34,7 +34,7 @@ module Examples
     extras :ignore
     required :name, :string
     required :leader, Employee
-    required :members, :array, of: Employee, description: 'Team members'
+    required :members, :array, of: Developer, description: 'Team members'
   end
 
   class Company < FieldStruct.flexible
@@ -58,6 +58,69 @@ module ModelHelpers
       source: 'B',
       level: 2,
       at: past_time
+    }
+  end
+
+  let(:person_attrs) do
+    {
+      first_name: 'John',
+      last_name: 'Max'
+    }
+  end
+
+  let(:employee_attrs) do
+    person_attrs.merge title: 'VP of Engineering'
+  end
+
+  let(:developer_attrs) do
+    employee_attrs.merge language: 'Haskell'
+  end
+
+  let(:leader_attrs) do
+    { first_name: 'Karl', last_name: 'Marx', title: 'Team Lead' }
+  end
+
+  let(:leader2_attrs) do
+    { first_name: 'Evan', last_name: 'Majors', title: 'Team Lead' }
+  end
+
+  let(:dev1_attrs) do
+    { first_name: 'John', last_name: 'Stalingrad', title: 'Developer', language: 'Ruby' }
+  end
+
+  let(:dev2_attrs) do
+    { first_name: 'Steve', last_name: 'Romanoff', title: 'Designer', language: 'In Design' }
+  end
+
+  let(:mke1_attrs) do
+    { first_name: 'Rob', last_name: 'Morris', title: 'Developer', language: 'Javascript' }
+  end
+
+  let(:mke2_attrs) do
+    { first_name: 'Zach', last_name: 'Evanoff', title: 'Designer', language: 'Photoshop' }
+  end
+
+  let(:team_attrs) do
+    {
+      name: 'Duper Team',
+      leader: leader_attrs,
+      members: [dev1_attrs, dev2_attrs]
+    }
+  end
+
+  let(:mark_attrs) do
+    {
+      name: 'Growing Team',
+      leader: leader2_attrs,
+      members: [mke1_attrs, mke2_attrs]
+    }
+  end
+
+  let(:company_attrs) do
+    {
+      legal_name: 'My Super Company',
+      development_team: team_attrs,
+      marketing_team: mark_attrs
     }
   end
 end

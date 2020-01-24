@@ -25,35 +25,93 @@ puts Friend.metadata.as_avro_schema.inspect
 # {
 #   :type => "record", 
 #   :name => "friend", 
-#   :namespace => "", 
-#   :doc => "version 82f78509", 
+#   :namespace => "",
+#   :doc => "| version 82f78509", 
 #   :fields => [
-#     { :name => :name, :type => "string" }, 
-#     { :name => :age, :type => ["null", "int"] }, 
-#     { :name => :balance_owed, :type => ["float", "null"], :default => 0.0 }, 
-#     { :name => :gamer_level, :type => ["null", "int"] }, 
-#     { :name => :zip_code, :type => ["null", "string"] }
+#     { :name => :name, :type => "string", :doc => "| type string" }, 
+#     { :name => :age, :type => ["null", "int"], :doc => "| type integer" }, 
+#     { :name => :balance_owed, :type => ["float", "null"], :default => 0.0, :doc => "| type currency" },
+#     { :name => :gamer_level, :type => ["null", "int"], :doc => "| type integer" }, 
+#     { :name => :zip_code, :type => ["null", "string"], :doc => "| type string" }
 #   ]
 # }
 
-puts Friend.metadata.to_avro_json
+puts Friend.metadata.to_avro_json true
 # {
-#   "type":"record",
-#   "name":"friend",
-#   "namespace":"",
-#   "doc":"version 82f78509",
-#   "fields":[
-#     {"name":"name","type":"string"},
-#     {"name":"age","type":["null","int"]},
-#     {"name":"balance_owed","type":["float","null"],"default":0.0},
-#     {"name":"gamer_level","type":["null","int"]},
-#     {"name":"zip_code","type":["null","string"]}
+#   "type": "record",
+#   "name": "friend",
+#   "namespace": "",
+#   "doc": "| version 82f78509",
+#   "fields": [
+#     {
+#       "name": "name",
+#       "type": "string",
+#       "doc": "| type string"
+#     },
+#     {
+#       "name": "age",
+#       "type": [
+#         "null",
+#         "int"
+#       ],
+#       "doc": "| type integer"
+#     },
+#     {
+#       "name": "balance_owed",
+#       "type": [
+#         "float",
+#         "null"
+#       ],
+#       "default": 0.0,
+#       "doc": "| type currency"
+#     },
+#     {
+#       "name": "gamer_level",
+#       "type": [
+#         "null",
+#         "int"
+#       ],
+#       "doc": "| type integer"
+#     },
+#     {
+#       "name": "zip_code",
+#       "type": [
+#         "null",
+#         "string"
+#       ],
+#       "doc": "| type string"
+#     }
 #   ]
 # }
 
 schema = Friend.metadata.to_avro_schema; schema.class.name
 # => "Avro::Schema::RecordSchema" 
 ``` 
+
+We can also generate a new FieldStruct metadata from the Avro definition we just generated. 
+And with that we can generate a new FieldStruct class.
+
+```ruby
+meta = FieldStruct::Metadata.from_avro_schema Friend.metadata.as_avro_schema
+# => [#<FieldStruct::Metadata name="Schemas::::Friend::V82f78509" version="82f78509" type=:flexible>]
+FieldStruct.from_metadata meta.last
+# => Schemas::Friend::V82f78509
+```
+
+And with that new class we can create new instances:
+
+```ruby 
+john = Schemas::Friend::V82f78509.new age: 18
+# => #<Schemas::Friend::V82f78509 age=18 balance_owed=0.0>  
+john.valid?
+# => false
+john.errors.messages
+# => {:name=>["can't be blank"]}
+john = Schemas::Friend::V82f78509.new name: 'John', age: 18
+# => #<Schemas::Friend::V82f78509 name="John" age=18 balance_owed=0.0>
+john.valid?
+# => true 
+```
 
 
 ## Installation
