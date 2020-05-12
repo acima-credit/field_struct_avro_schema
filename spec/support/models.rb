@@ -23,7 +23,7 @@ module Examples
 
   class Employee < Person
     extras :add
-    optional :title, :string
+    optional :title, :string, default: -> { 'Staff' }
   end
 
   class Developer < Employee

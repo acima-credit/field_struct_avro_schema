@@ -86,7 +86,7 @@ module FieldStruct
 
       def add_field_default_for(attr, hsh)
         return if attr.default.nil?
-        return if attr.default.is_a?(::Proc)
+        return if attr.default.is_a?(::Proc) || attr.default.to_s == '<proc>'
 
         hsh[:default] = attr.default
         hsh[:type].reverse! if hsh[:type].is_a?(Array) && hsh[:type].first == 'null'
@@ -113,10 +113,6 @@ module FieldStruct
 
     def to_avro_json(pretty = false)
       pretty ? JSON.pretty_generate(as_avro_schema) : as_avro_schema.to_json
-    end
-
-    def to_avro_schema
-      Avro::Schema.parse to_avro_json
     end
   end
 end

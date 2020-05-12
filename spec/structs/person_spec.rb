@@ -47,16 +47,11 @@ RSpec.describe Examples::Person do
   let(:blt_meta) { FieldStruct::Metadata.from_avro_schema act_avro }
   let(:blt_klas) { FieldStruct.from_metadata blt_meta.last }
 
-  it('matches') { expect(act_meta).to eq exp_meta }
+  it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
-    it('#as_avro_schema') { expect(act_avro).to eq exp_schema }
-    it('#to_avro_json') { expect(subject.to_avro_json).to eq exp_schema.to_json }
-    context '#to_avro_schema' do
-      it('type') { expect(subject.to_avro_schema).to be_a Avro::Schema::RecordSchema }
-      it('type') { expect(subject.to_avro_schema).to be_a Avro::Schema }
-      it('to_s') { expect(subject.to_avro_schema.to_s).to eq exp_schema.to_json }
-    end
+    it('#as_avro_schema') { compare act_avro, exp_schema }
+    it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
   end
 
   context 'from Avro' do
@@ -65,7 +60,7 @@ RSpec.describe Examples::Person do
       expect(blt_meta).to be_a Array
       expect(blt_meta.size).to eq 1
       expect(blt_meta.first).to be_a FieldStruct::Metadata
-      expect(blt_meta.map(&:to_hash)).to eq exp_version_meta
+      compare blt_meta.map(&:to_hash), exp_version_meta
     end
   end
 

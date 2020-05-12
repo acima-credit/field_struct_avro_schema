@@ -2,18 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe Examples::Company, :focus2 do
+RSpec.describe Examples::Company, :focus do
   subject { described_class.metadata }
 
   let(:exp_meta) do
     {
       name: 'Examples::Company',
       schema_name: 'examples.company',
-      version: '7dda35cf',
+      version: 'bb40ff23',
       attributes: {
         legal_name: { type: :string, required: true },
-        development_team: { type: Examples::Team, version: 'f280c56c' },
-        marketing_team: { type: Examples::Team, version: 'f280c56c' }
+        development_team: { type: Examples::Team, version: '6ce37c6d' },
+        marketing_team: { type: Examples::Team, version: '6ce37c6d' }
       }
     }
   end
@@ -23,7 +23,7 @@ RSpec.describe Examples::Company, :focus2 do
         type: 'record',
         name: 'developer',
         namespace: 'examples',
-        doc: '| version b061a6fa',
+        doc: '| version 5251a97e',
         fields: [
           { name: :first_name, type: 'string', doc: '| type string' },
           { name: :last_name, type: 'string', doc: '| type string' },
@@ -35,7 +35,7 @@ RSpec.describe Examples::Company, :focus2 do
         type: 'record',
         name: 'employee',
         namespace: 'examples',
-        doc: '| version c4c4ab50',
+        doc: '| version 115d6e02',
         fields: [
           { name: :first_name, type: 'string', doc: '| type string' },
           { name: :last_name, type: 'string', doc: '| type string' },
@@ -45,7 +45,7 @@ RSpec.describe Examples::Company, :focus2 do
       {
         type: 'record',
         name: 'team',
-        namespace: 'examples', doc: '| version f280c56c',
+        namespace: 'examples', doc: '| version 6ce37c6d',
         fields: [
           { name: :name, type: 'string', doc: '| type string' },
           { name: :leader, type: 'examples.employee', doc: '| type examples.employee' },
@@ -57,7 +57,7 @@ RSpec.describe Examples::Company, :focus2 do
         type: 'record',
         name: 'company',
         namespace: 'examples',
-        doc: '| version 7dda35cf',
+        doc: '| version bb40ff23',
         fields: [
           { name: :legal_name, type: 'string', doc: '| type string' },
           { name: :development_team, type: ['null', 'examples.team'], doc: '| type examples.team' },
@@ -69,9 +69,9 @@ RSpec.describe Examples::Company, :focus2 do
   let(:exp_version_meta) do
     [
       {
-        name: 'Schemas::Examples::Developer::Vb061a6fa',
-        schema_name: 'schemas.examples.developer.vb061a6fa',
-        version: 'b061a6fa',
+        name: 'Schemas::Examples::Developer::V5251a97e',
+        schema_name: 'schemas.examples.developer.v5251a97e',
+        version: '5251a97e',
         attributes: {
           first_name: { type: :string, required: true },
           last_name: { type: :string, required: true },
@@ -80,9 +80,9 @@ RSpec.describe Examples::Company, :focus2 do
         }
       },
       {
-        name: 'Schemas::Examples::Employee::Vc4c4ab50',
-        schema_name: 'schemas.examples.employee.vc4c4ab50',
-        version: 'c4c4ab50',
+        name: 'Schemas::Examples::Employee::V115d6e02',
+        schema_name: 'schemas.examples.employee.v115d6e02',
+        version: '115d6e02',
         attributes: {
           first_name: { type: :string, required: true },
           last_name: { type: :string, required: true },
@@ -90,28 +90,28 @@ RSpec.describe Examples::Company, :focus2 do
         }
       },
       {
-        name: 'Schemas::Examples::Team::Vf280c56c',
-        schema_name: 'schemas.examples.team.vf280c56c',
-        version: 'f280c56c',
+        name: 'Schemas::Examples::Team::V6ce37c6d',
+        schema_name: 'schemas.examples.team.v6ce37c6d',
+        version: '6ce37c6d',
         attributes: {
           name: { type: :string, required: true },
-          leader: { type: 'Schemas::Examples::Employee::Vc4c4ab50', required: true },
+          leader: { type: 'Schemas::Examples::Employee::V115d6e02', required: true },
           members: {
             description: 'Team members',
             type: :array,
-            of: 'Schemas::Examples::Developer::Vb061a6fa',
+            of: 'Schemas::Examples::Developer::V5251a97e',
             required: true
           }
         }
       },
       {
-        name: 'Schemas::Examples::Company::V7dda35cf',
-        schema_name: 'schemas.examples.company.v7dda35cf',
-        version: '7dda35cf',
+        name: 'Schemas::Examples::Company::Vbb40ff23',
+        schema_name: 'schemas.examples.company.vbb40ff23',
+        version: 'bb40ff23',
         attributes: {
           legal_name: { type: :string, required: true },
-          development_team: { type: 'Schemas::Examples::Team::Vf280c56c' },
-          marketing_team: { type: 'Schemas::Examples::Team::Vf280c56c' }
+          development_team: { type: 'Schemas::Examples::Team::V6ce37c6d' },
+          marketing_team: { type: 'Schemas::Examples::Team::V6ce37c6d' }
         }
       }
     ]
@@ -125,16 +125,11 @@ RSpec.describe Examples::Company, :focus2 do
   let(:emp_klass) { FieldStruct.from_metadata blt_meta[1] }
   let(:dev_klass) { FieldStruct.from_metadata blt_meta[0] }
 
-  it('matches') { expect(act_meta).to eq exp_meta }
+  it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
-    it('#as_avro_schema') { expect(act_avro).to eq exp_schema }
-    it('#to_avro_json') { expect(subject.to_avro_json).to eq exp_schema.to_json }
-    context '#to_avro_schema' do
-      it('type') { expect(subject.to_avro_schema).to be_a Avro::Schema::UnionSchema }
-      it('type') { expect(subject.to_avro_schema).to be_a Avro::Schema }
-      it('to_s') { expect(subject.to_avro_schema.to_s).to eq exp_schema.to_json }
-    end
+    it('#as_avro_schema') { compare act_avro, exp_schema }
+    it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
   end
 
   context 'from Avro' do
@@ -146,11 +141,11 @@ RSpec.describe Examples::Company, :focus2 do
       expect(blt_meta[2]).to be_a FieldStruct::Metadata
       expect(blt_meta[1]).to be_a FieldStruct::Metadata
       expect(blt_meta[0]).to be_a FieldStruct::Metadata
-      expect(blt_meta.map(&:to_hash)).to eq exp_version_meta
+      compare blt_meta.map(&:to_hash), exp_version_meta
     end
   end
 
-  context 'to and from Avro', :focus do
+  context 'to and from Avro' do
     let(:original) { described_class.new company_attrs }
     let(:clone) { comp_klass.new company_attrs }
     let(:exp_comp_hsh) do
@@ -180,20 +175,20 @@ RSpec.describe Examples::Company, :focus2 do
       expect(original).to be_valid
       expect(original.to_hash).to eq exp_comp_hsh
       expect { emp_klass }.to_not raise_error
-      expect(emp_klass).to eq Schemas::Examples::Employee::Vc4c4ab50
+      expect(emp_klass).to eq Schemas::Examples::Employee::V115d6e02
 
       expect { dev_klass }.to_not raise_error
-      expect(dev_klass).to eq Schemas::Examples::Developer::Vb061a6fa
+      expect(dev_klass).to eq Schemas::Examples::Developer::V5251a97e
 
       expect { team_klass }.to_not raise_error
-      expect(team_klass).to eq Schemas::Examples::Team::Vf280c56c
+      expect(team_klass).to eq Schemas::Examples::Team::V6ce37c6d
 
       expect { comp_klass }.to_not raise_error
-      expect(comp_klass).to eq Schemas::Examples::Company::V7dda35cf
+      expect(comp_klass).to eq Schemas::Examples::Company::Vbb40ff23
 
       expect { clone }.to_not raise_error
 
-      expect(clone).to be_a Schemas::Examples::Company::V7dda35cf
+      expect(clone).to be_a Schemas::Examples::Company::Vbb40ff23
       expect(clone).to be_valid
       expect(clone.to_hash).to eq exp_comp_hsh
       expect(clone.development_team).to be_a team_klass

@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = 'Support for Avro schemas in FieldStruct'
   spec.description = 'Adds support for Avro schemas for FieldStruct classes'
-  spec.homepage = 'http://github.com/acimacredit/field_struct_avro_schema'
+  spec.homepage = 'http://github.com/acima-credit/field_struct_avro_schema'
   spec.license = 'MIT'
 
   spec.metadata['homepage_uri'] = spec.homepage
@@ -29,7 +29,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activesupport'
   spec.add_dependency 'activemodel'
   spec.add_dependency 'field_struct'
-  spec.add_dependency 'avro', '~> 1.9'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'pry'

@@ -83,9 +83,6 @@ puts Friend.metadata.to_avro_json true
 #     }
 #   ]
 # }
-
-schema = Friend.metadata.to_avro_schema; schema.class.name
-# => "Avro::Schema::RecordSchema" 
 ``` 
 
 We can also generate a new FieldStruct metadata from the Avro definition we just generated. 

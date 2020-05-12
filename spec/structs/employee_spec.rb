@@ -9,11 +9,11 @@ RSpec.describe Examples::Employee do
     {
       name: 'Examples::Employee',
       schema_name: 'examples.employee',
-      version: 'c4c4ab50',
+      version: '115d6e02',
       attributes: {
         first_name: { type: :string, required: true, min_length: 3, max_length: 20 },
         last_name: { type: :string, required: true },
-        title: { type: :string }
+        title: { type: :string, default: '<proc>' }
       }
     }
   end
@@ -22,7 +22,7 @@ RSpec.describe Examples::Employee do
       type: 'record',
       name: 'employee',
       namespace: 'examples',
-      doc: '| version c4c4ab50',
+      doc: '| version 115d6e02',
       fields: [
         { name: :first_name, type: 'string', doc: '| type string' },
         { name: :last_name, type: 'string', doc: '| type string' },
@@ -33,9 +33,9 @@ RSpec.describe Examples::Employee do
   let(:exp_version_meta) do
     [
       {
-        name: 'Schemas::Examples::Employee::Vc4c4ab50',
-        schema_name: 'schemas.examples.employee.vc4c4ab50',
-        version: 'c4c4ab50',
+        name: 'Schemas::Examples::Employee::V115d6e02',
+        schema_name: 'schemas.examples.employee.v115d6e02',
+        version: '115d6e02',
         attributes: {
           first_name: { type: :string, required: true },
           last_name: { type: :string, required: true },
@@ -50,16 +50,11 @@ RSpec.describe Examples::Employee do
   let(:blt_meta) { FieldStruct::Metadata.from_avro_schema act_avro }
   let(:blt_klas) { FieldStruct.from_metadata blt_meta.last }
 
-  it('matches') { expect(act_meta).to eq exp_meta }
+  it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
-    it('#as_avro_schema') { expect(act_avro).to eq exp_schema }
-    it('#to_avro_json') { expect(subject.to_avro_json).to eq exp_schema.to_json }
-    context '#to_avro_schema' do
-      it('type') { expect(subject.to_avro_schema).to be_a Avro::Schema::RecordSchema }
-      it('type') { expect(subject.to_avro_schema).to be_a Avro::Schema }
-      it('to_s') { expect(subject.to_avro_schema.to_s).to eq exp_schema.to_json }
-    end
+    it('#as_avro_schema') { compare act_avro, exp_schema }
+    it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
   end
 
   context 'from Avro' do
@@ -68,7 +63,7 @@ RSpec.describe Examples::Employee do
       expect(blt_meta).to be_a Array
       expect(blt_meta.size).to eq 1
       expect(blt_meta.first).to be_a FieldStruct::Metadata
-      expect(blt_meta.map(&:to_hash)).to eq exp_version_meta
+      compare blt_meta.map(&:to_hash), exp_version_meta
     end
   end
 
