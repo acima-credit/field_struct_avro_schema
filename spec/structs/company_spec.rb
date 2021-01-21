@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Examples::Company, :focus do
+RSpec.describe Examples::Company do
   subject { described_class.metadata }
 
   let(:exp_meta) do
@@ -18,53 +18,61 @@ RSpec.describe Examples::Company, :focus do
     }
   end
   let(:exp_schema) do
-    [
-      {
-        type: 'record',
-        name: 'developer',
-        namespace: 'examples',
-        doc: '| version 5251a97e',
-        fields: [
-          { name: :first_name, type: 'string', doc: '| type string' },
-          { name: :last_name, type: 'string', doc: '| type string' },
-          { name: :title, type: %w[null string], doc: '| type string' },
-          { name: :language, type: 'string', doc: '| type string' }
-        ]
-      },
-      {
-        type: 'record',
-        name: 'employee',
-        namespace: 'examples',
-        doc: '| version 115d6e02',
-        fields: [
-          { name: :first_name, type: 'string', doc: '| type string' },
-          { name: :last_name, type: 'string', doc: '| type string' },
-          { name: :title, type: %w[null string], doc: '| type string' }
-        ]
-      },
-      {
-        type: 'record',
-        name: 'team',
-        namespace: 'examples', doc: '| version 6ce37c6d',
-        fields: [
-          { name: :name, type: 'string', doc: '| type string' },
-          { name: :leader, type: 'examples.employee', doc: '| type examples.employee' },
-          { name: :members, type: { type: 'array', items: 'examples.developer' },
-            doc: 'Team members | type array:examples.developer' }
-        ]
-      },
-      {
-        type: 'record',
-        name: 'company',
-        namespace: 'examples',
-        doc: '| version bb40ff23',
-        fields: [
-          { name: :legal_name, type: 'string', doc: '| type string' },
-          { name: :development_team, type: ['null', 'examples.team'], doc: '| type examples.team' },
-          { name: :marketing_team, type: ['null', 'examples.team'], doc: '| type examples.team' }
-        ]
-      }
-    ]
+    {
+      type: 'record',
+      name: 'company',
+      namespace: 'examples',
+      doc: '| version bb40ff23',
+      fields: [
+        { name: 'legal_name',
+          type: 'string', doc: '| type string' },
+        { name: 'development_team',
+          type: ['null',
+                 { type: 'record',
+                   name: 'team',
+                   namespace: 'examples',
+                   doc: '| version 6ce37c6d',
+                   fields: [
+                     { name: 'name', type: 'string', doc: '| type string' },
+                     { name: 'leader',
+                       type: {
+                         type: 'record',
+                         name: 'employee',
+                         namespace: 'examples',
+                         doc: '| version 115d6e02',
+                         fields: [
+                           { name: 'first_name', type: 'string', doc: '| type string' },
+                           { name: 'last_name', type: 'string', doc: '| type string' },
+                           { name: 'title', type: %w[null string], default: nil, doc: '| type string' }
+                         ]
+                       },
+                       doc: '| type examples.employee' },
+                     { name: 'members',
+                       type: {
+                         type: 'array',
+                         items: {
+                           type: 'record',
+                           name: 'developer',
+                           namespace: 'examples',
+                           doc: '| version 5251a97e',
+                           fields: [
+                             { name: 'first_name', type: 'string', doc: '| type string' },
+                             { name: 'last_name', type: 'string', doc: '| type string' },
+                             { name: 'title', type: %w[null string], default: nil, doc: '| type string' },
+                             { name: 'language', type: 'string', doc: '| type string' }
+                           ]
+                         }
+                       },
+                       doc: 'Team members | type array:examples.developer' }
+                   ] }],
+          default: nil,
+          doc: '| type examples.team' },
+        { name: 'marketing_team',
+          type: ['null', 'examples.team'],
+          default: nil,
+          doc: '| type examples.team' }
+      ]
+    }
   end
   let(:exp_version_meta) do
     [
@@ -128,8 +136,8 @@ RSpec.describe Examples::Company, :focus do
   it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
-    it('#as_avro_schema') { compare act_avro, exp_schema }
-    it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
+    it('#as_avro_schema', :focus2) { compare act_avro, exp_schema }
+    it('#to_avro_json', :focus) { compare subject.to_avro_json, exp_schema.to_json }
   end
 
   context 'from Avro' do
