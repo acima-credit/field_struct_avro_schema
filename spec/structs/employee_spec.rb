@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Examples::Employee do
+RSpec.describe Examples::Employee, :focus2 do
   subject { described_class.metadata }
 
   let(:exp_meta) do
@@ -24,9 +24,9 @@ RSpec.describe Examples::Employee do
       namespace: 'examples',
       doc: '| version 115d6e02',
       fields: [
-        { name: :first_name, type: 'string', doc: '| type string' },
-        { name: :last_name, type: 'string', doc: '| type string' },
-        { name: :title, type: %w[null string], doc: '| type string' }
+        { name: 'first_name', type: 'string', doc: '| type string' },
+        { name: 'last_name', type: 'string', doc: '| type string' },
+        { name: 'title', type: %w[null string], default: nil, doc: '| type string' }
       ]
     }
   end

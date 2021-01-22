@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ExampleApp::Examples::Friend do
+RSpec.describe ExampleApp::Examples::Friend, :focus2 do
   subject { described_class.metadata }
 
   let(:exp_meta) do
@@ -18,17 +18,19 @@ RSpec.describe ExampleApp::Examples::Friend do
     }
   end
   let(:exp_schema) do
-    { type: 'record',
+    {
+      type: 'record',
       name: 'friend',
       namespace: 'example_app.examples',
       doc: '| version 82f78509',
       fields: [
-        { name: :name, type: 'string', doc: '| type string' },
-        { name: :age, type: %w[null int], doc: '| type integer' },
-        { name: :balance_owed, type: %w[float null], default: 0.0, doc: '| type currency' },
-        { name: :gamer_level, type: %w[null int], doc: '| type integer' },
-        { name: :zip_code, type: %w[null string], doc: '| type string' }
-      ] }
+        { name: 'name', type: 'string', doc: '| type string' },
+        { name: 'age', type: %w[null int], default: nil, doc: '| type integer' },
+        { name: 'balance_owed', type: %w[null float], default: nil, doc: '| type currency' },
+        { name: 'gamer_level', type: %w[null int], default: nil, doc: '| type integer' },
+        { name: 'zip_code', type: %w[null string], default: nil, doc: '| type string' }
+      ]
+    }
   end
   let(:exp_version_meta) do
     [
@@ -38,7 +40,7 @@ RSpec.describe ExampleApp::Examples::Friend do
         attributes: {
           name: { type: :string, required: true },
           age: { type: :integer },
-          balance_owed: { type: :currency, default: 0.0 },
+          balance_owed: { type: :currency },
           gamer_level: { type: :integer },
           zip_code: { type: :string }
         },
@@ -60,12 +62,11 @@ RSpec.describe ExampleApp::Examples::Friend do
   end
 
   context 'from Avro' do
-    it 'builds a valid metadata' do
+    it 'builds a valid metadata', :focus do
       expect { blt_meta }.to_not raise_error
       expect(blt_meta).to be_a Array
       expect(blt_meta.size).to eq 1
       expect(blt_meta.first).to be_a FieldStruct::Metadata
-      puts "> blt_meta.map(&:to_hash) : #{blt_meta.map(&:to_hash).inspect}"
       compare blt_meta.map(&:to_hash), exp_version_meta
     end
   end

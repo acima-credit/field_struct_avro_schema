@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Examples::Team do
+RSpec.describe Examples::Team, :focus2 do
   subject { described_class.metadata }
 
   let(:exp_meta) do
@@ -24,46 +24,45 @@ RSpec.describe Examples::Team do
     }
   end
   let(:exp_schema) do
-    [
-      {
-        type: 'record',
-        name: 'developer',
-        namespace: 'examples',
-        doc: '| version 5251a97e',
-        fields: [
-          { name: :first_name, type: 'string', doc: '| type string' },
-          { name: :last_name, type: 'string', doc: '| type string' },
-          { name: :title, type: %w[null string], doc: '| type string' },
-          { name: :language, type: 'string', doc: '| type string' }
-        ]
-      },
-      {
-        type: 'record',
-        name: 'employee',
-        namespace: 'examples',
-        doc: '| version 115d6e02',
-        fields: [
-          { name: :first_name, type: 'string', doc: '| type string' },
-          { name: :last_name, type: 'string', doc: '| type string' },
-          { name: :title, type: %w[null string], doc: '| type string' }
-        ]
-      },
-      {
-        type: 'record',
-        name: 'team',
-        namespace: 'examples',
-        doc: '| version 6ce37c6d',
-        fields: [
-          { name: :name, type: 'string', doc: '| type string' },
-          { name: :leader, type: 'examples.employee', doc: '| type examples.employee' },
-          {
-            name: :members,
-            type: { type: 'array', items: 'examples.developer' },
-            doc: 'Team members | type array:examples.developer'
-          }
-        ]
-      }
-    ]
+    { type: 'record',
+      name: 'team',
+      namespace: 'examples',
+      doc: '| version 6ce37c6d',
+      fields: [
+        { name: 'name', type: 'string', doc: '| type string' },
+        {
+          name: 'leader',
+          type: {
+            type: 'record',
+            name: 'employee',
+            namespace: 'examples',
+            doc: '| version 115d6e02',
+            fields: [
+              { name: 'first_name', type: 'string', doc: '| type string' },
+              { name: 'last_name', type: 'string', doc: '| type string' },
+              { name: 'title', type: %w[null string], default: nil, doc: '| type string' }
+            ]
+          },
+          doc: '| type examples.employee'
+        },
+        {
+          name: 'members',
+          type: {
+            type: 'array',
+            items: { type: 'record',
+                     name: 'developer',
+                     namespace: 'examples',
+                     doc: '| version 5251a97e',
+                     fields: [
+                       { name: 'first_name', type: 'string', doc: '| type string' },
+                       { name: 'last_name', type: 'string', doc: '| type string' },
+                       { name: 'title', type: %w[null string], default: nil, doc: '| type string' },
+                       { name: 'language', type: 'string', doc: '| type string' }
+                     ] }
+          },
+          doc: 'Team members | type array:examples.developer'
+        }
+      ] }
   end
   let(:exp_version_meta) do
     [

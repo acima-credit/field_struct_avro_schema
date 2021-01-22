@@ -2,9 +2,12 @@
 
 module CompareHelpers
   def compare(act, exp, prefix = '')
-    if ENV.fetch('DEBUG', 'false') == 'true'
-      puts "> act #{prefix}(#{act.class.name}) #{act.to_yaml}"
-      puts "> exp #{prefix}(#{exp.class.name}) #{exp.to_yaml}"
+    if ENV.fetch('DEBUG', 'false') == 'true' && prefix == ''
+      puts ' [ actual ] '.center(60, '-')
+      puts act.to_yaml
+      puts ' [ expected ] '.center(60, '-')
+      puts exp.to_yaml
+      puts ' [ done ] '.center(60, '-')
     end
 
     if act.is_a?(Hash) && exp.is_a?(Hash)

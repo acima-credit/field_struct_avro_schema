@@ -105,8 +105,11 @@ module FieldStruct
           line << ", :#{opts[:type]}"
         end
         line += ", items: #{opts[:items].inspect}" if opts.key?(:items)
-        line += ", default: #{opts[:default].inspect}" if opts.key?(:default)
+        if opts.key?(:default) && !opts[:default].nil? && opts[:mode] == :required
+          line += ", default: #{opts[:default].inspect}"
+        end
         line += ", doc: #{opts[:doc].inspect}"
+        puts "> build_attr_line | line [#{line}]"
         line
       end
 
@@ -137,7 +140,9 @@ module FieldStruct
         return if attr.default.nil?
         return if attr.default.is_a?(::Proc) || attr.default.to_s == '<proc>'
 
+        puts "add_field_default_for | attr.default (#{attr.default.class.name}) #{attr.default.inspect}"
         hsh[:default] = attr.default
+        puts "add_field_default_for | hsh[:default] (#{hsh[:default].class.name}) #{hsh[:default].inspect}"
       end
 
       def add_field_doc_for(attr, hsh)
@@ -160,7 +165,9 @@ module FieldStruct
     end
 
     def as_avro_schema
-      JSON.parse(as_avro.to_s).deep_symbolize_keys
+      str = as_avro.to_s
+      puts "as_avro_schema | str : #{str}"
+      JSON.parse(str).deep_symbolize_keys
     end
 
     def to_avro_json(pretty = false)

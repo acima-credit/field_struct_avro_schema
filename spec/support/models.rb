@@ -9,7 +9,7 @@ module Examples
     required :source, :string, enum: %w[A B C]
     required :level, :integer, default: -> { 2 }
     optional :at, :time
-    optional :active, :boolean, default: false
+    required :active, :boolean, default: false
   end
 
   class Person < FieldStruct.flexible
@@ -73,7 +73,8 @@ module ModelHelpers
       owed: 1537.25,
       source: 'B',
       level: 2,
-      at: past_time
+      at: past_time,
+      active: true
     }
   end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Examples::Company, :focus do
+RSpec.describe Examples::Company, :focus2 do
   subject { described_class.metadata }
 
   let(:exp_meta) do
@@ -173,7 +173,7 @@ RSpec.describe Examples::Company, :focus do
         }
       }
     end
-    it 'works', :focus do
+    it 'works' do
       expect { original }.to_not raise_error
 
       expect(original).to be_valid

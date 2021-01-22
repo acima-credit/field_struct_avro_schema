@@ -18,7 +18,7 @@ module Examples
     required :source, :string, enum: %w[A B C]
     required :level, :integer, default: -> { 2 }
     optional :at, :time
-    optional :active, :boolean, default: false
+    required :active, :boolean, default: false
   end
 
   class Person < FieldStruct.flexible
@@ -50,6 +50,22 @@ module Examples
     required :legal_name, :string
     optional :development_team, Team
     optional :marketing_team, Team
+  end
+end
+
+module ExampleApp
+  module Examples
+    class Friend < FieldStruct.flexible
+      required :name, :string
+      optional :age, :integer
+      optional :balance_owed, :currency, default: 0.0
+      optional :gamer_level, :integer, enum: [1, 2, 3], default: -> { 1 }
+      optional :zip_code, :string, format: /\A[0-9]{5}?\z/
+
+      def topic_key
+        format '%s', name
+      end
+    end
   end
 end
 

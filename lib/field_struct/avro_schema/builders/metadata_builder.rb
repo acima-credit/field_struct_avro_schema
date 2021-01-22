@@ -54,13 +54,27 @@ module FieldStruct
         end
 
         def build_attribute(attr)
-          name = attr.delete :name
-          attr.delete(:default) if attr.key?(:default) && attr[:default].nil?
+          name = attr[:name]
           fields = {}
 
           build_attribute_doc attr, fields
           fields[:required] = true unless attr[:type].is_a?(Array)
-          fields[:default] = attr[:default] if attr.key?(:default) && attr[:default] != '<proc>'
+          if attr.keys.include?(:default) && (attr[:default] != '<proc>' && !attr[:default].nil?)
+            fields[:default] = attr[:default]
+          end
+          if attr.key? :default
+            default_value = attr[:default]
+            if default_value.to_s == '<proc>'
+              puts "build_attribute | name : #{name.inspect} | fields[:default] : proc ..."
+            elsif default_value.nil?
+              puts "build_attribute | name : #{name.inspect} | fields[:default] : proc ..."
+            else
+              fields[:default] = default_value
+              puts "build_attribute | name : #{name.inspect} | fields[:default] : 1 : (#{fields[:default].class.name}) #{fields[:default].inspect}"
+            end
+          else
+            puts "build_attribute | name : #{name.inspect} | fields[:default] : missing ..."
+          end
 
           puts "build_attribute | name : #{name.inspect} | fields : #{fields.inspect}"
           [name, fields]
@@ -74,16 +88,16 @@ module FieldStruct
           match = meta.match(/ type ([\w:\.]+)/)
           return unless match
 
+          add_attribute_dependency attr
           build_attribute_type_from attr, fields, match
         end
 
-        def build_attribute_type_from(attr, fields, match)
-          puts "build_attribute_type_from | attr : #{attr.inspect}"
+        def add_attribute_dependency(attr)
           type = attr[:type]
           type = type.reject { |x| x == 'null' }.first if type.is_a? Array
-          puts "build_attribute_type_from | type : 0 : (#{type.class.name}) #{type.inspect}"
+          puts "add_attribute_dependency | type : 0 : (#{type.class.name}) #{type.inspect}"
           if type.is_a?(Hash)
-            puts "build_attribute_type_from | type : Hash : 1 : #{type.inspect}"
+            puts "add_attribute_dependency | type : Hash : 1 : #{type.inspect}"
             if type[:type] == 'record'
               @dependencies << type
             elsif type[:type] == 'array' && type.dig(:items, :type) == 'record'
@@ -92,15 +106,19 @@ module FieldStruct
               raise 'unknown complex type'
             end
           end
-          puts "build_attribute_type_from | attr[:type] (#{attr[:type].class.name}) #{attr[:type].inspect} ..."
+          puts "add_attribute_dependency | attr[:type] (#{attr[:type].class.name}) #{attr[:type].inspect} ..."
+        end
+
+        def build_attribute_type_from(attr, fields, match)
+          puts "build_attribute_type_from | attr : #{attr.inspect}"
 
           main, extra = match[1].to_s.split(':')
-          puts "build_attribute_type_from | main : #{main.inspect} | extra : #{extra.inspect}"
-          fields[:type] = ACTIVE_MODEL_TYPES.fetch main.to_sym, main
+          puts "build_attribute_type_from | name : #{attr[:name]} | attr[:type] : #{attr[:type].inspect} | main : #{main.inspect} | extra : #{extra.inspect}"
+          fields[:type] = ACTIVE_MODEL_TYPES.key?(main) ? main.to_sym : main
           puts "build_attribute_type_from | fields : 1 : #{fields.inspect}"
           return unless extra.present?
 
-          fields[:of] = ACTIVE_MODEL_TYPES.fetch extra.to_sym, extra
+          fields[:of] = ACTIVE_MODEL_TYPES.key?(extra) ? extra.to_sym : extra
           puts "build_attribute_type_from | fields : 2 : #{fields.inspect}"
         end
       end
