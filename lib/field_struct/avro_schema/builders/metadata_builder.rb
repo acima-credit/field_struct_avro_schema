@@ -89,7 +89,7 @@ module FieldStruct
             elsif type[:type] == 'array' && type.dig(:items, :type) == 'record'
               @dependencies << type[:items]
             else
-              raise "unknown complex type"
+              raise 'unknown complex type'
             end
           end
           puts "build_attribute_type_from | attr[:type] (#{attr[:type].class.name}) #{attr[:type].inspect} ..."
@@ -174,17 +174,17 @@ module FieldStruct
               end
             end
             # of
-            if attr[:of].is_a?(String)
-              puts ">> review_schema_names | trying to change attr[:of] #{attr[:of].inspect}"
-              new_name = aliased_name attr[:of]
-              if new_name
-                attr[:of] = new_name
-                puts ">> review_schema_names | changed : attr (#{attr.class.name}) #{attr.inspect}"
-              else
-                puts ">> review_schema_names | NOT changed : attr (#{attr.class.name}) #{attr.inspect}"
-              end
-              attr[:of] = new_name if new_name
+            next unless attr[:of].is_a?(String)
+
+            puts ">> review_schema_names | trying to change attr[:of] #{attr[:of].inspect}"
+            new_name = aliased_name attr[:of]
+            if new_name
+              attr[:of] = new_name
+              puts ">> review_schema_names | changed : attr (#{attr.class.name}) #{attr.inspect}"
+            else
+              puts ">> review_schema_names | NOT changed : attr (#{attr.class.name}) #{attr.inspect}"
             end
+            attr[:of] = new_name if new_name
           end
         end
       end
@@ -201,7 +201,6 @@ module FieldStruct
 
         format('%s.%s', @options[:prefix], str).underscore
       end
-
     end
   end
 

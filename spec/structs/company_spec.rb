@@ -112,8 +112,8 @@ RSpec.describe Examples::Company, :focus do
         name: 'Schemas::Examples::Company::Vbb40ff23',
         schema_name: 'schemas.examples.company.vbb40ff23',
         attributes: { legal_name: { type: :string, required: true },
-                      development_team: { type: "Schemas::Examples::Team::V6ce37c6d" },
-                      marketing_team: { type: "Schemas::Examples::Team::V6ce37c6d" } },
+                      development_team: { type: 'Schemas::Examples::Team::V6ce37c6d' },
+                      marketing_team: { type: 'Schemas::Examples::Team::V6ce37c6d' } },
         version: 'bb40ff23'
       }
     ]
