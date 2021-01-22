@@ -158,9 +158,9 @@ module FieldStruct
     def as_avro
       AvroSchema::AvroBuilder.build self
     end
-    
+
     def as_avro_schema
-      JSON.parse as_avro.to_s
+      JSON.parse(as_avro.to_s).deep_symbolize_keys
     end
 
     def to_avro_json(pretty = false)

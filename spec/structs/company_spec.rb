@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Examples::Company do
+RSpec.describe Examples::Company, :focus do
   subject { described_class.metadata }
 
   let(:exp_meta) do
@@ -24,8 +24,7 @@ RSpec.describe Examples::Company do
       namespace: 'examples',
       doc: '| version bb40ff23',
       fields: [
-        { name: 'legal_name',
-          type: 'string', doc: '| type string' },
+        { name: 'legal_name', type: 'string', doc: '| type string' },
         { name: 'development_team',
           type: ['null',
                  { type: 'record',
@@ -67,10 +66,7 @@ RSpec.describe Examples::Company do
                    ] }],
           default: nil,
           doc: '| type examples.team' },
-        { name: 'marketing_team',
-          type: ['null', 'examples.team'],
-          default: nil,
-          doc: '| type examples.team' }
+        { name: 'marketing_team', type: ['null', 'examples.team'], default: nil, doc: '| type examples.team' }
       ]
     }
   end
@@ -115,12 +111,10 @@ RSpec.describe Examples::Company do
       {
         name: 'Schemas::Examples::Company::Vbb40ff23',
         schema_name: 'schemas.examples.company.vbb40ff23',
-        version: 'bb40ff23',
-        attributes: {
-          legal_name: { type: :string, required: true },
-          development_team: { type: 'Schemas::Examples::Team::V6ce37c6d' },
-          marketing_team: { type: 'Schemas::Examples::Team::V6ce37c6d' }
-        }
+        attributes: { legal_name: { type: :string, required: true },
+                      development_team: { type: "Schemas::Examples::Team::V6ce37c6d" },
+                      marketing_team: { type: "Schemas::Examples::Team::V6ce37c6d" } },
+        version: 'bb40ff23'
       }
     ]
   end
@@ -136,8 +130,8 @@ RSpec.describe Examples::Company do
   it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
-    it('#as_avro_schema', :focus2) { compare act_avro, exp_schema }
-    it('#to_avro_json', :focus) { compare subject.to_avro_json, exp_schema.to_json }
+    it('#as_avro_schema') { compare act_avro, exp_schema }
+    it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
   end
 
   context 'from Avro' do
@@ -149,7 +143,9 @@ RSpec.describe Examples::Company do
       expect(blt_meta[2]).to be_a FieldStruct::Metadata
       expect(blt_meta[1]).to be_a FieldStruct::Metadata
       expect(blt_meta[0]).to be_a FieldStruct::Metadata
-      compare blt_meta.map(&:to_hash), exp_version_meta
+
+      act_version_hash = blt_meta.map(&:to_hash)
+      compare act_version_hash, exp_version_meta
     end
   end
 
@@ -177,11 +173,12 @@ RSpec.describe Examples::Company do
         }
       }
     end
-    it 'works' do
+    it 'works', :focus do
       expect { original }.to_not raise_error
 
       expect(original).to be_valid
       expect(original.to_hash).to eq exp_comp_hsh
+
       expect { emp_klass }.to_not raise_error
       expect(emp_klass).to eq Schemas::Examples::Employee::V115d6e02
 

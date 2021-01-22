@@ -25,7 +25,6 @@ RSpec.configure do |config|
   FileUtils.mkdir_p STORE_PATH
   FieldStruct::AvroSchema::AvroBuilder.builder_store_path = STORE_PATH
   config.before(:each) do
-    puts '>> going to clear builder store ...'
-    # FieldStruct::AvroSchema::AvroBuilder.builder_store.clear
+    FieldStruct::AvroSchema::AvroBuilder.builder_store.clear
   end
 end
