@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ExampleApp::Examples::Friend, :focus2 do
+RSpec.describe ExampleApp::Examples::Friend do
   subject { described_class.metadata }
 
   let(:exp_meta) do
@@ -62,7 +62,7 @@ RSpec.describe ExampleApp::Examples::Friend, :focus2 do
   end
 
   context 'from Avro' do
-    it 'builds a valid metadata', :focus do
+    it 'builds a valid metadata' do
       expect { blt_meta }.to_not raise_error
       expect(blt_meta).to be_a Array
       expect(blt_meta.size).to eq 1

@@ -21,9 +21,9 @@ RSpec.configure do |config|
   Dir[ROOT_PATH.join('spec/support/*.rb')].sort.each { |f| require f }
 
   # Builder Store setup
-  STORE_PATH = ROOT_PATH.join('spec/schemas')
-  FileUtils.mkdir_p STORE_PATH
-  FieldStruct::AvroSchema::AvroBuilder.builder_store_path = STORE_PATH
+  # STORE_PATH = ROOT_PATH.join('spec/schemas')
+  # FileUtils.mkdir_p STORE_PATH
+  # FieldStruct::AvroSchema::AvroBuilder.builder_store_path = STORE_PATH
   config.before(:each) do
     FieldStruct::AvroSchema::AvroBuilder.builder_store.clear
   end

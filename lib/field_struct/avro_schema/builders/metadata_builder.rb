@@ -7,7 +7,6 @@ module FieldStruct
         attr_reader :schema, :options, :prefix_schema
 
         def initialize(schema, options = {})
-          puts "initialize | schema (#{schema.class.name}) #{schema.inspect}"
           @schema = schema
           @options = options
           @prefix_schema = options[:prefix].to_s.split('::').map(&:underscore).join('.')
@@ -63,20 +62,9 @@ module FieldStruct
             fields[:default] = attr[:default]
           end
           if attr.key? :default
-            default_value = attr[:default]
-            if default_value.to_s == '<proc>'
-              puts "build_attribute | name : #{name.inspect} | fields[:default] : proc ..."
-            elsif default_value.nil?
-              puts "build_attribute | name : #{name.inspect} | fields[:default] : proc ..."
-            else
-              fields[:default] = default_value
-              puts "build_attribute | name : #{name.inspect} | fields[:default] : 1 : (#{fields[:default].class.name}) #{fields[:default].inspect}"
-            end
-          else
-            puts "build_attribute | name : #{name.inspect} | fields[:default] : missing ..."
+            fields[:default] = attr[:default] unless attr[:default].to_s == '<proc>' || attr[:default].nil?
           end
 
-          puts "build_attribute | name : #{name.inspect} | fields : #{fields.inspect}"
           [name, fields]
         end
 
@@ -95,31 +83,23 @@ module FieldStruct
         def add_attribute_dependency(attr)
           type = attr[:type]
           type = type.reject { |x| x == 'null' }.first if type.is_a? Array
-          puts "add_attribute_dependency | type : 0 : (#{type.class.name}) #{type.inspect}"
-          if type.is_a?(Hash)
-            puts "add_attribute_dependency | type : Hash : 1 : #{type.inspect}"
-            if type[:type] == 'record'
-              @dependencies << type
-            elsif type[:type] == 'array' && type.dig(:items, :type) == 'record'
-              @dependencies << type[:items]
-            else
-              raise 'unknown complex type'
-            end
+          return unless type.is_a?(Hash)
+
+          if type[:type] == 'record'
+            @dependencies << type
+          elsif type[:type] == 'array' && type.dig(:items, :type) == 'record'
+            @dependencies << type[:items]
+          else
+            raise 'unknown complex type'
           end
-          puts "add_attribute_dependency | attr[:type] (#{attr[:type].class.name}) #{attr[:type].inspect} ..."
         end
 
-        def build_attribute_type_from(attr, fields, match)
-          puts "build_attribute_type_from | attr : #{attr.inspect}"
-
+        def build_attribute_type_from(_attr, fields, match)
           main, extra = match[1].to_s.split(':')
-          puts "build_attribute_type_from | name : #{attr[:name]} | attr[:type] : #{attr[:type].inspect} | main : #{main.inspect} | extra : #{extra.inspect}"
           fields[:type] = ACTIVE_MODEL_TYPES.key?(main) ? main.to_sym : main
-          puts "build_attribute_type_from | fields : 1 : #{fields.inspect}"
           return unless extra.present?
 
           fields[:of] = ACTIVE_MODEL_TYPES.key?(extra) ? extra.to_sym : extra
-          puts "build_attribute_type_from | fields : 2 : #{fields.inspect}"
         end
       end
 
@@ -143,16 +123,10 @@ module FieldStruct
       end
 
       def build
-        puts ">> build | building #{@schemas.size} schemas ..."
         @schemas.each { |schema| @results << build_schema(schema) }
-        until @dependencies.empty?
-          puts ">> build | building #{@dependencies.size} dependencies ..."
-          @results << build_schema(@dependencies.shift)
-        end
-        puts ">> build | reversing #{@results.size} results ..."
+        @results << build_schema(@dependencies.shift) until @dependencies.empty?
         @results.reverse!
         review_schema_names
-        puts ">> build | (#{@results.class.name}) #{@results.to_yaml}"
         @results
       end
 
@@ -161,11 +135,7 @@ module FieldStruct
       def build_schema(schema)
         @cnt ||= 0
         @cnt += 1
-        puts " [ build_schema ##{@cnt} ] ".center(90, '=')
-        puts ">> build_schema | schema (#{schema.class.name}) #{schema.inspect}"
         meta, deps = SingleBuilder.new(schema, @options.dup).build
-        puts ">> build_schema | meta (#{meta.class.name}) : schema_name : #{meta.schema_name} : to_hash : #{meta.to_hash.to_yaml}"
-        puts ">> build_schema | deps (#{deps.class.name}) : #{deps.inspect}"
         name = meta.schema_name.split('.')[0..-2].join('.')
         @options[:schema_names][name] = meta.name
         @dependencies += deps
@@ -173,45 +143,25 @@ module FieldStruct
       end
 
       def review_schema_names
-        puts ">> review_schema_names | @options[:schema_names] : #{@options[:schema_names].to_yaml}"
-        puts ">> review_schema_names | @options[:prefix] : #{@options[:prefix].inspect}"
-        @results.each_with_index do |meta, idx|
-          puts ">> review_schema_names | #{idx} : meta (#{meta.class.name}) ..."
+        @results.each_with_index do |meta, _idx|
           meta.keys.each do |attr_name|
             attr = meta[attr_name]
-            puts ">> review_schema_names | attr (#{attr.class.name}) #{attr.inspect}"
             # type
             if attr[:type].is_a?(String)
-              puts ">> review_schema_names | trying to change attr[:type] #{attr[:type].inspect}"
               new_name = aliased_name attr[:type]
-              if new_name
-                attr[:type] = new_name
-                puts ">> review_schema_names | changed : attr (#{attr.class.name}) #{attr.inspect}"
-              else
-                puts ">> review_schema_names | NOT changed : attr (#{attr.class.name}) #{attr.inspect}"
-              end
+              attr[:type] = new_name if new_name
             end
             # of
             next unless attr[:of].is_a?(String)
 
-            puts ">> review_schema_names | trying to change attr[:of] #{attr[:of].inspect}"
             new_name = aliased_name attr[:of]
-            if new_name
-              attr[:of] = new_name
-              puts ">> review_schema_names | changed : attr (#{attr.class.name}) #{attr.inspect}"
-            else
-              puts ">> review_schema_names | NOT changed : attr (#{attr.class.name}) #{attr.inspect}"
-            end
             attr[:of] = new_name if new_name
           end
         end
       end
 
       def aliased_name(str)
-        key = prefixed_schema(str)
-        res = @options.dig :schema_names, key
-        puts ">> review_schema_names | aliased_name : #{key.inspect} : #{res.inspect}"
-        res
+        @options.dig :schema_names, prefixed_schema(str)
       end
 
       def prefixed_schema(str)

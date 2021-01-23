@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Examples::Company, :focus2 do
+RSpec.describe Examples::Company do
   subject { described_class.metadata }
 
   let(:exp_meta) do
@@ -130,7 +130,7 @@ RSpec.describe Examples::Company, :focus2 do
   it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
-    it('#as_avro_schema') { compare act_avro, exp_schema }
+    it('#as_avro_schema', :focus) { compare act_avro, exp_schema }
     it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
   end
 

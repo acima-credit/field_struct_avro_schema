@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Examples::Person, :focus2 do
+RSpec.describe Examples::Person do
   subject { described_class.metadata }
 
   let(:exp_meta) do

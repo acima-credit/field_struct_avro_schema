@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'avro_builder/schema_store'
+require_relative 'avro_builder/ext'
 
 module FieldStruct
   module AvroSchema
@@ -8,7 +9,6 @@ module FieldStruct
       class << self
         attr_reader :builder_store_path
 
-        # @param [Pathname] value path to DSL schemas
         def builder_store_path=(value)
           @builder_store = SchemaStore.new value
           @builder_store_path = value
@@ -109,7 +109,6 @@ module FieldStruct
           line += ", default: #{opts[:default].inspect}"
         end
         line += ", doc: #{opts[:doc].inspect}"
-        puts "> build_attr_line | line [#{line}]"
         line
       end
 
@@ -140,9 +139,7 @@ module FieldStruct
         return if attr.default.nil?
         return if attr.default.is_a?(::Proc) || attr.default.to_s == '<proc>'
 
-        puts "add_field_default_for | attr.default (#{attr.default.class.name}) #{attr.default.inspect}"
         hsh[:default] = attr.default
-        puts "add_field_default_for | hsh[:default] (#{hsh[:default].class.name}) #{hsh[:default].inspect}"
       end
 
       def add_field_doc_for(attr, hsh)
@@ -165,9 +162,7 @@ module FieldStruct
     end
 
     def as_avro_schema
-      str = as_avro.to_s
-      puts "as_avro_schema | str : #{str}"
-      JSON.parse(str).deep_symbolize_keys
+      JSON.parse(as_avro.to_s).deep_symbolize_keys
     end
 
     def to_avro_json(pretty = false)

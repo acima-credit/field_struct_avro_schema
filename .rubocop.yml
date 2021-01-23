@@ -49,11 +49,12 @@ Naming/VariableName:
 
 Metrics/CyclomaticComplexity:
   Enabled: true
-  Exclude:
-    - 'lib/field_struct/avro_schema/avro_schema.rb'
+  Max: 9
+
+Metrics/PerceivedComplexity:
+  Enabled: true
+  Max: 8
 
 Metrics/AbcSize:
   Enabled: true
-  Exclude:
-    - 'lib/field_struct/avro_schema/builders/avro_builder.rb'
-    - 'spec/support/*'
+  Max: 30

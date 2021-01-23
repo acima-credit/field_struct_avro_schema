@@ -6,56 +6,94 @@ module FieldStruct
       # This class implements a schema store that loads Avro::Builder
       # DSL files and returns Avro::Schema objects.
       # It implements the same API as Avro::Builder::SchemaStore but also
-      # allows to set and persist a DSL schema from a string.
+      # allows to set and persist a DSL schema from a string and keep entries
+      # in memory only if desired.
       class SchemaStore
-        # @param [Pathname] path the path where DSL schemas will be stored
-        def initialize(path)
-          raise 'path must be a Pathname' unless path.is_a? Pathname
+        class Entry
+          attr_reader :full_name, :filename, :str, :schema
 
-          ::Avro::Builder.add_load_path path.to_s
+          def initialize(full_name, filename, str, schema)
+            @full_name = full_name
+            @filename = filename
+            @str = str
+            @schema = schema
+
+            check_name_mismatch
+          end
+
+          def check_name_mismatch
+            return unless schema.respond_to?(:fullname) && schema.fullname != full_name
+
+            raise ::Avro::Builder::SchemaError.new(schema.fullname, full_name)
+          end
+        end
+
+        attr_reader :path, :schemas
+
+        def initialize(path = nil)
+          raise 'path must be a Pathname' if !path.nil? && !path.is_a?(Pathname)
+
+          ::Avro::Builder.add_load_path(path.to_s) unless path.nil?
           @path = path
           @schemas = {}
         end
 
-        # @param [String] name the name of the schema
-        # @param [String] str the DSL schema
-        # @param [String,nil] namespace the namespace of the schema
-        # @return [Avro::Builder::DSL]
-        def set(name, str, namespace = nil)
-          full_name = Avro::Name.make_fullname(name, namespace)
-          filename = build_schema_path(full_name)
-          persist filename, str
-          find full_name
+        def get_by_full_name(name)
+          schemas[name]
         end
 
-        # @param [String] name the name of the schema
-        # @param [String,nil] namespace the namespace of the schema
-        # @return [Avro::Builder::DSL]
+        def get_by_filename(name)
+          schemas.values.find { |x| x.filename == name }
+        end
+
+        def set(name, str, namespace = nil)
+          full_name = Avro::Name.make_fullname(name, namespace)
+          persist full_name, str
+
+          add_entry_from_str(full_name, str).schema
+        end
+
         def find(name, namespace = nil)
           full_name = Avro::Name.make_fullname(name, namespace)
+          found = get_by_full_name full_name
+          return found.schema if found
 
-          @schemas[full_name] ||= Avro::Builder::DSL.new { eval_file(full_name) }
-                                                    .as_schema.tap do |schema|
-            if schema.respond_to?(:fullname) && schema.fullname != full_name
-              raise SchemaError.new(schema.fullname, full_name)
-            end
-          end
+          add_entry_from_file(full_name).schema
         end
 
         def clear
-          @schemas.keys.each { |full_name| FileUtils.rm build_schema_path(full_name) }
-          @schemas = {}
+          schemas = {}
+          schemas.keys.each { |full_name| FileUtils.rm build_schema_path(full_name) } unless path.nil?
         end
 
         private
 
-        def persist(filename, str)
+        def persist(full_name, str)
+          return false if path.nil?
+
+          filename = build_schema_path full_name
           FileUtils.mkdir_p filename.dirname
-          File.open(filename, 'w') { |f| f.puts str }
+          File.write filename, str
+          true
         end
 
         def build_schema_path(full_name)
-          @path.join full_name.gsub('.', '/') + '.rb'
+          schema_path = full_name.tr('.', '/') + '.rb'
+          return Pathname.new(schema_path) unless path
+
+          path.join(schema_path)
+        end
+
+        def add_entry_from_file(full_name)
+          add_entry_from_str full_name, File.read(filename)
+        end
+
+        def add_entry_from_str(full_name, str)
+          filename = build_schema_path(full_name).to_s
+          schema = ::Avro::Builder::DSL.new(str).as_schema
+          entry = Entry.new(full_name, filename, str, schema)
+          schemas[full_name] = entry
+          entry
         end
       end
     end
