@@ -35,6 +35,7 @@ module Avro
         FieldStruct::AvroSchema::AvroBuilder.builder_store
       end
     end
+
     class DSL
       private
 

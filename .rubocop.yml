@@ -58,3 +58,15 @@ Metrics/PerceivedComplexity:
 Metrics/AbcSize:
   Enabled: true
   Max: 30
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Style/StringConcatenation:
+  Enabled: false
+
+Style/SoleNestedConditional:
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: false

@@ -63,7 +63,9 @@ module FieldStruct
 
         def clear
           schemas = {}
-          schemas.keys.each { |full_name| FileUtils.rm build_schema_path(full_name) } unless path.nil?
+          return if path.nil?
+
+          schemas.keys.each { |full_name| FileUtils.rm build_schema_path(full_name) }
         end
 
         private

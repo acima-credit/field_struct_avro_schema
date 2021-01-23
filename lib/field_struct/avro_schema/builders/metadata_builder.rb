@@ -73,7 +73,7 @@ module FieldStruct
 
           doc, meta = attr[:doc].to_s.split('|')
           fields[:description] = doc.strip if doc.present?
-          match = meta.match(/ type ([\w:\.]+)/)
+          match = meta.match(/ type ([\w:.]+)/)
           return unless match
 
           add_attribute_dependency attr
