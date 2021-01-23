@@ -25,10 +25,10 @@ RSpec.describe Examples::Developer do
       namespace: 'examples',
       doc: '| version 5251a97e',
       fields: [
-        { name: :first_name, type: 'string', doc: '| type string' },
-        { name: :last_name, type: 'string', doc: '| type string' },
-        { name: :title, type: %w[null string], doc: '| type string' },
-        { name: :language, type: 'string', doc: '| type string' }
+        { name: 'first_name', type: 'string', doc: '| type string' },
+        { name: 'last_name', type: 'string', doc: '| type string' },
+        { name: 'title', type: %w[null string], default: nil, doc: '| type string' },
+        { name: 'language', type: 'string', doc: '| type string' }
       ]
     }
   end

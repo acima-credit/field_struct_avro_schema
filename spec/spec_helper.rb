@@ -7,6 +7,8 @@ require 'rspec/core/shared_context'
 require 'rspec/json_expectations'
 require 'hashdiff'
 
+ROOT_PATH = Pathname.new File.expand_path(File.dirname(File.dirname(__FILE__)))
+
 RSpec.configure do |config|
   config.example_status_persistence_file_path = '.rspec_status'
   config.disable_monkey_patching!
@@ -16,7 +18,13 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  ROOT_PATH = Pathname.new File.expand_path(File.dirname(File.dirname(__FILE__)))
-
   Dir[ROOT_PATH.join('spec/support/*.rb')].sort.each { |f| require f }
+
+  # Builder Store setup
+  # STORE_PATH = ROOT_PATH.join('spec/schemas')
+  # FileUtils.mkdir_p STORE_PATH
+  # FieldStruct::AvroSchema::AvroBuilder.builder_store_path = STORE_PATH
+  config.before(:each) do
+    FieldStruct::AvroSchema::AvroBuilder.builder_store.clear
+  end
 end

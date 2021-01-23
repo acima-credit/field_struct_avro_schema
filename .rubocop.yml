@@ -20,7 +20,7 @@ Metrics/MethodLength:
   Max: 20
 
 Metrics/ClassLength:
-  Max: 120
+  Max: 140
 
 Style/RaiseArgs:
   Enabled: false
@@ -49,11 +49,24 @@ Naming/VariableName:
 
 Metrics/CyclomaticComplexity:
   Enabled: true
-  Exclude:
-    - 'lib/field_struct/avro_schema/avro_schema.rb'
+  Max: 9
+
+Metrics/PerceivedComplexity:
+  Enabled: true
+  Max: 8
 
 Metrics/AbcSize:
   Enabled: true
-  Exclude:
-    - 'lib/field_struct/avro_schema/builders/avro_builder.rb'
-    - 'spec/support/*'
+  Max: 30
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Style/StringConcatenation:
+  Enabled: false
+
+Style/SoleNestedConditional:
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: false

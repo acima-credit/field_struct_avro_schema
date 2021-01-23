@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Examples::Company, :focus do
+RSpec.describe Examples::Company do
   subject { described_class.metadata }
 
   let(:exp_meta) do
@@ -18,53 +18,57 @@ RSpec.describe Examples::Company, :focus do
     }
   end
   let(:exp_schema) do
-    [
-      {
-        type: 'record',
-        name: 'developer',
-        namespace: 'examples',
-        doc: '| version 5251a97e',
-        fields: [
-          { name: :first_name, type: 'string', doc: '| type string' },
-          { name: :last_name, type: 'string', doc: '| type string' },
-          { name: :title, type: %w[null string], doc: '| type string' },
-          { name: :language, type: 'string', doc: '| type string' }
-        ]
-      },
-      {
-        type: 'record',
-        name: 'employee',
-        namespace: 'examples',
-        doc: '| version 115d6e02',
-        fields: [
-          { name: :first_name, type: 'string', doc: '| type string' },
-          { name: :last_name, type: 'string', doc: '| type string' },
-          { name: :title, type: %w[null string], doc: '| type string' }
-        ]
-      },
-      {
-        type: 'record',
-        name: 'team',
-        namespace: 'examples', doc: '| version 6ce37c6d',
-        fields: [
-          { name: :name, type: 'string', doc: '| type string' },
-          { name: :leader, type: 'examples.employee', doc: '| type examples.employee' },
-          { name: :members, type: { type: 'array', items: 'examples.developer' },
-            doc: 'Team members | type array:examples.developer' }
-        ]
-      },
-      {
-        type: 'record',
-        name: 'company',
-        namespace: 'examples',
-        doc: '| version bb40ff23',
-        fields: [
-          { name: :legal_name, type: 'string', doc: '| type string' },
-          { name: :development_team, type: ['null', 'examples.team'], doc: '| type examples.team' },
-          { name: :marketing_team, type: ['null', 'examples.team'], doc: '| type examples.team' }
-        ]
-      }
-    ]
+    {
+      type: 'record',
+      name: 'company',
+      namespace: 'examples',
+      doc: '| version bb40ff23',
+      fields: [
+        { name: 'legal_name', type: 'string', doc: '| type string' },
+        { name: 'development_team',
+          type: ['null',
+                 { type: 'record',
+                   name: 'team',
+                   namespace: 'examples',
+                   doc: '| version 6ce37c6d',
+                   fields: [
+                     { name: 'name', type: 'string', doc: '| type string' },
+                     { name: 'leader',
+                       type: {
+                         type: 'record',
+                         name: 'employee',
+                         namespace: 'examples',
+                         doc: '| version 115d6e02',
+                         fields: [
+                           { name: 'first_name', type: 'string', doc: '| type string' },
+                           { name: 'last_name', type: 'string', doc: '| type string' },
+                           { name: 'title', type: %w[null string], default: nil, doc: '| type string' }
+                         ]
+                       },
+                       doc: '| type examples.employee' },
+                     { name: 'members',
+                       type: {
+                         type: 'array',
+                         items: {
+                           type: 'record',
+                           name: 'developer',
+                           namespace: 'examples',
+                           doc: '| version 5251a97e',
+                           fields: [
+                             { name: 'first_name', type: 'string', doc: '| type string' },
+                             { name: 'last_name', type: 'string', doc: '| type string' },
+                             { name: 'title', type: %w[null string], default: nil, doc: '| type string' },
+                             { name: 'language', type: 'string', doc: '| type string' }
+                           ]
+                         }
+                       },
+                       doc: 'Team members | type array:examples.developer' }
+                   ] }],
+          default: nil,
+          doc: '| type examples.team' },
+        { name: 'marketing_team', type: ['null', 'examples.team'], default: nil, doc: '| type examples.team' }
+      ]
+    }
   end
   let(:exp_version_meta) do
     [
@@ -107,12 +111,10 @@ RSpec.describe Examples::Company, :focus do
       {
         name: 'Schemas::Examples::Company::Vbb40ff23',
         schema_name: 'schemas.examples.company.vbb40ff23',
-        version: 'bb40ff23',
-        attributes: {
-          legal_name: { type: :string, required: true },
-          development_team: { type: 'Schemas::Examples::Team::V6ce37c6d' },
-          marketing_team: { type: 'Schemas::Examples::Team::V6ce37c6d' }
-        }
+        attributes: { legal_name: { type: :string, required: true },
+                      development_team: { type: 'Schemas::Examples::Team::V6ce37c6d' },
+                      marketing_team: { type: 'Schemas::Examples::Team::V6ce37c6d' } },
+        version: 'bb40ff23'
       }
     ]
   end
@@ -128,7 +130,7 @@ RSpec.describe Examples::Company, :focus do
   it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
-    it('#as_avro_schema') { compare act_avro, exp_schema }
+    it('#as_avro_schema', :focus) { compare act_avro, exp_schema }
     it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
   end
 
@@ -141,7 +143,9 @@ RSpec.describe Examples::Company, :focus do
       expect(blt_meta[2]).to be_a FieldStruct::Metadata
       expect(blt_meta[1]).to be_a FieldStruct::Metadata
       expect(blt_meta[0]).to be_a FieldStruct::Metadata
-      compare blt_meta.map(&:to_hash), exp_version_meta
+
+      act_version_hash = blt_meta.map(&:to_hash)
+      compare act_version_hash, exp_version_meta
     end
   end
 
@@ -174,6 +178,7 @@ RSpec.describe Examples::Company, :focus do
 
       expect(original).to be_valid
       expect(original.to_hash).to eq exp_comp_hsh
+
       expect { emp_klass }.to_not raise_error
       expect(emp_klass).to eq Schemas::Examples::Employee::V115d6e02
 

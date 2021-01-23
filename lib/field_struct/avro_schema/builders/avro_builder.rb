@@ -1,86 +1,137 @@
 # frozen_string_literal: true
 
+require_relative 'avro_builder/schema_store'
+require_relative 'avro_builder/ext'
+
 module FieldStruct
   module AvroSchema
     class AvroBuilder
-      def self.build(metadata)
-        new(metadata).build
+      class << self
+        attr_reader :builder_store_path
+
+        def builder_store_path=(value)
+          @builder_store = SchemaStore.new value
+          @builder_store_path = value
+        end
+
+        def builder_store
+          @builder_store ||= SchemaStore.new builder_store_path
+        end
+
+        def build(metadata)
+          new(metadata).build
+        end
       end
 
-      attr_reader :list, :schema
+      attr_reader :meta
 
-      def initialize(metadata)
-        @list   = [metadata]
-        @schema = nil
+      def initialize(meta)
+        @meta = meta
       end
 
       def build
-        make_list
-        clean_list
-        build_schemas
-        schema
+        build_namespace
+        build_extras
+        build_record
+        build_dependencies
+        build_attributes
+        build_template
+        build_dsl
       end
 
       private
 
-      def make_list
-        idx = 0
-        loop do
-          add_type_for idx
-          idx += 1
-          break if idx >= list.size
-        end
+      def build_namespace
+        parts = meta.schema_name.split('.')
+        @record_name = parts.pop
+        @namespace = parts.join '.'
       end
 
-      def add_type_for(idx)
-        meta = list.at idx
+      def build_extras
+        @extras = []
+      end
+
+      def build_record
+        @record_options = {
+          doc: "| version #{meta.version}"
+        }
+      end
+
+      def build_dependencies
         meta.attributes.each do |_name, attr|
           [attr.type, attr.of].compact.each do |type|
-            list << type.metadata if type.field_struct?
+            self.class.build(type.metadata) if type.field_struct?
           end
         end
       end
 
-      def clean_list
-        @list = list.reverse.uniq
+      def build_attributes
+        @attributes = meta.attributes.map do |name, attr|
+          build_attribute name, attr
+        end
       end
 
-      def build_schemas
-        @schema = list.map { |x| build_schema_for x }
-        @schema = schema.first if schema.size == 1
-      end
-
-      def build_schema_for(meta)
-        names           = meta.schema_name.split('.')
-        hsh             = {}
-        hsh[:type]      = 'record'
-        hsh[:name]      = names.last
-        hsh[:namespace] = names[0..-2].join('.')
-        hsh[:doc]       = "| version #{meta.version}"
-        hsh[:fields]    = meta.attributes.map { |name, attr| build_field_for name, attr }
-        hsh
-      end
-
-      def build_field_for(name, attr)
-        hsh = { name: name }
+      def build_attribute(name, attr)
+        hsh = {
+          name: name,
+          mode: attr.required? ? :required : :optional
+        }
         add_field_type_for attr, hsh
         add_field_default_for attr, hsh
         add_field_doc_for attr, hsh
         hsh
       end
 
-      def add_field_type_for(attr, hsh)
-        hsh[:type] = basic_type_for attr.type, attr
-        hsh[:type] = ['null', hsh[:type]] unless attr.required?
+      def build_template
+        ary = []
+        ary << "namespace '#{@namespace}'" << '' if @namespace.present?
+        rec_opts = @record_options.inspect[1..-2]
+        ary << "record :#{@record_name}, #{rec_opts} do"
+        @attributes.each { |opts| ary << build_attr_line(opts) }
+        ary << 'end'
+
+        @template = ary.join("\n")
       end
 
-      def basic_type_for(type, attr)
-        if type == :array
-          { type: 'array', items: basic_type_for(attr.of, attr) }
-        elsif ACTIVE_MODEL_TYPES.key?(type)
-          ACTIVE_MODEL_TYPES[type].to_s
+      def build_attr_line(opts)
+        line = '  '.dup
+        line << "#{opts[:mode]} :#{opts[:name]}"
+        type_parts = opts[:type].to_s.split('.')
+        if type_parts.size > 1
+          type_name = type_parts.pop
+          type_namespace = type_parts.join('.')
+          line << ", :#{type_name}, namespace: '#{type_namespace}'"
         else
-          type.field_struct? ? type.metadata.schema_name : nil
+          line << ", :#{opts[:type]}"
+        end
+        line += ", items: #{opts[:items].inspect}" if opts.key?(:items)
+        if opts.key?(:default) && !opts[:default].nil? && opts[:mode] == :required
+          line += ", default: #{opts[:default].inspect}"
+        end
+        line += ", doc: #{opts[:doc].inspect}"
+        line
+      end
+
+      def build_dsl
+        @dsl = self.class.builder_store.set meta.schema_name, @template
+      end
+
+      def add_field_type_for(attr, hsh)
+        if attr.type == :array
+          hsh[:type] = :array
+          hsh[:items] = basic_type_for attr.of
+        elsif ACTIVE_MODEL_TYPES.key?(attr.type)
+          hsh[:type] = ACTIVE_MODEL_TYPES[attr.type].to_s
+        else
+          hsh[:type] = attr.type.field_struct? ? attr.type.metadata.schema_name : nil
+        end
+      end
+
+      def basic_type_for(type)
+        if ACTIVE_MODEL_TYPES.key?(type)
+          ACTIVE_MODEL_TYPES[type].to_s
+        elsif type.field_struct?
+          type.metadata.schema_name
         end
       end
 
@@ -89,7 +140,6 @@ module FieldStruct
         return if attr.default.is_a?(::Proc) || attr.default.to_s == '<proc>'
 
         hsh[:default] = attr.default
-        hsh[:type].reverse! if hsh[:type].is_a?(Array) && hsh[:type].first == 'null'
       end
 
       def add_field_doc_for(attr, hsh)
@@ -98,17 +148,21 @@ module FieldStruct
         hsh[:doc] += '| type '
         if attr.of
           hsh[:doc] += 'array:'
-          hsh[:doc] +=  attr.of.field_struct? ? attr.of.metadata.schema_name : attr.of.to_s
+          hsh[:doc] += attr.of.field_struct? ? attr.of.metadata.schema_name : attr.of.to_s
         else
-          hsh[:doc] +=  attr.type.field_struct? ? attr.type.metadata.schema_name : attr.type.to_s
+          hsh[:doc] += attr.type.field_struct? ? attr.type.metadata.schema_name : attr.type.to_s
         end
       end
     end
   end
 
   class Metadata
-    def as_avro_schema
+    def as_avro
       AvroSchema::AvroBuilder.build self
+    end
+
+    def as_avro_schema
+      JSON.parse(as_avro.to_s).deep_symbolize_keys
     end
 
     def to_avro_json(pretty = false)

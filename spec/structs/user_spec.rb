@@ -9,7 +9,7 @@ RSpec.describe Examples::User do
     {
       name: 'Examples::User',
       schema_name: 'examples.user',
-      version: '5cf8302f',
+      version: '53d47729',
       attributes: {
         username: { type: :string, required: true, format: /\A[a-z]/i, description: 'login' },
         password: { type: :string },
@@ -18,7 +18,7 @@ RSpec.describe Examples::User do
         source: { type: :string, required: true, enum: %w[A B C] },
         level: { type: :integer, required: true, default: '<proc>' },
         at: { type: :time },
-        active: { type: :boolean, default: false }
+        active: { type: :boolean, required: true, default: false }
       }
     }
   end
@@ -27,25 +27,25 @@ RSpec.describe Examples::User do
       type: 'record',
       name: 'user',
       namespace: 'examples',
-      doc: '| version 5cf8302f',
+      doc: '| version 53d47729',
       fields: [
-        { name: :username, type: 'string', doc: 'login | type string' },
-        { name: :password, type: %w[null string], doc: '| type string' },
-        { name: :age, type: 'int', doc: '| type integer' },
-        { name: :owed, type: 'float', doc: 'amount owed to the company | type currency' },
-        { name: :source, type: 'string', doc: '| type string' },
-        { name: :level, type: 'int', doc: '| type integer' },
-        { name: :at, type: %w[null string], doc: '| type time' },
-        { name: :active, type: %w[boolean null], default: false, doc: '| type boolean' }
+        { name: 'username', type: 'string', doc: 'login | type string' },
+        { name: 'password', type: %w[null string], default: nil, doc: '| type string' },
+        { name: 'age', type: 'int', doc: '| type integer' },
+        { name: 'owed', type: 'float', doc: 'amount owed to the company | type currency' },
+        { name: 'source', type: 'string', doc: '| type string' },
+        { name: 'level', type: 'int', doc: '| type integer' },
+        { name: 'at', type: %w[null string], default: nil, doc: '| type time' },
+        { name: 'active', type: 'boolean', default: false, doc: '| type boolean' }
       ]
     }
   end
   let(:exp_version_meta) do
     [
       {
-        name: 'Schemas::Examples::User::V5cf8302f',
-        schema_name: 'schemas.examples.user.v5cf8302f',
-        version: '5cf8302f',
+        name: 'Schemas::Examples::User::V53d47729',
+        schema_name: 'schemas.examples.user.v53d47729',
+        version: '53d47729',
         attributes: {
           username: { type: :string, required: true, description: 'login' },
           password: { type: :string },
@@ -54,7 +54,7 @@ RSpec.describe Examples::User do
           source: { type: :string, required: true },
           level: { type: :integer, required: true },
           at: { type: :time },
-          active: { type: :boolean, default: false }
+          active: { type: :boolean, required: true, default: false }
         }
       }
     ]
@@ -96,6 +96,7 @@ RSpec.describe Examples::User do
       expect(original.source).to eq 'B'
       expect(original.level).to eq 2
       expect(original.at).to eq past_time
+      expect(original.active).to eq true
 
       expect { blt_klas }.to_not raise_error
 
@@ -109,6 +110,7 @@ RSpec.describe Examples::User do
       expect(clone.source).to eq 'B'
       expect(clone.level).to eq 2
       expect(clone.at).to eq past_time
+      expect(clone.active).to eq true
     end
   end
 end

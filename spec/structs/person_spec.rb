@@ -23,8 +23,8 @@ RSpec.describe Examples::Person do
       namespace: 'examples',
       doc: '| version 75b71433',
       fields: [
-        { name: :first_name, type: 'string', doc: '| type string' },
-        { name: :last_name, type: 'string', doc: '| type string' }
+        { name: 'first_name', type: 'string', doc: '| type string' },
+        { name: 'last_name', type: 'string', doc: '| type string' }
       ]
     }
   end

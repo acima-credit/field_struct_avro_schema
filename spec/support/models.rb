@@ -9,7 +9,7 @@ module Examples
     required :source, :string, enum: %w[A B C]
     required :level, :integer, default: -> { 2 }
     optional :at, :time
-    optional :active, :boolean, default: false
+    required :active, :boolean, default: false
   end
 
   class Person < FieldStruct.flexible
@@ -44,6 +44,22 @@ module Examples
   end
 end
 
+module ExampleApp
+  module Examples
+    class Friend < FieldStruct.flexible
+      required :name, :string
+      optional :age, :integer
+      optional :balance_owed, :currency, default: 0.0
+      optional :gamer_level, :integer, enum: [1, 2, 3], default: -> { 1 }
+      optional :zip_code, :string, format: /\A[0-9]{5}?\z/
+
+      def topic_key
+        format '%s', name
+      end
+    end
+  end
+end
+
 module ModelHelpers
   extend RSpec::Core::SharedContext
 
@@ -57,7 +73,8 @@ module ModelHelpers
       owed: 1537.25,
       source: 'B',
       level: 2,
-      at: past_time
+      at: past_time,
+      active: true
     }
   end
 
@@ -121,6 +138,16 @@ module ModelHelpers
       legal_name: 'My Super Company',
       development_team: team_attrs,
       marketing_team: mark_attrs
+    }
+  end
+
+  let(:friend_attrs) do
+    {
+      name: 'Carl Rovers',
+      age: 45,
+      balance_owed: 25.75,
+      gamer_level: 2,
+      zip_code: '84120'
     }
   end
 end

@@ -9,7 +9,7 @@ module FieldStruct
       string: %i[string date datetime immutable_string time],
       boolean: [:boolean],
       array: [:array]
-    }.freeze
+    }.with_indifferent_access.freeze
 
     ACTIVE_MODEL_TYPES = {
       float: :float,
@@ -25,7 +25,7 @@ module FieldStruct
       time: :string,
       boolean: :boolean,
       array: :array
-    }.freeze
+    }.with_indifferent_access.freeze
   end
 end
 require_relative 'builders/avro_builder'
