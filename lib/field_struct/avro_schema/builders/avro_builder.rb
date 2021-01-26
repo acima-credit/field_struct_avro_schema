@@ -6,6 +6,81 @@ require_relative 'avro_builder/ext'
 module FieldStruct
   module AvroSchema
     class AvroBuilder
+      class TemplateBuilder
+        def self.build(*args)
+          new(*args).build
+        end
+
+        def initialize(namespace, record_options, record_name, attributes)
+          @namespace = namespace
+          @record_options = record_options
+          @record_name = record_name
+          @attributes = attributes
+        end
+
+        def build
+          ary = []
+          ary << "namespace '#{@namespace}'" << '' if @namespace.present?
+          rec_opts = @record_options.inspect[1..-2]
+          ary << "record :#{@record_name}, #{rec_opts} do"
+          @attributes.each { |attr| ary << build_attr_line(attr) }
+          ary << 'end'
+          ary.join("\n")
+        end
+
+        private
+
+        def build_attr_line(attr)
+          ary = []
+          build_attr_base_line attr, ary
+          build_attr_type_line attr, ary
+          build_attr_items_line attr, ary
+          build_attr_default_line attr, ary
+          build_attr_doc_line attr, ary
+          '  ' + ary.join(', ')
+        end
+
+        def build_attr_base_line(attr, ary)
+          ary << "#{attr[:mode]} :#{attr[:name]}"
+        end
+
+        def build_attr_type_line(attr, ary)
+          type_parts = attr[:type].to_s.split('.')
+          if type_parts.size > 1
+            type_name = type_parts.pop
+            type_namespace = type_parts.join('.')
+            ary << ":#{type_name}" << "namespace: '#{type_namespace}'"
+          else
+            ary << ":#{attr[:type]}"
+          end
+          ary << "logical_type: #{attr[:logical_type].inspect}" if attr[:logical_type]
+        end
+
+        def build_attr_items_line(attr, ary)
+          return unless attr.key? :items
+
+          items = attr[:items]
+          ary << if items.is_a?(Array)
+                   "items: type(#{items.first.inspect}, logical_type: #{items.last.inspect})"
+                 else
+                   "items: #{attr[:items].inspect}"
+                 end
+        end
+
+        def build_attr_default_line(attr, ary)
+          return unless attr.key?(:default)
+
+          default = attr[:default]
+          return if default.nil? # || opts[:mode] == :required
+
+          ary << "default: #{attr[:default].inspect}"
+        end
+
+        def build_attr_doc_line(attr, ary)
+          ary << "doc: #{attr[:doc].inspect}"
+        end
+      end
+
       class << self
         attr_reader :builder_store_path
 
@@ -16,6 +91,10 @@ module FieldStruct
 
         def builder_store
           @builder_store ||= SchemaStore.new builder_store_path
+        end
+
+        def build_template(metadata)
+          new(metadata).build_template
         end
 
         def build(metadata)
@@ -29,12 +108,16 @@ module FieldStruct
         @meta = meta
       end
 
-      def build
+      def build_template
         build_namespace
         build_extras
         build_record
         build_dependencies
         build_attributes
+        build_lines
+      end
+
+      def build
         build_template
         build_dsl
       end
@@ -82,34 +165,8 @@ module FieldStruct
         hsh
       end
 
-      def build_template
-        ary = []
-        ary << "namespace '#{@namespace}'" << '' if @namespace.present?
-        rec_opts = @record_options.inspect[1..-2]
-        ary << "record :#{@record_name}, #{rec_opts} do"
-        @attributes.each { |opts| ary << build_attr_line(opts) }
-        ary << 'end'
-
-        @template = ary.join("\n")
-      end
-
-      def build_attr_line(opts)
-        line = '  '.dup
-        line << "#{opts[:mode]} :#{opts[:name]}"
-        type_parts = opts[:type].to_s.split('.')
-        if type_parts.size > 1
-          type_name = type_parts.pop
-          type_namespace = type_parts.join('.')
-          line << ", :#{type_name}, namespace: '#{type_namespace}'"
-        else
-          line << ", :#{opts[:type]}"
-        end
-        line += ", items: #{opts[:items].inspect}" if opts.key?(:items)
-        if opts.key?(:default) && !opts[:default].nil? && opts[:mode] == :required
-          line += ", default: #{opts[:default].inspect}"
-        end
-        line += ", doc: #{opts[:doc].inspect}"
-        line
+      def build_lines
+        @template = TemplateBuilder.build @namespace, @record_options, @record_name, @attributes
       end
 
       def build_dsl
@@ -117,21 +174,32 @@ module FieldStruct
       end
 
       def add_field_type_for(attr, hsh)
-        if attr.type == :array
-          hsh[:type] = :array
-          hsh[:items] = basic_type_for attr.of
-        elsif ACTIVE_MODEL_TYPES.key?(attr.type)
-          hsh[:type] = ACTIVE_MODEL_TYPES[attr.type].to_s
-        else
-          hsh[:type] = attr.type.field_struct? ? attr.type.metadata.schema_name : nil
+        add_array_field_type_for(attr, hsh) || add_single_field_type_for(attr, hsh)
+      end
+
+      def add_array_field_type_for(attr, hsh)
+        return false unless attr.type == :array
+
+        hsh[:type] = :array
+        type = attr.of
+        if (type_ary = LOGICAL_TYPES[type])
+          hsh[:items] = type_ary
+        elsif (type_key = ACTIVE_MODEL_TYPES[type])
+          hsh[:items] = type_key.to_s
+        elsif type.field_struct?
+          hsh[:items] = type.metadata.schema_name
         end
       end
 
-      def basic_type_for(type)
-        if ACTIVE_MODEL_TYPES.key?(type)
-          ACTIVE_MODEL_TYPES[type].to_s
+      def add_single_field_type_for(attr, hsh)
+        type = attr.type
+        if (type_ary = LOGICAL_TYPES[type])
+          hsh[:type] = type_ary.first.to_s
+          hsh[:logical_type] = type_ary.last
+        elsif (type_key = ACTIVE_MODEL_TYPES[type])
+          hsh[:type] = type_key.to_s
         elsif type.field_struct?
-          type.metadata.schema_name
+          hsh[:type] = type.metadata.schema_name
         end
       end
 
@@ -144,7 +212,7 @@ module FieldStruct
 
       def add_field_doc_for(attr, hsh)
         hsh[:doc] = ''
-        hsh[:doc] += format('%s ', attr.description) if attr.description?
+        hsh[:doc] += format('%s ', attr[:description]) if attr[:description]
         hsh[:doc] += '| type '
         if attr.of
           hsh[:doc] += 'array:'
@@ -157,6 +225,10 @@ module FieldStruct
   end
 
   class Metadata
+    def as_avro_template
+      AvroSchema::AvroBuilder.build_template self
+    end
+
     def as_avro
       AvroSchema::AvroBuilder.build self
     end

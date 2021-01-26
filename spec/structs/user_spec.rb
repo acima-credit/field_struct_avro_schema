@@ -22,6 +22,22 @@ RSpec.describe Examples::User do
       }
     }
   end
+  let(:exp_template) do
+    <<~CODE.chomp
+      namespace 'examples'
+
+      record :user, :doc=>"| version 53d47729" do
+        required :username, :string, doc: "login | type string"
+        optional :password, :string, doc: "| type string"
+        required :age, :int, doc: "| type integer"
+        required :owed, :float, doc: "amount owed to the company | type currency"
+        required :source, :string, doc: "| type string"
+        required :level, :int, doc: "| type integer"
+        optional :at, :int, logical_type: "timestamp-millis", doc: "| type time"
+        required :active, :boolean, default: false, doc: "| type boolean"
+      end
+    CODE
+  end
   let(:exp_schema) do
     {
       type: 'record',
@@ -35,7 +51,12 @@ RSpec.describe Examples::User do
         { name: 'owed', type: 'float', doc: 'amount owed to the company | type currency' },
         { name: 'source', type: 'string', doc: '| type string' },
         { name: 'level', type: 'int', doc: '| type integer' },
-        { name: 'at', type: %w[null string], default: nil, doc: '| type time' },
+        {
+          name: 'at',
+          type: ['null', { type: 'int', logicalType: 'timestamp-millis' }],
+          default: nil,
+          doc: '| type time'
+        },
         { name: 'active', type: 'boolean', default: false, doc: '| type boolean' }
       ]
     }
@@ -61,6 +82,7 @@ RSpec.describe Examples::User do
   end
 
   let(:act_meta) { subject.to_hash }
+  let(:act_template) { subject.as_avro_template }
   let(:act_avro) { subject.as_avro_schema }
   let(:blt_meta) { FieldStruct::Metadata.from_avro_schema act_avro }
   let(:blt_klas) { FieldStruct.from_metadata blt_meta.last }
@@ -68,6 +90,7 @@ RSpec.describe Examples::User do
   it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
+    it('#as_avro_template') { compare act_template, exp_template }
     it('#as_avro_schema') { compare act_avro, exp_schema }
     it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
   end

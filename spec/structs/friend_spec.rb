@@ -17,6 +17,19 @@ RSpec.describe ExampleApp::Examples::Friend do
       version: '82f78509'
     }
   end
+  let(:exp_template) do
+    <<~CODE.chomp
+      namespace 'example_app.examples'
+
+      record :friend, :doc=>"| version 82f78509" do
+        required :name, :string, doc: "| type string"
+        optional :age, :int, doc: "| type integer"
+        optional :balance_owed, :float, default: 0.0, doc: "| type currency"
+        optional :gamer_level, :int, doc: "| type integer"
+        optional :zip_code, :string, doc: "| type string"
+      end
+    CODE
+  end
   let(:exp_schema) do
     {
       type: 'record',
@@ -50,6 +63,7 @@ RSpec.describe ExampleApp::Examples::Friend do
   end
 
   let(:act_meta) { subject.to_hash }
+  let(:act_template) { subject.as_avro_template }
   let(:act_avro) { subject.as_avro_schema }
   let(:blt_meta) { FieldStruct::Metadata.from_avro_schema act_avro }
   let(:blt_klas) { FieldStruct.from_metadata blt_meta.last }
@@ -57,6 +71,7 @@ RSpec.describe ExampleApp::Examples::Friend do
   it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
+    it('#as_avro_template') { compare act_template, exp_template }
     it('#as_avro_schema') { compare act_avro, exp_schema }
     it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
   end

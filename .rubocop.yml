@@ -1,5 +1,6 @@
 AllCops:
   TargetRubyVersion: 2.4
+  SuggestExtensions: false
   Include:
     - '**/*.rake'
     - '**/Rakefile'
@@ -70,3 +71,70 @@ Style/SoleNestedConditional:
 
 Style/HashEachMethods:
   Enabled: false
+
+# New cops
+Layout/SpaceBeforeBrackets:
+  Enabled: true
+
+Lint/AmbiguousAssignment:
+  Enabled: true
+
+Lint/DeprecatedConstants:
+  Enabled: true
+
+Lint/DuplicateBranch:
+  Enabled: true
+
+Lint/DuplicateRegexpCharacterClassElement:
+  Enabled: true
+
+Lint/EmptyBlock:
+  Enabled: true
+
+Lint/EmptyClass:
+  Enabled: true
+
+Lint/LambdaWithoutLiteralBlock:
+  Enabled: true
+
+Lint/NoReturnInBeginEndBlocks:
+  Enabled: true
+
+Lint/RedundantDirGlobSort:
+  Enabled: true
+
+Lint/ToEnumArguments:
+  Enabled: true
+
+Lint/UnexpectedBlockArity:
+  Enabled: true
+
+Lint/UnmodifiedReduceAccumulator:
+  Enabled: true
+
+Style/ArgumentsForwarding:
+  Enabled: true
+
+Style/CollectionCompact:
+  Enabled: true
+
+Style/DocumentDynamicEvalDefinition:
+  Enabled: true
+
+Style/EndlessMethod:
+  Enabled: true
+
+Style/HashExcept:
+  Enabled: true
+
+Style/NegatedIfElseCondition:
+  Enabled: true
+
+Style/NilLambda:
+  Enabled: true
+
+Style/RedundantArgument:
+  Enabled: true
+
+Style/SwapValues:
+  Enabled: true
