@@ -17,6 +17,17 @@ RSpec.describe Examples::Company do
       }
     }
   end
+  let(:exp_template) do
+    <<~CODE.chomp
+      namespace 'examples'
+
+      record :company, :doc=>"| version bb40ff23" do
+        required :legal_name, :string, doc: "| type string"
+        optional :development_team, :team, namespace: 'examples', doc: "| type examples.team"
+        optional :marketing_team, :team, namespace: 'examples', doc: "| type examples.team"
+      end
+    CODE
+  end
   let(:exp_schema) do
     {
       type: 'record',
@@ -120,6 +131,7 @@ RSpec.describe Examples::Company do
   end
 
   let(:act_meta) { subject.to_hash }
+  let(:act_template) { subject.as_avro_template }
   let(:act_avro) { subject.as_avro_schema }
   let(:blt_meta) { FieldStruct::Metadata.from_avro_schema act_avro }
   let(:comp_klass) { FieldStruct.from_metadata blt_meta[3] }
@@ -130,7 +142,8 @@ RSpec.describe Examples::Company do
   it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
-    it('#as_avro_schema', :focus) { compare act_avro, exp_schema }
+    it('#as_avro_template') { compare act_template, exp_template }
+    it('#as_avro_schema') { compare act_avro, exp_schema }
     it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
   end
 

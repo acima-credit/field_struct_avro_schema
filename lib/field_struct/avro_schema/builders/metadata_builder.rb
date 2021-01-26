@@ -89,8 +89,6 @@ module FieldStruct
             @dependencies << type
           elsif type[:type] == 'array' && type.dig(:items, :type) == 'record'
             @dependencies << type[:items]
-          else
-            raise 'unknown complex type'
           end
         end
 

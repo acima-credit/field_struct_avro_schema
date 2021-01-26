@@ -23,6 +23,17 @@ RSpec.describe Examples::Team do
       }
     }
   end
+  let(:exp_template) do
+    <<~CODE.chomp
+      namespace 'examples'
+
+      record :team, :doc=>"| version 6ce37c6d" do
+        required :name, :string, doc: "| type string"
+        required :leader, :employee, namespace: 'examples', doc: "| type examples.employee"
+        required :members, :array, items: "examples.developer", doc: "Team members | type array:examples.developer"
+      end
+    CODE
+  end
   let(:exp_schema) do
     { type: 'record',
       name: 'team',
@@ -106,6 +117,7 @@ RSpec.describe Examples::Team do
   end
 
   let(:act_meta) { subject.to_hash }
+  let(:act_template) { subject.as_avro_template }
   let(:act_avro) { subject.as_avro_schema }
   let(:blt_meta) { FieldStruct::Metadata.from_avro_schema act_avro }
   let(:team_klass) { FieldStruct.from_metadata blt_meta[2] }
@@ -115,6 +127,7 @@ RSpec.describe Examples::Team do
   it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
+    it('#as_avro_template') { compare act_template, exp_template }
     it('#as_avro_schema') { compare act_avro, exp_schema }
     it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
   end

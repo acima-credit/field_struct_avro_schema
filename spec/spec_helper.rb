@@ -8,6 +8,7 @@ require 'rspec/json_expectations'
 require 'hashdiff'
 
 ROOT_PATH = Pathname.new File.expand_path(File.dirname(File.dirname(__FILE__)))
+STORE_PATH = ROOT_PATH.join('spec/schemas')
 
 RSpec.configure do |config|
   config.example_status_persistence_file_path = '.rspec_status'
@@ -18,12 +19,15 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  Dir[ROOT_PATH.join('spec/support/*.rb')].sort.each { |f| require f }
+  require_relative 'support/compare'
+  require_relative 'support/models'
+  require_relative 'support/model_helpers'
+  require_relative 'support/values'
 
   # Builder Store setup
-  # STORE_PATH = ROOT_PATH.join('spec/schemas')
-  # FileUtils.mkdir_p STORE_PATH
-  # FieldStruct::AvroSchema::AvroBuilder.builder_store_path = STORE_PATH
+  FileUtils.mkdir_p STORE_PATH
+  FieldStruct::AvroSchema::AvroBuilder.builder_store_path = STORE_PATH
+
   config.before(:each) do
     FieldStruct::AvroSchema::AvroBuilder.builder_store.clear
   end

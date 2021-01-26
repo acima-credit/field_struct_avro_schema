@@ -16,6 +16,16 @@ RSpec.describe Examples::Person do
       }
     }
   end
+  let(:exp_template) do
+    <<~CODE.chomp
+      namespace 'examples'
+
+      record :person, :doc=>"| version 75b71433" do
+        required :first_name, :string, doc: "| type string"
+        required :last_name, :string, doc: "| type string"
+      end
+    CODE
+  end
   let(:exp_schema) do
     {
       type: 'record',
@@ -43,6 +53,7 @@ RSpec.describe Examples::Person do
   end
 
   let(:act_meta) { subject.to_hash }
+  let(:act_template) { subject.as_avro_template }
   let(:act_avro) { subject.as_avro_schema }
   let(:blt_meta) { FieldStruct::Metadata.from_avro_schema act_avro }
   let(:blt_klas) { FieldStruct.from_metadata blt_meta.last }
@@ -50,6 +61,7 @@ RSpec.describe Examples::Person do
   it('matches') { compare act_meta, exp_meta }
 
   context 'to Avro' do
+    it('#as_avro_template') { compare act_template, exp_template }
     it('#as_avro_schema') { compare act_avro, exp_schema }
     it('#to_avro_json') { compare subject.to_avro_json, exp_schema.to_json }
   end

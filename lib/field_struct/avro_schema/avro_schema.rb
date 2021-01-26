@@ -19,12 +19,18 @@ module FieldStruct
       integer: :int,
       binary: :bytes,
       string: :string,
-      date: :string,
-      datetime: :string,
+      date: :int,
+      datetime: :int,
       immutable_string: :string,
-      time: :string,
+      time: :int,
       boolean: :boolean,
       array: :array
+    }.with_indifferent_access.freeze
+
+    LOGICAL_TYPES = {
+      date: [:int, 'date'],
+      datetime: [:int, 'timestamp-millis'],
+      time: [:int, 'timestamp-millis']
     }.with_indifferent_access.freeze
   end
 end
