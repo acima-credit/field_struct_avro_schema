@@ -29,10 +29,13 @@ module FieldStruct
 
     LOGICAL_TYPES = {
       date: [:int, 'date'],
-      datetime: [:int, 'timestamp-millis'],
-      time: [:int, 'timestamp-millis']
+      datetime: [:long, 'timestamp-millis'],
+      time: [:long, 'timestamp-millis']
     }.with_indifferent_access.freeze
   end
 end
+
 require_relative 'builders/avro_builder'
 require_relative 'builders/metadata_builder'
+require_relative 'converter'
+require_relative 'extension'

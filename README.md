@@ -14,6 +14,8 @@ require 'field_struct'
 require 'field_struct/avro_schema'
 
 class Friend < FieldStruct.strict
+  include FieldStruct::AvroExtension
+  
   required :name, :string
   optional :age, :integer
   optional :balance_owed, :currency, default: 0.0
@@ -22,25 +24,20 @@ class Friend < FieldStruct.strict
 end
 
 puts Friend.metadata.as_avro_schema.inspect
-# {
-#   :type => "record", 
-#   :name => "friend", 
-#   :namespace => "",
-#   :doc => "| version 82f78509", 
-#   :fields => [
-#     { :name => :name, :type => "string", :doc => "| type string" }, 
-#     { :name => :age, :type => ["null", "int"], :doc => "| type integer" }, 
-#     { :name => :balance_owed, :type => ["float", "null"], :default => 0.0, :doc => "| type currency" },
-#     { :name => :gamer_level, :type => ["null", "int"], :doc => "| type integer" }, 
-#     { :name => :zip_code, :type => ["null", "string"], :doc => "| type string" }
-#   ]
-# }
+# {:type=>"record",
+#  :name=>"friend",
+#  :doc=>"| version 82f78509",
+#  :fields=>
+#    [{:name=>"name", :type=>"string", :doc=>"| type string"},
+#     {:name=>"age", :type=>["null", "int"], :default=>nil, :doc=>"| type integer"},
+#     {:name=>"balance_owed", :type=>["null", "float"], :default=>nil, :doc=>"| type currency"},
+#     {:name=>"gamer_level", :type=>["null", "int"], :default=>nil, :doc=>"| type integer"},
+#     {:name=>"zip_code", :type=>["null", "string"], :default=>nil, :doc=>"| type string"}]}
 
 puts Friend.metadata.to_avro_json true
 # {
 #   "type": "record",
 #   "name": "friend",
-#   "namespace": "",
 #   "doc": "| version 82f78509",
 #   "fields": [
 #     {
@@ -54,15 +51,16 @@ puts Friend.metadata.to_avro_json true
 #         "null",
 #         "int"
 #       ],
+#       "default": null,
 #       "doc": "| type integer"
 #     },
 #     {
 #       "name": "balance_owed",
 #       "type": [
-#         "float",
-#         "null"
+#         "null",
+#         "float"
 #       ],
-#       "default": 0.0,
+#       "default": null,
 #       "doc": "| type currency"
 #     },
 #     {
@@ -71,6 +69,7 @@ puts Friend.metadata.to_avro_json true
 #         "null",
 #         "int"
 #       ],
+#       "default": null,
 #       "doc": "| type integer"
 #     },
 #     {
@@ -79,6 +78,7 @@ puts Friend.metadata.to_avro_json true
 #         "null",
 #         "string"
 #       ],
+#       "default": null,
 #       "doc": "| type string"
 #     }
 #   ]
@@ -90,7 +90,7 @@ And with that we can generate a new FieldStruct class.
 
 ```ruby
 meta = FieldStruct::Metadata.from_avro_schema Friend.metadata.as_avro_schema
-# => [#<FieldStruct::Metadata name="Schemas::::Friend::V82f78509" version="82f78509" type=:flexible>]
+# => [#<FieldStruct::Metadata name="Schemas::Friend::V82f78509" version="82f78509" type=:flexible>]
 FieldStruct.from_metadata meta.last
 # => Schemas::Friend::V82f78509
 ```
@@ -99,13 +99,13 @@ And with that new class we can create new instances:
 
 ```ruby 
 john = Schemas::Friend::V82f78509.new age: 18
-# => #<Schemas::Friend::V82f78509 age=18 balance_owed=0.0>  
+# => #<Schemas::Friend::V82f78509 age=18>  
 john.valid?
 # => false
 john.errors.messages
 # => {:name=>["can't be blank"]}
 john = Schemas::Friend::V82f78509.new name: 'John', age: 18
-# => #<Schemas::Friend::V82f78509 name="John" age=18 balance_owed=0.0>
+# => #<Schemas::Friend::V82f78509 name="John" age=18>
 john.valid?
 # => true 
 ```

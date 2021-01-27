@@ -9,11 +9,11 @@ RSpec.describe Examples::Company do
     {
       name: 'Examples::Company',
       schema_name: 'examples.company',
-      version: 'bb40ff23',
+      version: 'fb7aba4',
       attributes: {
         legal_name: { type: :string, required: true },
-        development_team: { type: Examples::Team, version: '6ce37c6d' },
-        marketing_team: { type: Examples::Team, version: '6ce37c6d' }
+        development_team: { type: Examples::Team, version: '3f5d90e2' },
+        marketing_team: { type: Examples::Team, version: '3f5d90e2' }
       }
     }
   end
@@ -21,7 +21,7 @@ RSpec.describe Examples::Company do
     <<~CODE.chomp
       namespace 'examples'
 
-      record :company, :doc=>"| version bb40ff23" do
+      record :company, :doc=>"| version fb7aba4" do
         required :legal_name, :string, doc: "| type string"
         optional :development_team, :team, namespace: 'examples', doc: "| type examples.team"
         optional :marketing_team, :team, namespace: 'examples', doc: "| type examples.team"
@@ -33,7 +33,7 @@ RSpec.describe Examples::Company do
       type: 'record',
       name: 'company',
       namespace: 'examples',
-      doc: '| version bb40ff23',
+      doc: '| version fb7aba4',
       fields: [
         { name: 'legal_name', type: 'string', doc: '| type string' },
         { name: 'development_team',
@@ -41,7 +41,7 @@ RSpec.describe Examples::Company do
                  { type: 'record',
                    name: 'team',
                    namespace: 'examples',
-                   doc: '| version 6ce37c6d',
+                   doc: '| version 3f5d90e2',
                    fields: [
                      { name: 'name', type: 'string', doc: '| type string' },
                      { name: 'leader',
@@ -105,9 +105,9 @@ RSpec.describe Examples::Company do
         }
       },
       {
-        name: 'Schemas::Examples::Team::V6ce37c6d',
-        schema_name: 'schemas.examples.team.v6ce37c6d',
-        version: '6ce37c6d',
+        name: 'Schemas::Examples::Team::V3f5d90e2',
+        schema_name: 'schemas.examples.team.v3f5d90e2',
+        version: '3f5d90e2',
         attributes: {
           name: { type: :string, required: true },
           leader: { type: 'Schemas::Examples::Employee::V115d6e02', required: true },
@@ -120,12 +120,12 @@ RSpec.describe Examples::Company do
         }
       },
       {
-        name: 'Schemas::Examples::Company::Vbb40ff23',
-        schema_name: 'schemas.examples.company.vbb40ff23',
+        name: 'Schemas::Examples::Company::Vfb7aba4',
+        schema_name: 'schemas.examples.company.vfb7aba4',
         attributes: { legal_name: { type: :string, required: true },
-                      development_team: { type: 'Schemas::Examples::Team::V6ce37c6d' },
-                      marketing_team: { type: 'Schemas::Examples::Team::V6ce37c6d' } },
-        version: 'bb40ff23'
+                      development_team: { type: 'Schemas::Examples::Team::V3f5d90e2' },
+                      marketing_team: { type: 'Schemas::Examples::Team::V3f5d90e2' } },
+        version: 'fb7aba4'
       }
     ]
   end
@@ -199,14 +199,14 @@ RSpec.describe Examples::Company do
       expect(dev_klass).to eq Schemas::Examples::Developer::V5251a97e
 
       expect { team_klass }.to_not raise_error
-      expect(team_klass).to eq Schemas::Examples::Team::V6ce37c6d
+      expect(team_klass).to eq Schemas::Examples::Team::V3f5d90e2
 
       expect { comp_klass }.to_not raise_error
-      expect(comp_klass).to eq Schemas::Examples::Company::Vbb40ff23
+      expect(comp_klass).to eq Schemas::Examples::Company::Vfb7aba4
 
       expect { clone }.to_not raise_error
 
-      expect(clone).to be_a Schemas::Examples::Company::Vbb40ff23
+      expect(clone).to be_a Schemas::Examples::Company::Vfb7aba4
       expect(clone).to be_valid
       expect(clone.to_hash).to eq exp_comp_hsh
       expect(clone.development_team).to be_a team_klass

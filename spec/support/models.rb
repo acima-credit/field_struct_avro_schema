@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module Examples
-  class User < FieldStruct.flexible
+  class Base < FieldStruct.flexible
+    include FieldStruct::AvroExtension
+  end
+
+  class User < Base
     required :username, :string, format: /\A[a-z]/i, description: 'login'
     optional :password, :string
     required :age, :integer
@@ -12,7 +16,9 @@ module Examples
     required :active, :boolean, default: false
   end
 
-  class Person < FieldStruct.flexible
+  class Person < Base
+    include FieldStruct::AvroExtension
+
     required :first_name, :string, length: 3..20
     required :last_name, :string
 
@@ -22,22 +28,30 @@ module Examples
   end
 
   class Employee < Person
+    include FieldStruct::AvroExtension
+
     extras :add
     optional :title, :string, default: -> { 'Staff' }
   end
 
   class Developer < Employee
+    include FieldStruct::AvroExtension
+
     required :language, :string
   end
 
-  class Team < FieldStruct.flexible
+  class Team < Base
+    include FieldStruct::AvroExtension
+
     extras :ignore
     required :name, :string
     required :leader, Employee
     required :members, :array, of: Developer, description: 'Team members'
   end
 
-  class Company < FieldStruct.flexible
+  class Company < Base
+    include FieldStruct::AvroExtension
+
     required :legal_name, :string
     optional :development_team, Team
     optional :marketing_team, Team
@@ -47,6 +61,8 @@ end
 module ExampleApp
   module Examples
     class Friend < FieldStruct.flexible
+      include FieldStruct::AvroExtension
+
       required :name, :string
       optional :age, :integer
       optional :balance_owed, :currency, default: 0.0
@@ -56,6 +72,11 @@ module ExampleApp
       def topic_key
         format '%s', name
       end
+    end
+
+    class Stranger < FieldStruct.flexible
+      required :name, :string
+      optional :age, :integer
     end
   end
 end

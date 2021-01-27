@@ -9,7 +9,7 @@ RSpec.describe Examples::Team do
     {
       name: 'Examples::Team',
       schema_name: 'examples.team',
-      version: '6ce37c6d',
+      version: '3f5d90e2',
       attributes: {
         name: { type: :string, required: true },
         leader: { type: Examples::Employee, version: '115d6e02', required: true },
@@ -27,7 +27,7 @@ RSpec.describe Examples::Team do
     <<~CODE.chomp
       namespace 'examples'
 
-      record :team, :doc=>"| version 6ce37c6d" do
+      record :team, :doc=>"| version 3f5d90e2" do
         required :name, :string, doc: "| type string"
         required :leader, :employee, namespace: 'examples', doc: "| type examples.employee"
         required :members, :array, items: "examples.developer", doc: "Team members | type array:examples.developer"
@@ -38,7 +38,7 @@ RSpec.describe Examples::Team do
     { type: 'record',
       name: 'team',
       namespace: 'examples',
-      doc: '| version 6ce37c6d',
+      doc: '| version 3f5d90e2',
       fields: [
         { name: 'name', type: 'string', doc: '| type string' },
         {
@@ -99,9 +99,9 @@ RSpec.describe Examples::Team do
         }
       },
       {
-        name: 'Schemas::Examples::Team::V6ce37c6d',
-        schema_name: 'schemas.examples.team.v6ce37c6d',
-        version: '6ce37c6d',
+        name: 'Schemas::Examples::Team::V3f5d90e2',
+        schema_name: 'schemas.examples.team.v3f5d90e2',
+        version: '3f5d90e2',
         attributes: {
           name: { type: :string, required: true },
           leader: { type: 'Schemas::Examples::Employee::V115d6e02', required: true },
@@ -187,10 +187,10 @@ RSpec.describe Examples::Team do
       expect(dev2b.language).to eq dev2_attrs[:language]
 
       expect { team_klass }.to_not raise_error
-      expect(team_klass).to eq Schemas::Examples::Team::V6ce37c6d
+      expect(team_klass).to eq Schemas::Examples::Team::V3f5d90e2
 
       expect { clone }.to_not raise_error
-      expect(clone).to be_a Schemas::Examples::Team::V6ce37c6d
+      expect(clone).to be_a Schemas::Examples::Team::V3f5d90e2
       expect(clone).to be_valid
       expect(clone.name).to eq 'Duper Team'
       expect(clone.leader).to eq leaderb

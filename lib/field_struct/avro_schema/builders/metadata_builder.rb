@@ -169,10 +169,4 @@ module FieldStruct
       end
     end
   end
-
-  class Metadata
-    def self.from_avro_schema(schemas, options = {})
-      AvroSchema::MetadataBuilder.build schemas, options
-    end
-  end
 end

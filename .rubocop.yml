@@ -10,6 +10,7 @@ AllCops:
   Exclude:
     - '**/*.gemspec'
     - '**/Gemfile*'
+    - '**/spec/schemas/**/*.rb'
 
 Security/Eval:
   Enabled: false

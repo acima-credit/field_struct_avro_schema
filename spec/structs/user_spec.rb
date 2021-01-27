@@ -33,7 +33,7 @@ RSpec.describe Examples::User do
         required :owed, :float, doc: "amount owed to the company | type currency"
         required :source, :string, doc: "| type string"
         required :level, :int, doc: "| type integer"
-        optional :at, :int, logical_type: "timestamp-millis", doc: "| type time"
+        optional :at, :long, logical_type: "timestamp-millis", doc: "| type time"
         required :active, :boolean, default: false, doc: "| type boolean"
       end
     CODE
@@ -53,7 +53,7 @@ RSpec.describe Examples::User do
         { name: 'level', type: 'int', doc: '| type integer' },
         {
           name: 'at',
-          type: ['null', { type: 'int', logicalType: 'timestamp-millis' }],
+          type: ['null', { type: 'long', logicalType: 'timestamp-millis' }],
           default: nil,
           doc: '| type time'
         },

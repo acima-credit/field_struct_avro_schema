@@ -223,22 +223,4 @@ module FieldStruct
       end
     end
   end
-
-  class Metadata
-    def as_avro_template
-      AvroSchema::AvroBuilder.build_template self
-    end
-
-    def as_avro
-      AvroSchema::AvroBuilder.build self
-    end
-
-    def as_avro_schema
-      JSON.parse(as_avro.to_s).deep_symbolize_keys
-    end
-
-    def to_avro_json(pretty = false)
-      pretty ? JSON.pretty_generate(as_avro_schema) : as_avro_schema.to_json
-    end
-  end
 end
