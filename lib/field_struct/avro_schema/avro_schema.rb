@@ -3,8 +3,8 @@
 module FieldStruct
   module AvroSchema
     AVRO_TYPES = {
-      float: %i[float big_integer decimal currency],
-      int: [:integer],
+      float: %i[float big_integer decimal],
+      int: %i[integer currency],
       bytes: [:binary],
       string: %i[string date datetime immutable_string time],
       boolean: [:boolean],
@@ -15,7 +15,7 @@ module FieldStruct
       float: :float,
       big_integer: :float,
       decimal: :float,
-      currency: :float,
+      currency: :int,
       integer: :int,
       binary: :bytes,
       string: :string,

@@ -30,7 +30,7 @@ RSpec.describe Examples::User do
         required :username, :string, doc: "login | type string"
         optional :password, :string, doc: "| type string"
         required :age, :int, doc: "| type integer"
-        required :owed, :float, doc: "amount owed to the company | type currency"
+        required :owed, :int, doc: "amount owed to the company | type currency"
         required :source, :string, doc: "| type string"
         required :level, :int, doc: "| type integer"
         optional :at, :long, logical_type: "timestamp-millis", doc: "| type time"
@@ -48,7 +48,7 @@ RSpec.describe Examples::User do
         { name: 'username', type: 'string', doc: 'login | type string' },
         { name: 'password', type: %w[null string], default: nil, doc: '| type string' },
         { name: 'age', type: 'int', doc: '| type integer' },
-        { name: 'owed', type: 'float', doc: 'amount owed to the company | type currency' },
+        { name: 'owed', type: 'int', doc: 'amount owed to the company | type currency' },
         { name: 'source', type: 'string', doc: '| type string' },
         { name: 'level', type: 'int', doc: '| type integer' },
         {
@@ -147,7 +147,7 @@ RSpec.describe Examples::User do
         username: 'some_user',
         password: 'some_password',
         age: 45,
-        owed: 1537.25,
+        owed: 153_725,
         source: 'B',
         level: 2,
         at: 1_551_701_167_891,

@@ -24,7 +24,7 @@ RSpec.describe ExampleApp::Examples::Friend do
       record :friend, :doc=>"| version 82f78509" do
         required :name, :string, doc: "| type string"
         optional :age, :int, doc: "| type integer"
-        optional :balance_owed, :float, default: 0.0, doc: "| type currency"
+        optional :balance_owed, :int, default: 0.0, doc: "| type currency"
         optional :gamer_level, :int, doc: "| type integer"
         optional :zip_code, :string, doc: "| type string"
       end
@@ -39,7 +39,7 @@ RSpec.describe ExampleApp::Examples::Friend do
       fields: [
         { name: 'name', type: 'string', doc: '| type string' },
         { name: 'age', type: %w[null int], default: nil, doc: '| type integer' },
-        { name: 'balance_owed', type: %w[null float], default: nil, doc: '| type currency' },
+        { name: 'balance_owed', type: %w[null int], default: nil, doc: '| type currency' },
         { name: 'gamer_level', type: %w[null int], default: nil, doc: '| type integer' },
         { name: 'zip_code', type: %w[null string], default: nil, doc: '| type string' }
       ]
@@ -117,7 +117,15 @@ RSpec.describe ExampleApp::Examples::Friend do
     let(:act_hash) { instance.to_avro_hash }
     let(:cloned) { described_class.from_avro_hash act_hash }
     let(:cloned_hsh) { cloned.to_hash.deep_symbolize_keys }
-    let(:exp_avro_hsh) { exp_hsh }
+    let(:exp_avro_hsh) do
+      {
+        name: 'Carl Rovers',
+        age: 45,
+        balance_owed: 2575,
+        gamer_level: 2,
+        zip_code: '84120'
+      }
+    end
     let(:exp_hsh) do
       {
         name: 'Carl Rovers',

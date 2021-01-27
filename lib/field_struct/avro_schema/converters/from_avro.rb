@@ -50,9 +50,7 @@ module FieldStruct
           converter = ValueConverters::Registry.find attr.of || attr.type
           return value unless converter
 
-          res = converter.from_avro value
-          puts "> convert_simple_value | #{attr.of || attr.type} : #{res.class.name} : #{res.inspect}"
-          res
+          converter.from_avro value
         end
       end
 
