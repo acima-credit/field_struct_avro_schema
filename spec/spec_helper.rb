@@ -7,6 +7,8 @@ require 'rspec/core/shared_context'
 require 'rspec/json_expectations'
 require 'hashdiff'
 
+TIME_ZONE = 'Mountain Time (US & Canada)'
+
 ROOT_PATH = Pathname.new File.expand_path(File.dirname(File.dirname(__FILE__)))
 STORE_PATH = ROOT_PATH.join('spec/schemas')
 
