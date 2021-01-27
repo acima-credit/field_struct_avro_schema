@@ -12,7 +12,7 @@ module FieldStruct
         end
 
         def from_avro
-          Time.at value / 1_000.0
+          (Time.zone || Time).at value / 1_000.0
         end
       end
 
