@@ -37,5 +37,5 @@ end
 
 require_relative 'builders/avro_builder'
 require_relative 'builders/metadata_builder'
-require_relative 'converter'
+require_relative 'converters'
 require_relative 'extension'

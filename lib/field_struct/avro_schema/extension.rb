@@ -13,6 +13,7 @@ module FieldStruct
       raise "#{base.name} does not have a proper metadata" unless base.metadata.is_a? FieldStruct::Metadata
 
       base.send :extend, Base::ClassMethods
+      base.send :include, Base::InstanceMethods
       base.metadata.send :extend, Meta::InstanceMethods
     end
 
@@ -21,6 +22,16 @@ module FieldStruct
         def inherited(child)
           super
           child.metadata.send :extend, Meta::InstanceMethods
+        end
+
+        def from_avro_hash(attrs)
+          FieldStruct::AvroSchema::Converters.from_avro self, attrs
+        end
+      end
+
+      module InstanceMethods
+        def to_avro_hash
+          FieldStruct::AvroSchema::Converters.to_avro self
         end
       end
     end

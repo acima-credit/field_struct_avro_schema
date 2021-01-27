@@ -111,4 +111,28 @@ RSpec.describe ExampleApp::Examples::Friend do
       expect(clone.zip_code).to eq '84120'
     end
   end
+
+  context 'to Avro hash' do
+    let(:instance) { described_class.new friend_attrs }
+    let(:act_hash) { instance.to_avro_hash }
+    let(:cloned) { described_class.from_avro_hash act_hash }
+    let(:cloned_hsh) { cloned.to_hash.deep_symbolize_keys }
+    let(:exp_avro_hsh) { exp_hsh }
+    let(:exp_hsh) do
+      {
+        name: 'Carl Rovers',
+        age: 45,
+        balance_owed: 25.75,
+        gamer_level: 2,
+        zip_code: '84120'
+      }
+    end
+    it('#to_avro_hash') { compare instance.to_avro_hash, exp_avro_hsh }
+    it('.from_avro_hash') do
+      expect { cloned }.to_not raise_error
+      expect(cloned).to be_a described_class
+      expect(cloned).to be_valid
+      compare cloned_hsh, exp_hsh
+    end
+  end
 end

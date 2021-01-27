@@ -197,4 +197,33 @@ RSpec.describe Examples::Team do
       expect(clone.members).to eq [dev1b, dev2b]
     end
   end
+
+  context 'to Avro hash' do
+    let(:instance) { described_class.new team_attrs }
+    let(:act_hash) { instance.to_avro_hash }
+    let(:cloned) { described_class.from_avro_hash act_hash }
+    let(:cloned_hsh) { cloned.to_hash.deep_symbolize_keys }
+    let(:exp_hsh) do
+      {
+        name: 'Duper Team',
+        leader: {
+          first_name: 'Karl',
+          last_name: 'Marx',
+          title: 'Team Lead'
+        },
+        members: [
+          { first_name: 'John', last_name: 'Stalingrad', title: 'Developer', language: 'Ruby' },
+          { first_name: 'Steve', last_name: 'Romanoff', title: 'Designer', language: 'In Design' }
+        ]
+      }
+    end
+    let(:exp_avro_hsh) { exp_hsh }
+    it('#to_avro_hash') { compare instance.to_avro_hash, exp_hsh }
+    it('.from_avro_hash') do
+      expect { cloned }.to_not raise_error
+      expect(cloned).to be_a described_class
+      expect(cloned).to be_valid
+      compare cloned_hsh, exp_hsh
+    end
+  end
 end

@@ -136,4 +136,42 @@ RSpec.describe Examples::User do
       expect(clone.active).to eq true
     end
   end
+
+  context 'to Avro hash' do
+    let(:instance) { described_class.new user_attrs }
+    let(:act_hash) { instance.to_avro_hash }
+    let(:cloned) { described_class.from_avro_hash act_hash }
+    let(:cloned_hsh) { cloned.to_hash.deep_symbolize_keys }
+    let(:exp_avro_hsh) do
+      {
+        username: 'some_user',
+        password: 'some_password',
+        age: 45,
+        owed: 1537.25,
+        source: 'B',
+        level: 2,
+        at: 1_551_701_167_891,
+        active: true
+      }
+    end
+    let(:exp_hsh) do
+      {
+        username: 'some_user',
+        password: 'some_password',
+        age: 45,
+        owed: 1537.25,
+        source: 'B',
+        level: 2,
+        at: past_time,
+        active: true
+      }
+    end
+    it('#to_avro_hash') { compare instance.to_avro_hash, exp_avro_hsh }
+    it('.from_avro_hash') do
+      expect { cloned }.to_not raise_error
+      expect(cloned).to be_a described_class
+      expect(cloned).to be_valid
+      compare cloned_hsh, exp_hsh
+    end
+  end
 end

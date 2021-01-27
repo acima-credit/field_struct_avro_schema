@@ -215,4 +215,40 @@ RSpec.describe Examples::Company do
       expect(clone.marketing_team.members.map(&:class)).to eq [dev_klass, dev_klass]
     end
   end
+
+  context 'to Avro hash' do
+    let(:instance) { described_class.new company_attrs }
+    let(:act_hash) { instance.to_avro_hash }
+    let(:cloned) { described_class.from_avro_hash act_hash }
+    let(:cloned_hsh) { cloned.to_hash.deep_symbolize_keys }
+    let(:exp_avro_hsh) { exp_hsh }
+    let(:exp_hsh) do
+      {
+        legal_name: 'My Super Company',
+        development_team: {
+          name: 'Duper Team',
+          leader: { first_name: 'Karl', last_name: 'Marx', title: 'Team Lead' },
+          members: [
+            { first_name: 'John', last_name: 'Stalingrad', title: 'Developer', language: 'Ruby' },
+            { first_name: 'Steve', last_name: 'Romanoff', title: 'Designer', language: 'In Design' }
+          ]
+        },
+        marketing_team: {
+          name: 'Growing Team',
+          leader: { first_name: 'Evan', last_name: 'Majors', title: 'Team Lead' },
+          members: [
+            { first_name: 'Rob', last_name: 'Morris', title: 'Developer', language: 'Javascript' },
+            { first_name: 'Zach', last_name: 'Evanoff', title: 'Designer', language: 'Photoshop' }
+          ]
+        }
+      }
+    end
+    it('#to_avro_hash') { compare instance.to_avro_hash, exp_avro_hsh }
+    it('.from_avro_hash') do
+      expect { cloned }.to_not raise_error
+      expect(cloned).to be_a described_class
+      expect(cloned).to be_valid
+      compare cloned_hsh, exp_hsh
+    end
+  end
 end

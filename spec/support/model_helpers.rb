@@ -3,7 +3,7 @@
 module ModelHelpers
   extend RSpec::Core::SharedContext
 
-  let(:past_time) { Time.new 2019, 3, 4, 5, 6, 7 }
+  let(:past_time) { Time.parse '2019-03-04T05:06:07.891-07:00' }
 
   let(:user_attrs) do
     {
