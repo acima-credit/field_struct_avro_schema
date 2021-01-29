@@ -8,6 +8,8 @@ module FieldStruct
         handles :datetime
 
         def from_avro
+          return value if value.is_a?(DateTime)
+
           super.to_datetime
         end
       end

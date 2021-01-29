@@ -3,7 +3,7 @@
 module ModelHelpers
   extend RSpec::Core::SharedContext
 
-  let(:past_time) { '2019-03-04T05:06:07.891-07:00'.in_time_zone TIME_ZONE }
+  let(:past_time) { '2019-03-04T05:06:07.891-07:00'.in_time_zone(TIME_ZONE) }
 
   let(:user_attrs) do
     {

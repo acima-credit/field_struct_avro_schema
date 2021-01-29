@@ -24,6 +24,10 @@ module FieldStruct
           child.metadata.send :extend, Meta::InstanceMethods
         end
 
+        def convert_avro_attributes(attrs)
+          FieldStruct::AvroSchema::Converters.convert_avro_attributes self, attrs
+        end
+
         def from_avro_hash(attrs)
           FieldStruct::AvroSchema::Converters.from_avro self, attrs
         end

@@ -12,20 +12,20 @@ module FieldStruct
           @attrs = attrs
         end
 
-        def convert
-          klass.new build_final_attrs
-        end
-
-        private
-
-        def build_final_attrs
+        def convert_attributes
           attrs.each_with_object({}) do |(key, value), hsh|
             next if value.nil?
 
             attr = metadata[key]
             hsh[key] = convert_value attr, value
-          end
+          end.deep_symbolize_keys
         end
+
+        def convert
+          klass.new convert_attributes
+        end
+
+        private
 
         def convert_value(attr, value)
           case value
@@ -34,24 +34,34 @@ module FieldStruct
           when Array
             convert_array_value attr, value
           else
-            convert_simple_value attr, value
+            convert_simple_value attr.of || attr.type, value
           end
         end
 
         def convert_hash_value(attr, value)
-          attr.type.from_avro_hash value
+          attr.type.from_avro_hash(value).to_hash
         end
 
         def convert_array_value(attr, value)
-          value.map { |x| attr.of.from_avro_hash x }
+          value.map do |x|
+            if attr.of.field_struct?
+              attr.of.from_avro_hash(x).to_hash
+            else
+              convert_simple_value attr.of, x
+            end
+          end
         end
 
-        def convert_simple_value(attr, value)
-          converter = ValueConverters::Registry.find attr.of || attr.type
+        def convert_simple_value(type, value)
+          converter = ValueConverters::Registry.find type
           return value unless converter
 
           converter.from_avro value
         end
+      end
+
+      def self.convert_avro_attributes(*args)
+        FromAvro.new(*args).convert_attributes
       end
 
       def self.from_avro(*args)

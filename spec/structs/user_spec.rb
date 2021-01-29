@@ -140,6 +140,7 @@ RSpec.describe Examples::User do
   context 'to Avro hash' do
     let(:instance) { described_class.new user_attrs }
     let(:act_hash) { instance.to_avro_hash }
+    let(:cloned_attrs) { described_class.convert_avro_attributes act_hash }
     let(:cloned) { described_class.from_avro_hash act_hash }
     let(:cloned_hsh) { cloned.to_hash.deep_symbolize_keys }
     let(:exp_avro_hsh) do
@@ -162,11 +163,16 @@ RSpec.describe Examples::User do
         owed: 1537.25,
         source: 'B',
         level: 2,
-        at: past_time,
+        at: past_time.utc,
         active: true
       }
     end
     it('#to_avro_hash') { compare instance.to_avro_hash, exp_avro_hsh }
+    it('.convert_avro_attributes') do
+      expect { cloned_attrs }.to_not raise_error
+      expect(cloned_attrs).to be_a Hash
+      compare cloned_attrs, exp_hsh
+    end
     it('.from_avro_hash') do
       expect { cloned }.to_not raise_error
       expect(cloned).to be_a described_class

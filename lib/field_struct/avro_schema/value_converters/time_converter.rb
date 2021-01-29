@@ -8,11 +8,13 @@ module FieldStruct
         handles :time
 
         def to_avro
-          value.strftime('%s%3N').to_i
+          value.utc.strftime('%s%3N').to_i
         end
 
         def from_avro
-          (Time.zone || Time).at value / 1_000.0
+          return value if value.is_a?(Time)
+
+          Time.use_zone('UTC') { Time.zone.at value / 1_000.0 }
         end
       end
 
