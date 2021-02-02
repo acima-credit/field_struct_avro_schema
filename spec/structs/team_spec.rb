@@ -9,7 +9,7 @@ RSpec.describe Examples::Team do
     {
       name: 'Examples::Team',
       schema_name: 'examples.team',
-      version: '3f5d90e2',
+      version: '4be5bf2d',
       attributes: {
         name: { type: :string, required: true },
         leader: { type: Examples::Employee, version: '115d6e02', required: true },
@@ -27,7 +27,7 @@ RSpec.describe Examples::Team do
     <<~CODE.chomp
       namespace 'examples'
 
-      record :team, :doc=>"| version 3f5d90e2" do
+      record :team, :doc=>"| version 4be5bf2d" do
         required :name, :string, doc: "| type string"
         required :leader, :employee, namespace: 'examples', doc: "| type examples.employee"
         required :members, :array, items: "examples.developer", doc: "Team members | type array:examples.developer"
@@ -38,7 +38,7 @@ RSpec.describe Examples::Team do
     { type: 'record',
       name: 'team',
       namespace: 'examples',
-      doc: '| version 3f5d90e2',
+      doc: '| version 4be5bf2d',
       fields: [
         { name: 'name', type: 'string', doc: '| type string' },
         {
@@ -75,6 +75,93 @@ RSpec.describe Examples::Team do
         }
       ] }
   end
+  let(:exp_json) do
+    <<~JSON.chomp
+      {
+        "type": "record",
+        "name": "team",
+        "namespace": "examples",
+        "doc": "| version 4be5bf2d",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string",
+            "doc": "| type string"
+          },
+          {
+            "name": "leader",
+            "type": {
+              "type": "record",
+              "name": "employee",
+              "namespace": "examples",
+              "doc": "| version 115d6e02",
+              "fields": [
+                {
+                  "name": "first_name",
+                  "type": "string",
+                  "doc": "| type string"
+                },
+                {
+                  "name": "last_name",
+                  "type": "string",
+                  "doc": "| type string"
+                },
+                {
+                  "name": "title",
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "default": null,
+                  "doc": "| type string"
+                }
+              ]
+            },
+            "doc": "| type examples.employee"
+          },
+          {
+            "name": "members",
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "record",
+                "name": "developer",
+                "namespace": "examples",
+                "doc": "| version 5251a97e",
+                "fields": [
+                  {
+                    "name": "first_name",
+                    "type": "string",
+                    "doc": "| type string"
+                  },
+                  {
+                    "name": "last_name",
+                    "type": "string",
+                    "doc": "| type string"
+                  },
+                  {
+                    "name": "title",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "| type string"
+                  },
+                  {
+                    "name": "language",
+                    "type": "string",
+                    "doc": "| type string"
+                  }
+                ]
+              }
+            },
+            "doc": "Team members | type array:examples.developer"
+          }
+        ]
+      }
+    JSON
+  end
   let(:exp_version_meta) do
     [
       {
@@ -99,9 +186,9 @@ RSpec.describe Examples::Team do
         }
       },
       {
-        name: 'Schemas::Examples::Team::V3f5d90e2',
-        schema_name: 'schemas.examples.team.v3f5d90e2',
-        version: '3f5d90e2',
+        name: 'Schemas::Examples::Team::V4be5bf2d',
+        schema_name: 'schemas.examples.team.v4be5bf2d',
+        version: '4be5bf2d',
         attributes: {
           name: { type: :string, required: true },
           leader: { type: 'Schemas::Examples::Employee::V115d6e02', required: true },
@@ -187,10 +274,10 @@ RSpec.describe Examples::Team do
       expect(dev2b.language).to eq dev2_attrs[:language]
 
       expect { team_klass }.to_not raise_error
-      expect(team_klass).to eq Schemas::Examples::Team::V3f5d90e2
+      expect(team_klass).to eq Schemas::Examples::Team::V4be5bf2d
 
       expect { clone }.to_not raise_error
-      expect(clone).to be_a Schemas::Examples::Team::V3f5d90e2
+      expect(clone).to be_a Schemas::Examples::Team::V4be5bf2d
       expect(clone).to be_valid
       expect(clone.name).to eq 'Duper Team'
       expect(clone.leader).to eq leaderb
@@ -230,6 +317,50 @@ RSpec.describe Examples::Team do
       expect(cloned).to be_a described_class
       expect(cloned).to be_valid
       compare cloned_hsh, exp_hsh
+    end
+  end
+
+  context 'event' do
+    let(:source) { OpenStruct.new attributes: team_attrs }
+    let(:instance) { described_class.from source }
+    let(:topic_name) { 'examples.team' }
+    let(:topic_key) { :name }
+    let(:new_schema_id) { 99 }
+    let(:new_topic_name) { 'some.topic' }
+    let(:new_topic_key) { :other }
+
+    context 'class' do
+      it('.schema_id') do
+        old_schema_id = described_class.schema_id
+        described_class.schema_id new_schema_id
+        expect(described_class.schema_id).to eq new_schema_id
+        described_class.schema_id nil
+        expect(described_class.schema_id).to be_nil
+        described_class.schema_id old_schema_id
+      end
+      it('.topic_name') do
+        expect(described_class.topic_name).to eq topic_name
+        described_class.topic_name new_topic_name
+        expect(described_class.topic_name).to eq new_topic_name
+        described_class.topic_name nil
+        expect(described_class.topic_name).to eq topic_name
+      end
+      it('.topic_key') do
+        expect(described_class.topic_key).to eq topic_key
+        described_class.topic_key new_topic_key
+        expect(described_class.topic_key).to eq new_topic_key
+        described_class.topic_key topic_key
+        expect(described_class.topic_key).to eq topic_key
+      end
+      it('.avro_template') { compare described_class.avro_template, exp_template }
+      it('.schema') { compare described_class.schema, exp_json }
+    end
+    context 'instance' do
+      it('event') { expect(instance).to be_a described_class }
+      it('#topic_name') { expect(instance.topic_name).to eq topic_name }
+      it('#topic_key') { compare instance.topic_key, 'Duper Team' }
+      it('#schema_id') { expect(instance.schema_id).to be_nil }
+      it('to_hash') { compare instance.to_hash, team_attrs.deep_stringify_keys }
     end
   end
 end

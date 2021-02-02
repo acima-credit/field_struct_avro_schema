@@ -52,6 +52,8 @@ Naming/VariableName:
 Metrics/CyclomaticComplexity:
   Enabled: true
   Max: 9
+  Exclude:
+    - 'spec/support/compare.rb'
 
 Metrics/PerceivedComplexity:
   Enabled: true

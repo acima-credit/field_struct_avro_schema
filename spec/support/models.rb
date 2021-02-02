@@ -2,10 +2,13 @@
 
 module Examples
   class Base < FieldStruct.flexible
-    include FieldStruct::AvroExtension
+    # include FieldStruct::AvroExtension
+    include FieldStruct::AvroSchema::Event
   end
 
   class User < Base
+    topic_key :username
+
     required :username, :string, format: /\A[a-z]/i, description: 'login'
     optional :password, :string
     required :age, :integer
@@ -17,7 +20,7 @@ module Examples
   end
 
   class Person < Base
-    include FieldStruct::AvroExtension
+    topic_key :full_name
 
     required :first_name, :string, length: 3..20
     required :last_name, :string
@@ -28,20 +31,16 @@ module Examples
   end
 
   class Employee < Person
-    include FieldStruct::AvroExtension
-
     extras :add
     optional :title, :string, default: -> { 'Staff' }
   end
 
   class Developer < Employee
-    include FieldStruct::AvroExtension
-
     required :language, :string
   end
 
   class Team < Base
-    include FieldStruct::AvroExtension
+    topic_key :name
 
     extras :ignore
     required :name, :string
@@ -50,7 +49,7 @@ module Examples
   end
 
   class Company < Base
-    include FieldStruct::AvroExtension
+    topic_key :legal_name
 
     required :legal_name, :string
     optional :development_team, Team
@@ -61,17 +60,14 @@ end
 module ExampleApp
   module Examples
     class Friend < FieldStruct.flexible
-      include FieldStruct::AvroExtension
+      include FieldStruct::AvroSchema::Event
+      topic_key :name
 
       required :name, :string
       optional :age, :integer
       optional :balance_owed, :currency, default: 0.0
       optional :gamer_level, :integer, enum: [1, 2, 3], default: -> { 1 }
       optional :zip_code, :string, format: /\A[0-9]{5}?\z/
-
-      def topic_key
-        format '%s', name
-      end
     end
 
     class Stranger < FieldStruct.flexible

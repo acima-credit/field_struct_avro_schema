@@ -45,6 +45,59 @@ RSpec.describe ExampleApp::Examples::Friend do
       ]
     }
   end
+  let(:exp_json) do
+    <<~JSON.chomp
+      {
+        "type": "record",
+        "name": "friend",
+        "namespace": "example_app.examples",
+        "doc": "| version 82f78509",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string",
+            "doc": "| type string"
+          },
+          {
+            "name": "age",
+            "type": [
+              "null",
+              "int"
+            ],
+            "default": null,
+            "doc": "| type integer"
+          },
+          {
+            "name": "balance_owed",
+            "type": [
+              "null",
+              "int"
+            ],
+            "default": null,
+            "doc": "| type currency"
+          },
+          {
+            "name": "gamer_level",
+            "type": [
+              "null",
+              "int"
+            ],
+            "default": null,
+            "doc": "| type integer"
+          },
+          {
+            "name": "zip_code",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "doc": "| type string"
+          }
+        ]
+      }
+    JSON
+  end
   let(:exp_version_meta) do
     [
       {
@@ -147,6 +200,50 @@ RSpec.describe ExampleApp::Examples::Friend do
       expect(cloned).to be_a described_class
       expect(cloned).to be_valid
       compare cloned_hsh, exp_hsh
+    end
+  end
+
+  context 'event' do
+    let(:source) { OpenStruct.new attributes: friend_attrs }
+    let(:instance) { described_class.from source }
+    let(:topic_name) { 'example_app.examples.friend' }
+    let(:topic_key) { :name }
+    let(:new_schema_id) { 99 }
+    let(:new_topic_name) { 'some.topic' }
+    let(:new_topic_key) { :other }
+
+    context 'class' do
+      it('.schema_id') do
+        old_schema_id = described_class.schema_id
+        described_class.schema_id new_schema_id
+        expect(described_class.schema_id).to eq new_schema_id
+        described_class.schema_id nil
+        expect(described_class.schema_id).to be_nil
+        described_class.schema_id old_schema_id
+      end
+      it('.topic_name') do
+        expect(described_class.topic_name).to eq topic_name
+        described_class.topic_name new_topic_name
+        expect(described_class.topic_name).to eq new_topic_name
+        described_class.topic_name nil
+        expect(described_class.topic_name).to eq topic_name
+      end
+      it('.topic_key') do
+        expect(described_class.topic_key).to eq topic_key
+        described_class.topic_key new_topic_key
+        expect(described_class.topic_key).to eq new_topic_key
+        described_class.topic_key topic_key
+        expect(described_class.topic_key).to eq topic_key
+      end
+      it('.avro_template') { compare described_class.avro_template, exp_template }
+      it('.schema') { compare described_class.schema, exp_json }
+    end
+    context 'instance' do
+      it('event') { expect(instance).to be_a described_class }
+      it('#topic_name') { expect(instance.topic_name).to eq topic_name }
+      it('#topic_key') { compare instance.topic_key, 'Carl Rovers' }
+      it('#schema_id') { expect(instance.schema_id).to be_nil }
+      it('to_hash') { compare instance.to_hash, friend_attrs.deep_stringify_keys }
     end
   end
 end

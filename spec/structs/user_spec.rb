@@ -61,6 +61,70 @@ RSpec.describe Examples::User do
       ]
     }
   end
+  let(:exp_json) do
+    <<~JSON.chomp
+      {
+        "type": "record",
+        "name": "user",
+        "namespace": "examples",
+        "doc": "| version 53d47729",
+        "fields": [
+          {
+            "name": "username",
+            "type": "string",
+            "doc": "login | type string"
+          },
+          {
+            "name": "password",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "doc": "| type string"
+          },
+          {
+            "name": "age",
+            "type": "int",
+            "doc": "| type integer"
+          },
+          {
+            "name": "owed",
+            "type": "int",
+            "doc": "amount owed to the company | type currency"
+          },
+          {
+            "name": "source",
+            "type": "string",
+            "doc": "| type string"
+          },
+          {
+            "name": "level",
+            "type": "int",
+            "doc": "| type integer"
+          },
+          {
+            "name": "at",
+            "type": [
+              "null",
+              {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              }
+            ],
+            "default": null,
+            "doc": "| type time"
+          },
+          {
+            "name": "active",
+            "type": "boolean",
+            "default": false,
+            "doc": "| type boolean"
+          }
+        ]
+      }
+    JSON
+  end
   let(:exp_version_meta) do
     [
       {
@@ -178,6 +242,50 @@ RSpec.describe Examples::User do
       expect(cloned).to be_a described_class
       expect(cloned).to be_valid
       compare cloned_hsh, exp_hsh
+    end
+  end
+
+  context 'event' do
+    let(:source) { OpenStruct.new attributes: user_attrs }
+    let(:instance) { described_class.from source }
+    let(:topic_name) { 'examples.user' }
+    let(:topic_key) { :username }
+    let(:new_schema_id) { 99 }
+    let(:new_topic_name) { 'some.topic' }
+    let(:new_topic_key) { :other }
+
+    context 'class' do
+      it('.schema_id') do
+        old_schema_id = described_class.schema_id
+        described_class.schema_id new_schema_id
+        expect(described_class.schema_id).to eq new_schema_id
+        described_class.schema_id nil
+        expect(described_class.schema_id).to be_nil
+        described_class.schema_id old_schema_id
+      end
+      it('.topic_name') do
+        expect(described_class.topic_name).to eq topic_name
+        described_class.topic_name new_topic_name
+        expect(described_class.topic_name).to eq new_topic_name
+        described_class.topic_name nil
+        expect(described_class.topic_name).to eq topic_name
+      end
+      it('.topic_key') do
+        expect(described_class.topic_key).to eq topic_key
+        described_class.topic_key new_topic_key
+        expect(described_class.topic_key).to eq new_topic_key
+        described_class.topic_key topic_key
+        expect(described_class.topic_key).to eq topic_key
+      end
+      it('.avro_template') { compare described_class.avro_template, exp_template }
+      it('.schema') { compare described_class.schema, exp_json }
+    end
+    context 'instance' do
+      it('event') { expect(instance).to be_a described_class }
+      it('#topic_name') { expect(instance.topic_name).to eq topic_name }
+      it('#topic_key') { compare instance.topic_key, 'some_user' }
+      it('#schema_id') { expect(instance.schema_id).to be_nil }
+      it('attributes') { compare instance.attributes, user_attrs.stringify_keys }
     end
   end
 end
