@@ -27,6 +27,15 @@ module FieldStruct
 
             raise ::Avro::Builder::SchemaError.new(schema.fullname, full_name)
           end
+
+          def to_s
+            format '#<%s full_name=%s filename=%s>',
+                   self.class.name,
+                   @full_name.inspect,
+                   @filename.inspect
+          end
+
+          alias inspect to_s
         end
 
         attr_reader :path, :schemas
@@ -68,6 +77,15 @@ module FieldStruct
 
           schemas.keys.each { |full_name| FileUtils.rm build_schema_path(full_name) }
         end
+
+        def to_s
+          format '#<%s path=%s schemas=%i>',
+                 self.class.name,
+                 @path.inspect,
+                 @schemas.size
+        end
+
+        alias inspect to_s
 
         private
 

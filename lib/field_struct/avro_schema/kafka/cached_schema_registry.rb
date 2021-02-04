@@ -52,6 +52,15 @@ module FieldStruct
           pulled = @upstream.subject_version subject, version
           @cache.store_by_version subject, version, pulled
         end
+
+        def to_s
+          format '#<%s upstream=%s cache=%s>',
+                 self.class.name,
+                 @upstream.inspect,
+                 @cache.inspect
+        end
+
+        alias inspect to_s
       end
     end
   end

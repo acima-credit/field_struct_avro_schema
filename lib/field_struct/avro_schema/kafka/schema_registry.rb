@@ -110,6 +110,14 @@ module FieldStruct
           put "/config/#{subject}", { body: config.to_json }
         end
 
+        def to_s
+          format '#<%s url=%s>',
+                 self.class.name,
+                 @url.inspect
+        end
+
+        alias inspect to_s
+
         private
 
         def get(path, **options)
