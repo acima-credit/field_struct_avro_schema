@@ -88,6 +88,17 @@ module FieldStruct
         def build(metadata)
           new(metadata).build
         end
+
+        def clean_builder_load_paths
+          ::Avro::Builder::DSL.load_paths.tap do |paths|
+            paths.each do |path|
+              full_path = Pathname.new path
+              next if full_path.exist? && full_path.directory?
+
+              paths.delete path
+            end
+          end
+        end
       end
 
       attr_reader :meta
@@ -212,3 +223,5 @@ module FieldStruct
     end
   end
 end
+
+FieldStruct::AvroSchema::AvroBuilder.clean_builder_load_paths
