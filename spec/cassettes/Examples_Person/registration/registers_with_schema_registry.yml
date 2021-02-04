@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: http://minujin:8081/subjects/examples.person/versions
+    uri: http://localhost:8081/subjects/examples.person/versions
     body:
       encoding: UTF-8
       string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"person\",\n  \"namespace\":

@@ -70,7 +70,8 @@ module FieldStruct
       end
 
       def register_event_schemas
-        events.each { |klass| register_event_schema klass }
+        events.values.each { |klass| register_event_schema klass }
+        events
       end
 
       def register_event_schema(klass)

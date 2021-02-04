@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://minujin:8081/schemas/ids/6
+    uri: http://localhost:8081/schemas/ids/6
     body:
       encoding: US-ASCII
       string: ''
