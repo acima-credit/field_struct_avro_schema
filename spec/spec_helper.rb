@@ -6,9 +6,15 @@ require 'field_struct/avro_schema'
 require 'rspec/core/shared_context'
 require 'rspec/json_expectations'
 require 'hashdiff'
+require 'vcr'
 
 TIME_ZONE = 'Mountain Time (US & Canada)'
 Time.zone = TIME_ZONE
+ActiveSupport.parse_json_times = true
+
+require 'json'
+require 'active_support/json'
+require 'active_support/time'
 
 ROOT_PATH = Pathname.new File.expand_path(File.dirname(File.dirname(__FILE__)))
 STORE_PATH = ROOT_PATH.join('spec/schemas')
@@ -23,15 +29,25 @@ RSpec.configure do |config|
   end
 
   require_relative 'support/compare'
+  require_relative 'support/kafka'
   require_relative 'support/models'
   require_relative 'support/model_helpers'
   require_relative 'support/values'
 
   # Builder Store setup
   FileUtils.mkdir_p STORE_PATH
-  FieldStruct::AvroSchema::AvroBuilder.builder_store_path = STORE_PATH
+  FieldStruct::AvroSchema::Kafka.builder_store_path = STORE_PATH
 
   config.before(:each) do
-    FieldStruct::AvroSchema::AvroBuilder.builder_store.clear
+    FieldStruct::AvroSchema::Kafka.builder_store.clear
   end
 end
+
+VCR.configure do |c|
+  c.cassette_library_dir = 'spec/cassettes'
+  c.hook_into :excon
+  c.configure_rspec_metadata!
+  # c.allow_http_connections_when_no_cassette = true
+end
+
+ENV['SCHEMA_REGISTRY_URL'] = 'http://minujin:8081'

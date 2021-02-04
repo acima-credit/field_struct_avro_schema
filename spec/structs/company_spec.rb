@@ -418,4 +418,12 @@ RSpec.describe Examples::Company do
       it('to_hash') { compare instance.to_hash, company_attrs.deep_stringify_keys }
     end
   end
+  context 'registration' do
+    let(:registration) { kafka.register_event_schema described_class }
+    it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
+    it 'registers with schema_registry', :vcr do
+      expect { registration }.to_not raise_error
+      expect(described_class.schema_id).to eq 10
+    end
+  end
 end

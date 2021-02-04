@@ -35,6 +35,8 @@ module FieldStruct
   end
 end
 
+require_relative 'version'
+require_relative 'kafka'
 require_relative 'builders/avro_builder'
 require_relative 'builders/metadata_builder'
 require_relative 'converters'

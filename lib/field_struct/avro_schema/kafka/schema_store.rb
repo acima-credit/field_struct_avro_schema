@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
+# This class implements a schema store that loads Avro::Builder
+# DSL files and returns Avro::Schema objects.
+# It implements the same API as Avro::Builder::SchemaStore but also
+# allows to set and persist a DSL schema from a string and keep entries
+# in memory only if desired.
+
 module FieldStruct
   module AvroSchema
-    class AvroBuilder
-      # This class implements a schema store that loads Avro::Builder
-      # DSL files and returns Avro::Schema objects.
-      # It implements the same API as Avro::Builder::SchemaStore but also
-      # allows to set and persist a DSL schema from a string and keep entries
-      # in memory only if desired.
+    module Kafka
       class SchemaStore
         class Entry
           attr_reader :full_name, :filename, :str, :schema
@@ -87,6 +88,7 @@ module FieldStruct
         end
 
         def add_entry_from_file(full_name)
+          filename = build_schema_path full_name
           add_entry_from_str full_name, File.read(filename)
         end
 

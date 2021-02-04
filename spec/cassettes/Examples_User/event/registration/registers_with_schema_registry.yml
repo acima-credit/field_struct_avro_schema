@@ -1,0 +1,42 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://minujin:8081/subjects/examples.user/versions
+    body:
+      encoding: UTF-8
+      string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"user\",\n  \"namespace\":
+        \"examples\",\n  \"doc\": \"| version 53d47729\",\n  \"fields\": [\n    {\n      \"name\":
+        \"username\",\n      \"type\": \"string\",\n      \"doc\": \"login | type
+        string\"\n    },\n    {\n      \"name\": \"password\",\n      \"type\": [\n        \"null\",\n        \"string\"\n      ],\n      \"default\":
+        null,\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\": \"age\",\n      \"type\":
+        \"int\",\n      \"doc\": \"| type integer\"\n    },\n    {\n      \"name\":
+        \"owed\",\n      \"type\": \"int\",\n      \"doc\": \"amount owed to the company
+        | type currency\"\n    },\n    {\n      \"name\": \"source\",\n      \"type\":
+        \"string\",\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\":
+        \"level\",\n      \"type\": \"int\",\n      \"doc\": \"| type integer\"\n    },\n    {\n      \"name\":
+        \"at\",\n      \"type\": [\n        \"null\",\n        {\n          \"type\":
+        \"long\",\n          \"logicalType\": \"timestamp-millis\"\n        }\n      ],\n      \"default\":
+        null,\n      \"doc\": \"| type time\"\n    },\n    {\n      \"name\": \"active\",\n      \"type\":
+        \"boolean\",\n      \"default\": false,\n      \"doc\": \"| type boolean\"\n    }\n  ]\n}"}'
+    headers:
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      Date:
+      - Wed, 03 Feb 2021 18:28:47 GMT
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+      Vary:
+      - Accept-Encoding, User-Agent
+      Content-Length:
+      - '8'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":5}'
+  recorded_at: Wed, 03 Feb 2021 18:28:47 GMT
+recorded_with: VCR 6.0.0

@@ -4,9 +4,17 @@ module CompareHelpers
   def compare(act, exp, prefix = '')
     if ENV.fetch('DEBUG', 'false') == 'true' && prefix == ''
       puts ' [ actual ] '.center(60, '-')
-      puts act.to_yaml
+      begin
+        puts act.to_yaml
+      rescue StandardError
+        act.inspect
+      end
       puts ' [ expected ] '.center(60, '-')
-      puts exp.to_yaml
+      begin
+        puts exp.to_yaml
+      rescue StandardError
+        exp.inspect
+      end
       puts ' [ done ] '.center(60, '-')
     end
 
@@ -53,11 +61,11 @@ module CompareHelpers
   end
 
   def compare_single_datetime(act, exp, prefix)
-    compare_single_instance(act, exp, prefix, DateTime) { |x| x.iso8601(3) }
+    compare_single_instance(act, exp, prefix, DateTime) { |x| x.utc.iso8601(3) }
   end
 
   def compare_single_time(act, exp, prefix)
-    compare_single_instance(act, exp, prefix, Time) { |x| x.iso8601(3) }
+    compare_single_instance(act, exp, prefix, Time) { |x| x.utc.iso8601(3) }
   end
 
   def compare_single_string(act, exp, prefix)

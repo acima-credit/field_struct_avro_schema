@@ -1,0 +1,52 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://minujin:8081/subjects/examples.team/versions
+    body:
+      encoding: UTF-8
+      string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"team\",\n  \"namespace\":
+        \"examples\",\n  \"doc\": \"| version 4be5bf2d\",\n  \"fields\": [\n    {\n      \"name\":
+        \"name\",\n      \"type\": \"string\",\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\":
+        \"leader\",\n      \"type\": {\n        \"type\": \"record\",\n        \"name\":
+        \"employee\",\n        \"namespace\": \"examples\",\n        \"doc\": \"|
+        version 115d6e02\",\n        \"fields\": [\n          {\n            \"name\":
+        \"first_name\",\n            \"type\": \"string\",\n            \"doc\": \"|
+        type string\"\n          },\n          {\n            \"name\": \"last_name\",\n            \"type\":
+        \"string\",\n            \"doc\": \"| type string\"\n          },\n          {\n            \"name\":
+        \"title\",\n            \"type\": [\n              \"null\",\n              \"string\"\n            ],\n            \"default\":
+        null,\n            \"doc\": \"| type string\"\n          }\n        ]\n      },\n      \"doc\":
+        \"| type examples.employee\"\n    },\n    {\n      \"name\": \"members\",\n      \"type\":
+        {\n        \"type\": \"array\",\n        \"items\": {\n          \"type\":
+        \"record\",\n          \"name\": \"developer\",\n          \"namespace\":
+        \"examples\",\n          \"doc\": \"| version 5251a97e\",\n          \"fields\":
+        [\n            {\n              \"name\": \"first_name\",\n              \"type\":
+        \"string\",\n              \"doc\": \"| type string\"\n            },\n            {\n              \"name\":
+        \"last_name\",\n              \"type\": \"string\",\n              \"doc\":
+        \"| type string\"\n            },\n            {\n              \"name\":
+        \"title\",\n              \"type\": [\n                \"null\",\n                \"string\"\n              ],\n              \"default\":
+        null,\n              \"doc\": \"| type string\"\n            },\n            {\n              \"name\":
+        \"language\",\n              \"type\": \"string\",\n              \"doc\":
+        \"| type string\"\n            }\n          ]\n        }\n      },\n      \"doc\":
+        \"Team members | type array:examples.developer\"\n    }\n  ]\n}"}'
+    headers:
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      Date:
+      - Wed, 03 Feb 2021 20:19:01 GMT
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+      Vary:
+      - Accept-Encoding, User-Agent
+      Content-Length:
+      - '8'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":9}'
+  recorded_at: Wed, 03 Feb 2021 20:19:00 GMT
+recorded_with: VCR 6.0.0

@@ -32,7 +32,7 @@ module Avro
       private
 
       def schema_store
-        FieldStruct::AvroSchema::AvroBuilder.builder_store
+        FieldStruct::AvroSchema::Kafka.builder_store
       end
     end
 

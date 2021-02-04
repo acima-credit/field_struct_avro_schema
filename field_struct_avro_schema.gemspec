@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'field_struct'
   spec.add_dependency 'avro', '~> 1.9.2'
   spec.add_dependency 'avro-builder'
+  spec.add_dependency 'excon'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'pry'
@@ -41,4 +42,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'timecop'
   spec.add_development_dependency 'hashdiff'
+  spec.add_development_dependency 'vcr'
 end

@@ -287,5 +287,58 @@ RSpec.describe Examples::User do
       it('#schema_id') { expect(instance.schema_id).to be_nil }
       it('attributes') { compare instance.attributes, user_attrs.stringify_keys }
     end
+    context 'registration' do
+      let(:registration) { kafka.register_event_schema described_class }
+      it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
+      it 'registers with schema_registry', :vcr do
+        expect { registration }.to_not raise_error
+        expect(described_class.schema_id).to eq 5
+      end
+    end
+    context 'encoding and decoding', :vcr do
+      let(:instance) { described_class.new user_attrs }
+      let(:decoded) { kafka.decode encoded, described_class.topic_name }
+      context 'avro' do
+        let(:encoded) { kafka.encode_avro instance, schema_id: 5 }
+        let(:exp_encoded) do
+          "\u0000\u0000\u0000\u0000\u0005\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1\u0012\u0002B\u0004\u0002" \
+            "\xA6\xBCƉ\xA9Z\u0001"
+        end
+        let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
+        it('encodes properly') { compare encoded, exp_encoded }
+        it('decodes properly') { compare decoded, exp_decoded }
+      end
+      context 'avro_event' do
+        before { described_class.schema_id 5 }
+        let(:encoded) { instance.topic_encoded(:avro_messaging) }
+        let(:exp_encoded) do
+          "\u0000\u0000\u0000\u0000\u0005\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1\u0012\u0002B\u0004\u0002" \
+            "\xA6\xBCƉ\xA9Z\u0001"
+        end
+        let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
+        it('encodes properly') { compare encoded, exp_encoded }
+        it('decodes properly') { compare decoded, exp_decoded }
+      end
+      context 'json' do
+        let(:encoded) { kafka.encode_json instance }
+        let(:exp_encoded) do
+          '{"username":"some_user","password":"some_password","age":45,"owed":1537.25,"source":"B","level":2,"at":' \
+            '"2019-03-04T05:06:07.891-07:00","active":true}'
+        end
+        let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
+        it('encodes properly') { compare encoded, exp_encoded }
+        it('decodes properly') { compare decoded, exp_decoded }
+      end
+      context 'json_event' do
+        let(:encoded) { instance.topic_encoded(:json) }
+        let(:exp_encoded) do
+          '{"username":"some_user","password":"some_password","age":45,"owed":1537.25,"source":"B","level":2,"at":' \
+            '"2019-03-04T05:06:07.891-07:00","active":true}'
+        end
+        let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
+        it('encodes properly') { compare encoded, exp_encoded }
+        it('decodes properly') { compare decoded, exp_decoded }
+      end
+    end
   end
 end

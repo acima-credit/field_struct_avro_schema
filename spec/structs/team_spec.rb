@@ -363,4 +363,37 @@ RSpec.describe Examples::Team do
       it('to_hash') { compare instance.to_hash, team_attrs.deep_stringify_keys }
     end
   end
+  context 'registration' do
+    let(:registration) { kafka.register_event_schema described_class }
+    it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
+    it 'registers with schema_registry', :vcr do
+      expect { registration }.to_not raise_error
+      expect(described_class.schema_id).to eq 9
+    end
+  end
+  context 'encoding and decoding', :vcr do
+    let(:instance) { described_class.new team_attrs }
+    let(:decoded) { kafka.decode encoded, described_class.topic_name }
+    context 'avro' do
+      let(:encoded) { kafka.encode_avro instance, schema_id: 9 }
+      let(:exp_encoded) do
+        "\0\0\0\0\t\x14Duper Team\bKarl\bMarx\x02\x12Team Lead\x04\bJohn\x14Stalingrad\x02\x12Developer\bRuby\nSteve" \
+          "\x10Romanoff\x02\x10Designer\x12In Design\0"
+      end
+      let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
+      it('encodes properly') { compare encoded, exp_encoded }
+      it('decodes properly') { compare decoded, exp_decoded }
+    end
+    context 'json' do
+      let(:encoded) { kafka.encode_json instance }
+      let(:exp_encoded) do
+        '{"name":"Duper Team","leader":{"first_name":"Karl","last_name":"Marx","title":"Team Lead"},"members":[{' \
+          '"first_name":"John","last_name":"Stalingrad","title":"Developer","language":"Ruby"},{"first_name":"Steve"' \
+          ',"last_name":"Romanoff","title":"Designer","language":"In Design"}]}'
+      end
+      let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
+      it('encodes properly') { compare encoded, exp_encoded }
+      it('decodes properly') { compare decoded, exp_decoded }
+    end
+  end
 end

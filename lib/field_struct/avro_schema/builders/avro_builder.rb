@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'avro_builder/schema_store'
 require_relative 'avro_builder/ext'
 
 module FieldStruct
@@ -82,17 +81,6 @@ module FieldStruct
       end
 
       class << self
-        attr_reader :builder_store_path
-
-        def builder_store_path=(value)
-          @builder_store = SchemaStore.new value
-          @builder_store_path = value
-        end
-
-        def builder_store
-          @builder_store ||= SchemaStore.new builder_store_path
-        end
-
         def build_template(metadata)
           new(metadata).build_template
         end
@@ -170,7 +158,7 @@ module FieldStruct
       end
 
       def build_dsl
-        @dsl = self.class.builder_store.set meta.schema_name, @template
+        @dsl = Kafka.builder_store.set meta.schema_name, @template
       end
 
       def add_field_type_for(attr, hsh)

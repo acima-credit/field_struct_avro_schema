@@ -246,4 +246,34 @@ RSpec.describe ExampleApp::Examples::Friend do
       it('to_hash') { compare instance.to_hash, friend_attrs.deep_stringify_keys }
     end
   end
+  context 'registration' do
+    let(:registration) { kafka.register_event_schema described_class }
+    it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
+    it 'registers with schema_registry', :vcr do
+      expect { registration }.to_not raise_error
+      expect(described_class.schema_id).to eq 11
+    end
+  end
+  context 'encoding and decoding', :vcr do
+    let(:instance) { described_class.new friend_attrs }
+    let(:decoded) { kafka.decode encoded, described_class.topic_name }
+    context 'avro' do
+      let(:encoded) { kafka.encode_avro instance, schema_id: 11 }
+      let(:exp_encoded) do
+        "\u0000\u0000\u0000\u0000\v\u0016Carl Rovers\u0002Z\u0002\x9E(\u0002\u0004\u0002\n84120"
+      end
+      let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
+      it('encodes properly') { compare encoded, exp_encoded }
+      it('decodes properly') { compare decoded, exp_decoded }
+    end
+    context 'json' do
+      let(:encoded) { kafka.encode_json instance }
+      let(:exp_encoded) do
+        '{"name":"Carl Rovers","age":45,"balance_owed":25.75,"gamer_level":2,"zip_code":"84120"}'
+      end
+      let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
+      it('encodes properly') { compare encoded, exp_encoded }
+      it('decodes properly') { compare decoded, exp_decoded }
+    end
+  end
 end

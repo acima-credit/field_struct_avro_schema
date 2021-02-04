@@ -1,0 +1,40 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://minujin:8081/schemas/ids/9
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      Date:
+      - Wed, 03 Feb 2021 23:35:28 GMT
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+      Vary:
+      - Accept-Encoding, User-Agent
+      Content-Length:
+      - '1100'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"schema":"{\"type\":\"record\",\"name\":\"team\",\"namespace\":\"examples\",\"doc\":\"|
+        version 4be5bf2d\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"leader\",\"type\":{\"type\":\"record\",\"name\":\"employee\",\"doc\":\"|
+        version 115d6e02\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
+        string\"},{\"name\":\"title\",\"type\":[\"null\",\"string\"],\"doc\":\"| type
+        string\",\"default\":null}]},\"doc\":\"| type examples.employee\"},{\"name\":\"members\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"developer\",\"doc\":\"|
+        version 5251a97e\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
+        string\"},{\"name\":\"title\",\"type\":[\"null\",\"string\"],\"doc\":\"| type
+        string\",\"default\":null},{\"name\":\"language\",\"type\":\"string\",\"doc\":\"|
+        type string\"}]}},\"doc\":\"Team members | type array:examples.developer\"}]}"}'
+  recorded_at: Wed, 03 Feb 2021 23:35:27 GMT
+recorded_with: VCR 6.0.0

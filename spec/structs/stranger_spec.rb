@@ -23,4 +23,7 @@ RSpec.describe ExampleApp::Examples::Stranger do
     subject { described_class.new }
     it('#to_avro_hash') { expect(subject).to_not respond_to :to_avro_hash }
   end
+  context 'registration' do
+    it('Kafka does not have event registered') { expect(kafka.events[described_class.name]).to be_nil }
+  end
 end

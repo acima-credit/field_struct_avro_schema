@@ -188,4 +188,34 @@ RSpec.describe Examples::Person do
       it('to_hash') { compare instance.to_hash, person_attrs.deep_stringify_keys }
     end
   end
+  context 'registration' do
+    let(:registration) { kafka.register_event_schema described_class }
+    it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
+    it 'registers with schema_registry', :vcr do
+      expect { registration }.to_not raise_error
+      expect(described_class.schema_id).to eq 6
+    end
+  end
+  context 'encoding and decoding', :vcr do
+    let(:instance) { described_class.new person_attrs }
+    let(:decoded) { kafka.decode encoded, described_class.topic_name }
+    context 'avro' do
+      let(:encoded) { kafka.encode_avro instance, schema_id: 6 }
+      let(:exp_encoded) do
+        "\0\0\0\0\x06\bJohn\x06Max"
+      end
+      let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
+      it('encodes properly') { compare encoded, exp_encoded }
+      it('decodes properly') { compare decoded, exp_decoded }
+    end
+    context 'json' do
+      let(:encoded) { kafka.encode_json instance }
+      let(:exp_encoded) do
+        '{"first_name":"John","last_name":"Max"}'
+      end
+      let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
+      it('encodes properly') { compare encoded, exp_encoded }
+      it('decodes properly') { compare decoded, exp_decoded }
+    end
+  end
 end

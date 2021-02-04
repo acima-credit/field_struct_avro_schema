@@ -6,6 +6,7 @@ module FieldStruct
       def self.included(base)
         base.send :include, FieldStruct::AvroExtension
         base.extend ClassMethods
+        AvroSchema::Kafka.register_event base
       end
 
       module ClassMethods
@@ -13,6 +14,7 @@ module FieldStruct
           super
           child.send :include, FieldStruct::AvroExtension
           child.topic_key topic_key
+          AvroSchema::Kafka.register_event child
         end
 
         def from(instance)
@@ -49,30 +51,7 @@ module FieldStruct
         def schema
           @schema ||= metadata.to_avro_json true
         end
-
-        # def schema_path
-        #   @schema_path ||= ::Messaging::Kafka.schema_store_path.join topic_name.gsub('.', '/') + '.avsc'
-        # end
-        #
-        # def builder_schema_path
-        #   @builder_schema_path ||= ::Messaging::Kafka.builder_schema_store_path.join topic_name.gsub('.', '/') + '.rb'
-        # end
-        #
-        # def inherited(child)
-        #   ::Messaging::Kafka.events[child.topic_name] = child
-        #   child.send :include, ::Logging::Mixin
-        # end
-        #
-        # def publish_many(events)
-        #   events.map(&:publish)
-        # end
       end
-
-      # def publish
-      #   DeliveryBoy.deliver_async! topic_encoded(:avro_messaging),
-      #                              topic: topic_name,
-      #                              key: topic_key
-      # end
 
       def topic_name
         self.class.topic_name
@@ -86,20 +65,20 @@ module FieldStruct
         self.class.schema_id
       end
 
-      # def to_avro_messaging
-      #   ::Messaging::Kafka.encode_avro to_avro_hash, schema_id: schema_id
-      # end
+      def topic_encoded(mode = :json)
+        case mode
+        when :json
+          to_json
+        when :avro_messaging
+          to_avro_messaging
+        else
+          raise "unknown mode [#{mode}]"
+        end
+      end
 
-      # def topic_encoded(mode = :json)
-      #   case mode
-      #   when :json
-      #     to_json
-      #   when :avro_messaging
-      #     to_avro_messaging
-      #   else
-      #     raise "unknown mode [#{mode}]"
-      #   end
-      # end
+      def to_avro_messaging
+        ::FieldStruct::AvroSchema::Kafka.encode_avro to_avro_hash, schema_id: schema_id
+      end
     end
   end
 end

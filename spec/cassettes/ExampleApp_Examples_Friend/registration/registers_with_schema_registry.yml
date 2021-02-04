@@ -1,0 +1,40 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://minujin:8081/subjects/example_app.examples.friend/versions
+    body:
+      encoding: UTF-8
+      string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"friend\",\n  \"namespace\":
+        \"example_app.examples\",\n  \"doc\": \"| version 82f78509\",\n  \"fields\":
+        [\n    {\n      \"name\": \"name\",\n      \"type\": \"string\",\n      \"doc\":
+        \"| type string\"\n    },\n    {\n      \"name\": \"age\",\n      \"type\":
+        [\n        \"null\",\n        \"int\"\n      ],\n      \"default\": null,\n      \"doc\":
+        \"| type integer\"\n    },\n    {\n      \"name\": \"balance_owed\",\n      \"type\":
+        [\n        \"null\",\n        \"int\"\n      ],\n      \"default\": null,\n      \"doc\":
+        \"| type currency\"\n    },\n    {\n      \"name\": \"gamer_level\",\n      \"type\":
+        [\n        \"null\",\n        \"int\"\n      ],\n      \"default\": null,\n      \"doc\":
+        \"| type integer\"\n    },\n    {\n      \"name\": \"zip_code\",\n      \"type\":
+        [\n        \"null\",\n        \"string\"\n      ],\n      \"default\": null,\n      \"doc\":
+        \"| type string\"\n    }\n  ]\n}"}'
+    headers:
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      Date:
+      - Wed, 03 Feb 2021 20:20:02 GMT
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+      Vary:
+      - Accept-Encoding, User-Agent
+      Content-Length:
+      - '9'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":11}'
+  recorded_at: Wed, 03 Feb 2021 20:20:01 GMT
+recorded_with: VCR 6.0.0
