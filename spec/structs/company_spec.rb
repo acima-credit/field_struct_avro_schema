@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Examples::Company do
   subject { described_class.metadata }
+  let(:exp_schema_id) { 10 }
 
   let(:exp_meta) do
     {
@@ -23,8 +24,8 @@ RSpec.describe Examples::Company do
 
       record :company, :doc=>"| version 9d450937" do
         required :legal_name, :string, doc: "| type string"
-        optional :development_team, :team, namespace: 'examples', doc: "| type examples.team"
-        optional :marketing_team, :team, namespace: 'examples', doc: "| type examples.team"
+        optional :development_team, "examples.team", doc: "| type examples.team"
+        optional :marketing_team, "examples.team", doc: "| type examples.team"
       end
     CODE
   end
@@ -421,9 +422,39 @@ RSpec.describe Examples::Company do
   context 'registration' do
     let(:registration) { kafka.register_event_schema described_class }
     it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
-    it 'registers with schema_registry', :vcr do
+    it 'registers with schema_registry', :vcr, :registers do
       expect { registration }.to_not raise_error
-      expect(described_class.schema_id).to eq 10
+      expect(described_class.schema_id).to eq exp_schema_id
+    end
+  end
+  context 'encoding and decoding', :vcr, :focus do
+    let(:instance) { described_class.new company_attrs }
+    let(:decoded) { kafka.decode encoded, described_class.topic_name }
+    context 'avro' do
+      let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
+      let(:exp_encoded) do
+        "\0\0\0\0\n My Super Company\x02\x14Duper Team\bKarl\bMarx\x02\x12Team Lead\x04\bJohn\x14Stalingrad\x02\x12" \
+          "Developer\bRuby\nSteve\x10Romanoff\x02\x10Designer\x12In Design\0\x02\x18Growing Team\bEvan\fMajors\x02" \
+          "\x12Team Lead\x04\x06Rob\fMorris\x02\x12Developer\x14Javascript\bZach\x0EEvanoff\x02\x10Designer\x12" \
+          "Photoshop\0"
+      end
+      let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
+      it('encodes properly') { compare encoded, exp_encoded }
+      it('decodes properly') { compare decoded, exp_decoded }
+    end
+    context 'json' do
+      let(:encoded) { kafka.encode_json instance }
+      let(:exp_encoded) do
+        '{"legal_name":"My Super Company","development_team":{"name":"Duper Team","leader":{"first_name":"Karl","las' \
+          't_name":"Marx","title":"Team Lead"},"members":[{"first_name":"John","last_name":"Stalingrad","title":"Dev' \
+          'eloper","language":"Ruby"},{"first_name":"Steve","last_name":"Romanoff","title":"Designer","language":"In' \
+          ' Design"}]},"marketing_team":{"name":"Growing Team","leader":{"first_name":"Evan","last_name":"Majors","t' \
+          'itle":"Team Lead"},"members":[{"first_name":"Rob","last_name":"Morris","title":"Developer","language":"Ja' \
+          'vascript"},{"first_name":"Zach","last_name":"Evanoff","title":"Designer","language":"Photoshop"}]}}'
+      end
+      let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
+      it('encodes properly') { compare encoded, exp_encoded }
+      it('decodes properly') { compare decoded, exp_decoded }
     end
   end
 end

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Examples::User do
   subject { described_class.metadata }
+  let(:exp_schema_id) { 5 }
 
   let(:exp_meta) do
     {
@@ -290,16 +291,16 @@ RSpec.describe Examples::User do
     context 'registration' do
       let(:registration) { kafka.register_event_schema described_class }
       it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
-      it 'registers with schema_registry', :vcr do
+      it 'registers with schema_registry', :vcr, :registers do
         expect { registration }.to_not raise_error
-        expect(described_class.schema_id).to eq 5
+        expect(described_class.schema_id).to eq exp_schema_id
       end
     end
     context 'encoding and decoding', :vcr do
       let(:instance) { described_class.new user_attrs }
       let(:decoded) { kafka.decode encoded, described_class.topic_name }
       context 'avro' do
-        let(:encoded) { kafka.encode_avro instance, schema_id: 5 }
+        let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
         let(:exp_encoded) do
           "\u0000\u0000\u0000\u0000\u0005\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1\u0012\u0002B\u0004\u0002" \
             "\xA6\xBCƉ\xA9Z\u0001"
@@ -309,7 +310,7 @@ RSpec.describe Examples::User do
         it('decodes properly') { compare decoded, exp_decoded }
       end
       context 'avro_event' do
-        before { described_class.schema_id 5 }
+        before { described_class.schema_id exp_schema_id }
         let(:encoded) { instance.topic_encoded(:avro_messaging) }
         let(:exp_encoded) do
           "\u0000\u0000\u0000\u0000\u0005\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1\u0012\u0002B\u0004\u0002" \
