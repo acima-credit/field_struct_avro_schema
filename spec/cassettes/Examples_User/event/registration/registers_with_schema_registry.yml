@@ -28,7 +28,7 @@ http_interactions:
       message:
     headers:
       Date:
-      - Wed, 03 Feb 2021 18:28:47 GMT
+      - Tue, 09 Feb 2021 20:44:29 GMT
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -38,5 +38,5 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":5}'
-  recorded_at: Wed, 03 Feb 2021 18:28:47 GMT
+  recorded_at: Tue, 09 Feb 2021 20:44:29 GMT
 recorded_with: VCR 6.0.0

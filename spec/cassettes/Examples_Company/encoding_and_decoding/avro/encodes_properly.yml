@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8081/schemas/ids/9
+    uri: http://localhost:8081/schemas/ids/10
     body:
       encoding: US-ASCII
       string: ''
@@ -15,16 +15,18 @@ http_interactions:
       message:
     headers:
       Date:
-      - Wed, 03 Feb 2021 23:35:28 GMT
+      - Tue, 09 Feb 2021 20:58:13 GMT
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
       - Accept-Encoding, User-Agent
       Content-Length:
-      - '1100'
+      - '1470'
     body:
       encoding: ASCII-8BIT
-      string: '{"schema":"{\"type\":\"record\",\"name\":\"team\",\"namespace\":\"examples\",\"doc\":\"|
+      string: '{"schema":"{\"type\":\"record\",\"name\":\"company\",\"namespace\":\"examples\",\"doc\":\"|
+        version 9d450937\",\"fields\":[{\"name\":\"legal_name\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"development_team\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"team\",\"doc\":\"|
         version 4be5bf2d\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"leader\",\"type\":{\"type\":\"record\",\"name\":\"employee\",\"doc\":\"|
         version 115d6e02\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
@@ -35,6 +37,8 @@ http_interactions:
         type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
         string\"},{\"name\":\"title\",\"type\":[\"null\",\"string\"],\"doc\":\"| type
         string\",\"default\":null},{\"name\":\"language\",\"type\":\"string\",\"doc\":\"|
-        type string\"}]}},\"doc\":\"Team members | type array:examples.developer\"}]}"}'
-  recorded_at: Wed, 03 Feb 2021 23:35:27 GMT
+        type string\"}]}},\"doc\":\"Team members | type array:examples.developer\"}]}],\"doc\":\"|
+        type examples.team\",\"default\":null},{\"name\":\"marketing_team\",\"type\":[\"null\",\"team\"],\"doc\":\"|
+        type examples.team\",\"default\":null}]}"}'
+  recorded_at: Tue, 09 Feb 2021 20:58:13 GMT
 recorded_with: VCR 6.0.0

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Examples::Team do
   subject { described_class.metadata }
+  let(:exp_schema_id) { 9 }
 
   let(:exp_meta) do
     {
@@ -29,7 +30,7 @@ RSpec.describe Examples::Team do
 
       record :team, :doc=>"| version 4be5bf2d" do
         required :name, :string, doc: "| type string"
-        required :leader, :employee, namespace: 'examples', doc: "| type examples.employee"
+        required :leader, "examples.employee", doc: "| type examples.employee"
         required :members, :array, items: "examples.developer", doc: "Team members | type array:examples.developer"
       end
     CODE
@@ -366,16 +367,16 @@ RSpec.describe Examples::Team do
   context 'registration' do
     let(:registration) { kafka.register_event_schema described_class }
     it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
-    it 'registers with schema_registry', :vcr do
+    it 'registers with schema_registry', :vcr, :registers do
       expect { registration }.to_not raise_error
-      expect(described_class.schema_id).to eq 9
+      expect(described_class.schema_id).to eq exp_schema_id
     end
   end
   context 'encoding and decoding', :vcr do
     let(:instance) { described_class.new team_attrs }
     let(:decoded) { kafka.decode encoded, described_class.topic_name }
     context 'avro' do
-      let(:encoded) { kafka.encode_avro instance, schema_id: 9 }
+      let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
         "\0\0\0\0\t\x14Duper Team\bKarl\bMarx\x02\x12Team Lead\x04\bJohn\x14Stalingrad\x02\x12Developer\bRuby\nSteve" \
           "\x10Romanoff\x02\x10Designer\x12In Design\0"

@@ -2,6 +2,7 @@
 
 RSpec.describe ExampleApp::Examples::Friend do
   subject { described_class.metadata }
+  let(:exp_schema_id) { 11 }
 
   let(:exp_meta) do
     {
@@ -249,16 +250,16 @@ RSpec.describe ExampleApp::Examples::Friend do
   context 'registration' do
     let(:registration) { kafka.register_event_schema described_class }
     it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
-    it 'registers with schema_registry', :vcr do
+    it 'registers with schema_registry', :vcr, :registers do
       expect { registration }.to_not raise_error
-      expect(described_class.schema_id).to eq 11
+      expect(described_class.schema_id).to eq exp_schema_id
     end
   end
   context 'encoding and decoding', :vcr do
     let(:instance) { described_class.new friend_attrs }
     let(:decoded) { kafka.decode encoded, described_class.topic_name }
     context 'avro' do
-      let(:encoded) { kafka.encode_avro instance, schema_id: 11 }
+      let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
         "\u0000\u0000\u0000\u0000\v\u0016Carl Rovers\u0002Z\u0002\x9E(\u0002\u0004\u0002\n84120"
       end

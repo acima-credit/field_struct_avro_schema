@@ -45,13 +45,11 @@ module FieldStruct
 
         def build_attr_type_line(attr, ary)
           type_parts = attr[:type].to_s.split('.')
-          if type_parts.size > 1
-            type_name = type_parts.pop
-            type_namespace = type_parts.join('.')
-            ary << ":#{type_name}" << "namespace: '#{type_namespace}'"
-          else
-            ary << ":#{attr[:type]}"
-          end
+          ary << if type_parts.size > 1
+                   type_parts.join('.').inspect
+                 else
+                   ":#{attr[:type]}"
+                 end
           ary << "logical_type: #{attr[:logical_type].inspect}" if attr[:logical_type]
         end
 
