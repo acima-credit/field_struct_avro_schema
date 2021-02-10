@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Examples::User do
+RSpec.describe Examples::User, :focus2 do
   subject { described_class.metadata }
   let(:exp_schema_id) { 5 }
 
@@ -254,6 +254,14 @@ RSpec.describe Examples::User do
     let(:new_schema_id) { 99 }
     let(:new_topic_name) { 'some.topic' }
     let(:new_topic_key) { :other }
+    let(:exp_avro_encoded) do
+      "\u0000\u0000\u0000\u0000\u0005\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1\u0012\u0002B\u0004\u0002\xA6" \
+        "\xBCƉ\xA9Z\u0001"
+    end
+    let(:exp_json_encoded) do
+      '{"username":"some_user","password":"some_password","age":45,"owed":1537.25,"source":"B","level":2,"at":' \
+            '"2019-03-04T05:06:07.891-07:00","active":true}'
+    end
 
     context 'class' do
       it('.schema_id') do
@@ -301,33 +309,21 @@ RSpec.describe Examples::User do
       let(:decoded) { kafka.decode encoded, described_class.topic_name }
       context 'avro' do
         let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
-        let(:exp_encoded) do
-          "\u0000\u0000\u0000\u0000\u0005\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1\u0012\u0002B\u0004\u0002" \
-            "\xA6\xBCƉ\xA9Z\u0001"
-        end
         let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
-        it('encodes properly') { compare encoded, exp_encoded }
+        it('encodes properly') { compare encoded, exp_avro_encoded }
         it('decodes properly') { compare decoded, exp_decoded }
       end
       context 'avro_event' do
         before { described_class.schema_id exp_schema_id }
         let(:encoded) { instance.topic_encoded(:avro_messaging) }
-        let(:exp_encoded) do
-          "\u0000\u0000\u0000\u0000\u0005\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1\u0012\u0002B\u0004\u0002" \
-            "\xA6\xBCƉ\xA9Z\u0001"
-        end
         let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
-        it('encodes properly') { compare encoded, exp_encoded }
+        it('encodes properly') { compare encoded, exp_avro_encoded }
         it('decodes properly') { compare decoded, exp_decoded }
       end
       context 'json' do
         let(:encoded) { kafka.encode_json instance }
-        let(:exp_encoded) do
-          '{"username":"some_user","password":"some_password","age":45,"owed":1537.25,"source":"B","level":2,"at":' \
-            '"2019-03-04T05:06:07.891-07:00","active":true}'
-        end
         let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
-        it('encodes properly') { compare encoded, exp_encoded }
+        it('encodes properly') { compare encoded, exp_json_encoded }
         it('decodes properly') { compare decoded, exp_decoded }
       end
       context 'json_event' do
@@ -339,6 +335,53 @@ RSpec.describe Examples::User do
         let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
         it('encodes properly') { compare encoded, exp_encoded }
         it('decodes properly') { compare decoded, exp_decoded }
+      end
+    end
+    context 'karafka', :vcr, :focus do
+      before { described_class.schema_id exp_schema_id }
+      let(:result) { coder.new.call instance }
+      context 'serialization' do
+        let(:coder) { FieldStruct::AvroSchema::Karafka.serializer }
+        context 'avro field struct' do
+          let(:instance) { described_class.new user_attrs }
+          it('encodes') { compare result, exp_avro_encoded }
+        end
+        context 'string' do
+          let(:instance) { exp_avro_encoded }
+          it('keeps same') { compare result, exp_avro_encoded }
+        end
+        context 'other' do
+          let(:instance) { ExampleApp::Examples::Stranger.new name: 'unknown', age: 25 }
+          it('raises error') { expect { result }.to raise_error ::Karafka::Errors::SerializationError, instance }
+        end
+      end
+      context 'deserialization' do
+        let(:coder) { FieldStruct::AvroSchema::Karafka.deserializer }
+        let(:instance) { OpenStruct.new raw_payload: raw_payload, topic: topic_name }
+        context 'avro field struct' do
+          let(:raw_payload) { exp_avro_encoded }
+          let(:exp_hsh) do
+            {
+              username: 'some_user',
+              password: 'some_password',
+              age: 45,
+              owed: 1537.25,
+              source: 'B',
+              level: 2,
+              at: past_time.utc,
+              active: true
+            }
+          end
+          it('decodes') { compare result, exp_hsh }
+        end
+        context 'null payload' do
+          let(:raw_payload) { nil }
+          it('returns nil') { compare result, nil }
+        end
+        context 'other' do
+          let(:raw_payload) { { a: 1 }.to_json }
+          it('raises error') { expect { result }.to raise_error ::Karafka::Errors::DeserializationError }
+        end
       end
     end
   end

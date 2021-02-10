@@ -1,0 +1,32 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8081/schemas/ids/6
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      Date:
+      - Wed, 10 Feb 2021 23:14:58 GMT
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+      Vary:
+      - Accept-Encoding, User-Agent
+      Content-Length:
+      - '268'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"schema":"{\"type\":\"record\",\"name\":\"person\",\"namespace\":\"examples\",\"doc\":\"|
+        version 75b71433\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
+        string\"}]}"}'
+  recorded_at: Wed, 10 Feb 2021 23:14:58 GMT
+recorded_with: VCR 6.0.0

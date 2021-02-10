@@ -1,0 +1,37 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8081/schemas/ids/5
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      Date:
+      - Wed, 10 Feb 2021 22:55:46 GMT
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+      Vary:
+      - Accept-Encoding, User-Agent
+      Content-Length:
+      - '809'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"schema":"{\"type\":\"record\",\"name\":\"user\",\"namespace\":\"examples\",\"doc\":\"|
+        version 53d47729\",\"fields\":[{\"name\":\"username\",\"type\":\"string\",\"doc\":\"login
+        | type string\"},{\"name\":\"password\",\"type\":[\"null\",\"string\"],\"doc\":\"|
+        type string\",\"default\":null},{\"name\":\"age\",\"type\":\"int\",\"doc\":\"|
+        type integer\"},{\"name\":\"owed\",\"type\":\"int\",\"doc\":\"amount owed
+        to the company | type currency\"},{\"name\":\"source\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"level\",\"type\":\"int\",\"doc\":\"| type integer\"},{\"name\":\"at\",\"type\":[\"null\",{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}],\"doc\":\"|
+        type time\",\"default\":null},{\"name\":\"active\",\"type\":\"boolean\",\"doc\":\"|
+        type boolean\",\"default\":false}]}"}'
+  recorded_at: Wed, 10 Feb 2021 22:55:46 GMT
+recorded_with: VCR 6.0.0
