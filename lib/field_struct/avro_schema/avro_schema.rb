@@ -42,3 +42,4 @@ require_relative 'builders/metadata_builder'
 require_relative 'converters'
 require_relative 'extension'
 require_relative 'event'
+require_relative 'karafka' if defined?(Karafka)

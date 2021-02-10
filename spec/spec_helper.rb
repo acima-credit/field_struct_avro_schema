@@ -35,6 +35,7 @@ RSpec.configure do |config|
   require_relative 'support/models'
   require_relative 'support/model_helpers'
   require_relative 'support/values'
+  require_relative 'support/karafka'
 
   # Builder Store setup
   FileUtils.mkdir_p STORE_PATH

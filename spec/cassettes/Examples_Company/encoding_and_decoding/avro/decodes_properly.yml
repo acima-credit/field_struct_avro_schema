@@ -1,0 +1,44 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8081/schemas/ids/10
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      Date:
+      - Wed, 10 Feb 2021 23:14:58 GMT
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+      Vary:
+      - Accept-Encoding, User-Agent
+      Content-Length:
+      - '1470'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"schema":"{\"type\":\"record\",\"name\":\"company\",\"namespace\":\"examples\",\"doc\":\"|
+        version 9d450937\",\"fields\":[{\"name\":\"legal_name\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"development_team\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"team\",\"doc\":\"|
+        version 4be5bf2d\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"leader\",\"type\":{\"type\":\"record\",\"name\":\"employee\",\"doc\":\"|
+        version 115d6e02\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
+        string\"},{\"name\":\"title\",\"type\":[\"null\",\"string\"],\"doc\":\"| type
+        string\",\"default\":null}]},\"doc\":\"| type examples.employee\"},{\"name\":\"members\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"developer\",\"doc\":\"|
+        version 5251a97e\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
+        string\"},{\"name\":\"title\",\"type\":[\"null\",\"string\"],\"doc\":\"| type
+        string\",\"default\":null},{\"name\":\"language\",\"type\":\"string\",\"doc\":\"|
+        type string\"}]}},\"doc\":\"Team members | type array:examples.developer\"}]}],\"doc\":\"|
+        type examples.team\",\"default\":null},{\"name\":\"marketing_team\",\"type\":[\"null\",\"team\"],\"doc\":\"|
+        type examples.team\",\"default\":null}]}"}'
+  recorded_at: Wed, 10 Feb 2021 23:14:58 GMT
+recorded_with: VCR 6.0.0
