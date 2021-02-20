@@ -68,6 +68,10 @@ module FieldStruct
           found = get_by_full_name full_name
           return found.schema if found
 
+          singular_full_name = full_name.singularize
+          found = get_by_full_name singular_full_name
+          return found.schema if found
+
           add_entry_from_file(full_name).schema
         end
 
@@ -107,6 +111,8 @@ module FieldStruct
 
         def add_entry_from_file(full_name)
           filename = build_schema_path full_name
+          raise SchemaNotFoundError.new("could not find #{filename}") unless filename.exist?
+
           add_entry_from_str full_name, File.read(filename)
         end
 
