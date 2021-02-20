@@ -145,3 +145,6 @@ Style/RedundantArgument:
 
 Style/SwapValues:
   Enabled: true
+
+Security/MarshalLoad:
+  Enabled: false
