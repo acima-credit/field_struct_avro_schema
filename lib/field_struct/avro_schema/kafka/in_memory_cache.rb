@@ -19,13 +19,13 @@ module FieldStruct
         end
 
         def store_by_schema(subject, schema, id)
-          key = format '%s:%s', subject, schema.to_s
+          key = format '%s:%s', subject, schema_crc_id(schema)
           store_by_id id, schema
           @ids_by_schema[key] = id
         end
 
         def lookup_by_schema(subject, schema)
-          key = format '%s:%s', subject, schema.to_s
+          key = format '%s:%s', subject, schema_crc_id(schema)
           @ids_by_schema[key]
         end
 
@@ -72,6 +72,13 @@ module FieldStruct
         end
 
         alias inspect to_s
+
+        private
+
+        def schema_crc_id(schema)
+          str = schema.to_s.gsub(/\s/, '')
+          Zlib.crc32 str, nil
+        end
       end
     end
   end

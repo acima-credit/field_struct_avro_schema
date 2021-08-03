@@ -41,18 +41,30 @@ RSpec.describe FieldStruct::AvroSchema::Kafka do
   describe '.schema_registry' do
     subject { described_class.schema_registry }
     it { expect(subject).to be_a FieldStruct::AvroSchema::Kafka::CachedSchemaRegistry }
+    it do
+      expect(subject.inspect).to eq '#<FieldStruct::AvroSchema::Kafka::CachedSchemaRegistry ' \
+                                    'upstream=#<FieldStruct::AvroSchema::Kafka::SchemaRegistry ' \
+                                    'url=nil> cache=#<FieldStruct::AvroSchema::Kafka::InMemoryCache ' \
+                                    'schemas_by_id=0 ids_by_schema=0 schema_by_subject_version=0>>'
+    end
   end
   describe '.base_schema_registry' do
     subject { described_class.base_schema_registry }
     it { expect(subject).to be_a FieldStruct::AvroSchema::Kafka::SchemaRegistry }
+    it { expect(subject.inspect).to eq '#<FieldStruct::AvroSchema::Kafka::SchemaRegistry url=nil>' }
   end
   describe '.registry_url' do
     subject { described_class.registry_url }
     it { expect(subject).to eq 'http://localhost:8081' }
+    it { expect(subject.inspect).to eq '"http://localhost:8081"' }
   end
   describe '.schema_registry_cache' do
     subject { described_class.schema_registry_cache }
     it { expect(subject).to be_a FieldStruct::AvroSchema::Kafka::InMemoryCache }
+    it do
+      expect(subject.inspect).to eq '#<FieldStruct::AvroSchema::Kafka::InMemoryCache ' \
+                                    'schemas_by_id=0 ids_by_schema=0 schema_by_subject_version=0>'
+    end
   end
   describe '.builder_store_path' do
     subject { described_class.builder_store_path }
