@@ -32,6 +32,14 @@ module FieldStruct
       datetime: [:long, 'timestamp-millis'],
       time: [:long, 'timestamp-millis']
     }.with_indifferent_access.freeze
+
+    def self.logger
+      @logger ||= Logger.new($stdout).tap { |x| x.level = Logger::INFO }
+    end
+
+    def self.logger=(value)
+      @logger = value
+    end
   end
 end
 

@@ -12,6 +12,7 @@ module FieldStruct
         def initialize(upstream, cache: nil)
           @upstream = upstream
           @cache = cache || InMemoryCache.new
+          @logger = AvroSchema.logger
         end
 
         %i[
@@ -31,25 +32,35 @@ module FieldStruct
 
         def fetch(id)
           found = @cache.lookup_by_id id
+          @logger.debug "F:A:K:CachedSchemaRegistry : fetch | #{id} : found : (#{found.class.name})"
           return found if found
 
           pulled = @upstream.fetch id
+          @logger.debug "F:A:K:CachedSchemaRegistry : fetch | #{id} : pulled : (#{found.class.name})"
           @cache.store_by_id id, pulled
         end
 
         def register(subject, schema)
+          @logger.debug 'F:A:K:CachedSchemaRegistry : register | ' \
+                        "#{subject} : (#{schema.class.name}) #{subject&.size || 'n/a'}"
           found = @cache.lookup_by_schema subject, schema
+          @logger.debug "F:A:K:CachedSchemaRegistry : register | #{subject} : found : (#{found.class.name})"
           return found if found
 
           registered = @upstream.register subject, schema
+          @logger.debug "F:A:K:CachedSchemaRegistry : register | #{subject} : registered : (#{registered.class.name})"
           @cache.store_by_schema subject, schema, registered
         end
 
         def subject_version(subject, version = 'latest')
           found = @cache.lookup_by_version subject, version
+          @logger.debug 'F:A:K:CachedSchemaRegistry : subject_version | ' \
+                        "#{subject} : #{version} : found (#{found.class.name})"
           return found if found
 
           pulled = @upstream.subject_version subject, version
+          @logger.debug 'F:A:K:CachedSchemaRegistry : subject_version | ' \
+                        "#{subject} : #{version} : pulled (#{pulled.class.name})"
           @cache.store_by_version subject, version, pulled
         end
 

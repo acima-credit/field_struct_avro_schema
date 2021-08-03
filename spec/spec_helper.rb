@@ -3,6 +3,8 @@
 require 'bundler/setup'
 require 'field_struct/avro_schema'
 
+FieldStruct::AvroSchema.logger.level = ENV.fetch('LOG_LEVEL', Logger::INFO).to_i
+
 require 'rspec/core/shared_context'
 require 'rspec/json_expectations'
 require 'hashdiff'

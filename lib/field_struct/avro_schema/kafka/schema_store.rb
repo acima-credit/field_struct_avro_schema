@@ -46,33 +46,44 @@ module FieldStruct
           ::Avro::Builder.add_load_path(path.to_s) unless path.nil?
           @path = path
           @schemas = {}
+          @logger = AvroSchema.logger
         end
 
         def get_by_full_name(name)
-          schemas[name]
+          schemas[name].tap do |res|
+            @logger.debug "F:A:K:SchemaStore : get_by_full_name | #{name} (#{res.class.name})"
+          end
         end
 
         def get_by_filename(name)
-          schemas.values.find { |x| x.filename == name }
+          schemas.values.find { |x| x.filename == name }.tap do |res|
+            @logger.debug "F:A:K:SchemaStore : get_by_filename | #{name} (#{res.class.name})"
+          end
         end
 
         def set(name, str, namespace = nil)
           full_name = Avro::Name.make_fullname(name, namespace)
           persist full_name, str
 
-          add_entry_from_str(full_name, str).schema
+          add_entry_from_str(full_name, str).schema.tap do |res|
+            @logger.debug "F:A:K:SchemaStore : set | #{name} (#{res.class.name})"
+          end
         end
 
         def find(name, namespace = nil)
           full_name = Avro::Name.make_fullname(name, namespace)
           found = get_by_full_name full_name
+          @logger.debug "F:A:K:SchemaStore : find | #{full_name} : 1 : (#{found.class.name})"
           return found.schema if found
 
           singular_full_name = full_name.singularize
           found = get_by_full_name singular_full_name
+          @logger.debug "F:A:K:SchemaStore : find | #{full_name} : 2 : (#{found.class.name})"
           return found.schema if found
 
-          add_entry_from_file(full_name).schema
+          add_entry_from_file(full_name).schema.tap do |res|
+            @logger.debug "F:A:K:SchemaStore : find | #{full_name} : 3 : (#{res.class.name})"
+          end
         end
 
         def clear
@@ -97,6 +108,7 @@ module FieldStruct
           return false if path.nil?
 
           filename = build_schema_path full_name
+          @logger.debug "F:A:K:SchemaStore : persist | #{full_name} : #{filename}"
           FileUtils.mkdir_p filename.dirname
           File.write filename, str
           true

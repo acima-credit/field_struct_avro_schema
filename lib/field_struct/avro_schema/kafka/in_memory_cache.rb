@@ -8,6 +8,7 @@ module FieldStruct
 
         def initialize
           clear
+          @logger = AvroSchema.logger
         end
 
         def store_by_id(id, schema)
@@ -20,23 +21,29 @@ module FieldStruct
 
         def store_by_schema(subject, schema, id)
           key = format '%s:%s', subject, schema_crc_id(schema)
+          @logger.debug "F:A:K:InMemoryCache : store_by_schema | #{subject} : #{id} : #{key}"
           store_by_id id, schema
           @ids_by_schema[key] = id
         end
 
         def lookup_by_schema(subject, schema)
           key = format '%s:%s', subject, schema_crc_id(schema)
-          @ids_by_schema[key]
+          @ids_by_schema[key].tap do |res|
+            @logger.debug "F:A:K:InMemoryCache : lookup_by_schema | #{subject} : #{key} : (#{res.class.name})"
+          end
         end
 
         def store_by_version(subject, version, schema)
           key = format '%s:%s', subject, version
+          @logger.debug "F:A:K:InMemoryCache : store_by_version | #{subject} : #{version} : #{key}"
           @schema_by_subject_version[key] = schema.to_s
         end
 
         def lookup_by_version(subject, version)
           key = format '%s:%s', subject, version
-          @schema_by_subject_version[key]
+          @schema_by_subject_version[key].tap do |res|
+            @logger.debug "F:A:K:InMemoryCache : lookup_by_version | #{subject} : #{key} : (#{res.class.name})"
+          end
         end
 
         def save(path)

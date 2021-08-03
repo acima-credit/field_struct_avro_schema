@@ -14,7 +14,7 @@ module FieldStruct
         # rubocop:disable Metrics/ParameterLists
         def initialize(
           url,
-          logger: Logger.new($stdout),
+          logger: AvroSchema.logger,
           proxy: nil,
           client_cert: nil,
           client_key: nil,

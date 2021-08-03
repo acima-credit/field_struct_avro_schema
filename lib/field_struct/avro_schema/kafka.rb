@@ -25,7 +25,7 @@ module FieldStruct
       module_function
 
       def logger
-        @logger ||= Logger.new($stdout)
+        @logger || AvroSchema.logger
       end
 
       def logger=(value)
