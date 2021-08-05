@@ -6,7 +6,7 @@ RSpec.describe Examples::User, :focus2 do
   subject { described_class.metadata }
   let(:exp_schema_id) { 5 }
 
-  let(:exp_meta) do
+  let(:exp_hash) do
     {
       name: 'Examples::User',
       schema_name: 'examples.user',
@@ -146,13 +146,13 @@ RSpec.describe Examples::User, :focus2 do
     ]
   end
 
-  let(:act_meta) { subject.to_hash }
+  let(:act_hash) { subject.to_hash }
   let(:act_template) { subject.as_avro_template }
   let(:act_avro) { subject.as_avro_schema }
   let(:blt_meta) { FieldStruct::Metadata.from_avro_schema act_avro }
   let(:blt_klas) { FieldStruct.from_metadata blt_meta.last }
 
-  it('matches') { compare act_meta, exp_meta }
+  it('matches') { compare act_hash, exp_hash }
 
   context 'to Avro' do
     it('#as_avro_template') { compare act_template, exp_template }
