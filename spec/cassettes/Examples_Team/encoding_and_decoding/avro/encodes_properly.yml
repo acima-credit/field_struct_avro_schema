@@ -25,7 +25,7 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"schema":"{\"type\":\"record\",\"name\":\"team\",\"namespace\":\"examples\",\"doc\":\"|
-        version 4be5bf2d\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
+        version c055f985\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"leader\",\"type\":{\"type\":\"record\",\"name\":\"employee\",\"doc\":\"|
         version 115d6e02\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type

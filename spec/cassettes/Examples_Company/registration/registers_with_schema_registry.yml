@@ -6,11 +6,11 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"company\",\n  \"namespace\":
-        \"examples\",\n  \"doc\": \"| version 9d450937\",\n  \"fields\": [\n    {\n      \"name\":
+        \"examples\",\n  \"doc\": \"| version 2e14ef35\",\n  \"fields\": [\n    {\n      \"name\":
         \"legal_name\",\n      \"type\": \"string\",\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\":
         \"development_team\",\n      \"type\": [\n        \"null\",\n        {\n          \"type\":
         \"record\",\n          \"name\": \"team\",\n          \"namespace\": \"examples\",\n          \"doc\":
-        \"| version 4be5bf2d\",\n          \"fields\": [\n            {\n              \"name\":
+        \"| version c055f985\",\n          \"fields\": [\n            {\n              \"name\":
         \"name\",\n              \"type\": \"string\",\n              \"doc\": \"|
         type string\"\n            },\n            {\n              \"name\": \"leader\",\n              \"type\":
         {\n                \"type\": \"record\",\n                \"name\": \"employee\",\n                \"namespace\":

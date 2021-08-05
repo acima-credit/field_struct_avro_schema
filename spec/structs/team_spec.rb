@@ -6,29 +6,52 @@ RSpec.describe Examples::Team do
   subject { described_class.metadata }
   let(:exp_schema_id) { 9 }
 
-  let(:exp_meta) do
+  let(:exp_hash) do
     {
       name: 'Examples::Team',
       schema_name: 'examples.team',
-      version: '4be5bf2d',
       attributes: {
         name: { type: :string, required: true },
-        leader: { type: Examples::Employee, version: '115d6e02', required: true },
+        leader: {
+          type: {
+            name: 'Examples::Employee',
+            schema_name: 'examples.employee',
+            attributes: {
+              first_name: { type: :string, required: true, min_length: 3, max_length: 20 },
+              last_name: { type: :string, required: true },
+              title: { type: :string, default: '<proc>' }
+            },
+            version: '115d6e02'
+          },
+          version: '115d6e02',
+          required: true
+        },
         members: {
           type: :array,
           version: '5251a97e',
           required: true,
-          of: Examples::Developer,
+          of: {
+            name: 'Examples::Developer',
+            schema_name: 'examples.developer',
+            attributes: {
+              first_name: { type: :string, required: true, min_length: 3, max_length: 20 },
+              last_name: { type: :string, required: true },
+              title: { type: :string, default: '<proc>' },
+              language: { type: :string, required: true }
+            },
+            version: '5251a97e'
+          },
           description: 'Team members'
         }
-      }
+      },
+      version: 'c055f985'
     }
   end
   let(:exp_template) do
     <<~CODE.chomp
       namespace 'examples'
 
-      record :team, :doc=>"| version 4be5bf2d" do
+      record :team, :doc=>"| version c055f985" do
         required :name, :string, doc: "| type string"
         required :leader, "examples.employee", doc: "| type examples.employee"
         required :members, :array, items: "examples.developer", doc: "Team members | type array:examples.developer"
@@ -39,7 +62,7 @@ RSpec.describe Examples::Team do
     { type: 'record',
       name: 'team',
       namespace: 'examples',
-      doc: '| version 4be5bf2d',
+      doc: '| version c055f985',
       fields: [
         { name: 'name', type: 'string', doc: '| type string' },
         {
@@ -82,7 +105,7 @@ RSpec.describe Examples::Team do
         "type": "record",
         "name": "team",
         "namespace": "examples",
-        "doc": "| version 4be5bf2d",
+        "doc": "| version c055f985",
         "fields": [
           {
             "name": "name",
@@ -187,9 +210,9 @@ RSpec.describe Examples::Team do
         }
       },
       {
-        name: 'Schemas::Examples::Team::V4be5bf2d',
-        schema_name: 'schemas.examples.team.v4be5bf2d',
-        version: '4be5bf2d',
+        name: 'Schemas::Examples::Team::Vc055f985',
+        schema_name: 'schemas.examples.team.vc055f985',
+        version: 'c055f985',
         attributes: {
           name: { type: :string, required: true },
           leader: { type: 'Schemas::Examples::Employee::V115d6e02', required: true },
@@ -204,7 +227,7 @@ RSpec.describe Examples::Team do
     ]
   end
 
-  let(:act_meta) { subject.to_hash }
+  let(:act_hash) { subject.to_hash }
   let(:act_template) { subject.as_avro_template }
   let(:act_avro) { subject.as_avro_schema }
   let(:blt_meta) { FieldStruct::Metadata.from_avro_schema act_avro }
@@ -212,7 +235,7 @@ RSpec.describe Examples::Team do
   let(:emp_klass) { FieldStruct.from_metadata blt_meta[1] }
   let(:dev_klass) { FieldStruct.from_metadata blt_meta[0] }
 
-  it('matches') { compare act_meta, exp_meta }
+  it('matches') { compare act_hash, exp_hash }
 
   context 'to Avro' do
     it('#as_avro_template') { compare act_template, exp_template }
@@ -275,10 +298,10 @@ RSpec.describe Examples::Team do
       expect(dev2b.language).to eq dev2_attrs[:language]
 
       expect { team_klass }.to_not raise_error
-      expect(team_klass).to eq Schemas::Examples::Team::V4be5bf2d
+      expect(team_klass).to eq Schemas::Examples::Team::Vc055f985
 
       expect { clone }.to_not raise_error
-      expect(clone).to be_a Schemas::Examples::Team::V4be5bf2d
+      expect(clone).to be_a Schemas::Examples::Team::Vc055f985
       expect(clone).to be_valid
       expect(clone.name).to eq 'Duper Team'
       expect(clone.leader).to eq leaderb

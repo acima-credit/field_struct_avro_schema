@@ -25,9 +25,9 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"schema":"{\"type\":\"record\",\"name\":\"company\",\"namespace\":\"examples\",\"doc\":\"|
-        version 9d450937\",\"fields\":[{\"name\":\"legal_name\",\"type\":\"string\",\"doc\":\"|
+        version 2e14ef35\",\"fields\":[{\"name\":\"legal_name\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"development_team\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"team\",\"doc\":\"|
-        version 4be5bf2d\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
+        version c055f985\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"leader\",\"type\":{\"type\":\"record\",\"name\":\"employee\",\"doc\":\"|
         version 115d6e02\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type

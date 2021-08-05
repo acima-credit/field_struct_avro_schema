@@ -14,6 +14,7 @@ module FieldStruct
           super
           child.send :include, FieldStruct::AvroExtension
           child.topic_key topic_key
+          child.topic_key topic_key
           AvroSchema::Kafka.register_event child
         end
 
