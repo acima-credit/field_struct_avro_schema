@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Examples::User, :focus2 do
+RSpec.describe Examples::User do
   subject { described_class.metadata }
   let(:exp_schema_id) { 5 }
 
@@ -337,7 +337,7 @@ RSpec.describe Examples::User, :focus2 do
         it('decodes properly') { compare decoded, exp_decoded }
       end
     end
-    context 'karafka', :vcr, :focus do
+    context 'karafka', :vcr do
       before { described_class.schema_id exp_schema_id }
       let(:result) { coder.new.call instance }
       context 'serialization' do
