@@ -64,6 +64,10 @@ module FieldStruct
           @cache.store_by_version subject, version, pulled
         end
 
+        def mock!
+          @cache.mock!
+        end
+
         def to_s
           format '#<%s upstream=%s cache=%s>',
                  self.class.name,

@@ -9,6 +9,7 @@ module FieldStruct
         def initialize
           clear
           @logger = AvroSchema.logger
+          @mock_lookup = false
         end
 
         def store_by_id(id, schema)
@@ -20,14 +21,20 @@ module FieldStruct
         end
 
         def store_by_schema(subject, schema, id)
-          key = format '%s:%s', subject, schema_crc_id(schema)
+          key = format '%s:%s', subject, get_crc_id(schema)
           @logger.debug "F:A:K:InMemoryCache : store_by_schema | #{subject} : #{id} : #{key}"
           store_by_id id, schema
           @ids_by_schema[key] = id
         end
 
         def lookup_by_schema(subject, schema)
-          key = format '%s:%s', subject, schema_crc_id(schema)
+          key = format '%s:%s', subject, get_crc_id(schema)
+          if @mock_lookup && !@ids_by_schema.key?(key)
+            mock_id = get_crc_id(subject)
+            @logger.debug "F:A:K:InMemoryCache : lookup_by_schema | #{subject} : #{key} : mocking with id ##{mock_id}"
+            store_by_schema(subject, schema, mock_id)
+          end
+
           @ids_by_schema[key].tap do |res|
             @logger.debug "F:A:K:InMemoryCache : lookup_by_schema | #{subject} : #{key} : (#{res.class.name})"
           end
@@ -44,6 +51,11 @@ module FieldStruct
           @schema_by_subject_version[key].tap do |res|
             @logger.debug "F:A:K:InMemoryCache : lookup_by_version | #{subject} : #{key} : (#{res.class.name})"
           end
+        end
+
+        def mock!
+          @mock_lookup = true
+          self
         end
 
         def save(path)
@@ -70,6 +82,14 @@ module FieldStruct
           self
         end
 
+        def stats
+          {
+            schemas_by_id: @schemas_by_id.size,
+            ids_by_schema: @ids_by_schema.size,
+            schema_by_subject_version: @schema_by_subject_version.size
+          }
+        end
+
         def to_s
           format '#<%s schemas_by_id=%i ids_by_schema=%i schema_by_subject_version=%i>',
                  self.class.name,
@@ -82,7 +102,7 @@ module FieldStruct
 
         private
 
-        def schema_crc_id(schema)
+        def get_crc_id(schema)
           str = schema.to_s.gsub(/\s/, '')
           Zlib.crc32 str, nil
         end

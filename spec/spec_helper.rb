@@ -18,6 +18,8 @@ require 'json'
 require 'active_support/json'
 require 'active_support/time'
 
+FieldStruct::AvroSchema.logger = Logger.new($stdout) if ENV['DEBUG'] == 'true'
+
 ROOT_PATH = Pathname.new File.expand_path(File.dirname(File.dirname(__FILE__)))
 STORE_PATH = ROOT_PATH.join('spec/schemas')
 
