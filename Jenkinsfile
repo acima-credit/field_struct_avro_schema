@@ -8,15 +8,15 @@ pipeline {
   stages {
     stage('build') {
       environment {
-        PUBLIC = credentials('acimabot_public_key')
-        PRIVATE = credentials('acimabot_private_key')
+        GITHUB_TOKEN = credentials('acimabot-github-token')
+        GITHUB_USERNAME = "acimabot"
       }
       steps {
         script {
           try {
             checkout scm
             sh '''
-              docker build -f ./Dockerfile.ci -t $SERVICE --build-arg PRIVATE="$PRIVATE" --build-arg PUBLIC="$PUBLIC" .
+              docker build -f ./Dockerfile.ci -t $SERVICE --build-arg GITHUB_TOKEN --build-arg GITHUB_USERNAME .
             '''
           } catch (exc) {
             echo "EXCEPTION: ${exc}"
