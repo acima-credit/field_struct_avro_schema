@@ -14,7 +14,7 @@ module FieldStruct
         end
 
         def from_avro
-          return value if value.isa?(Date)
+          return value if value.is_a?(Date)
 
           THRESHOLD + value
         end
