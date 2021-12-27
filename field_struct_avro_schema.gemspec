@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'field_struct'
   spec.add_dependency 'avro', '~> 1.9.2'
   spec.add_dependency 'avro-builder'
-  spec.add_dependency 'excon'
+  spec.add_dependency 'excon', '~> 0.89'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'pry'
