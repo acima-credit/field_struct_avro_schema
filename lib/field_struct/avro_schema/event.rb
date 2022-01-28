@@ -37,7 +37,7 @@ module FieldStruct
         end
 
         def default_schema_record_name
-          self.metadata.schema_name
+          metadata.schema_name
         end
 
         def schema_record_name(value = :none)
