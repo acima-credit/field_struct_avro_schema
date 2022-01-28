@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: http://localhost:8081/subjects/examples.employee/versions
+    uri: http://localhost:8081/subjects/examples.employee-value/versions
     body:
       encoding: UTF-8
       string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"employee\",\n  \"namespace\":

@@ -36,6 +36,24 @@ module FieldStruct
           @topic_name || default_topic_name
         end
 
+        def default_schema_record_name
+          self.metadata.schema_name
+        end
+
+        def schema_record_name(value = :none)
+          @schema_record_name = value unless value == :none
+          @schema_record_name || default_schema_record_name
+        end
+
+        def default_schema_naming_strategy
+          :topic_name
+        end
+
+        def schema_naming_strategy(value = :none)
+          @schema_naming_strategy = value unless value == :none
+          @schema_naming_strategy || default_schema_naming_strategy
+        end
+
         def default_topic_key
           :guid
         end

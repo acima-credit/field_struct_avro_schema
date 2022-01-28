@@ -57,6 +57,16 @@ module Examples
   end
 end
 
+module CustomNamespace
+  class CustomRecordName < Examples::Base
+    topic_key :last_name
+    schema_record_name('custom.record')
+
+    required :first_name, :string
+    required :last_name, :string
+  end
+end
+
 module ExampleApp
   module Examples
     class Friend < FieldStruct.flexible

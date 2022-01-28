@@ -121,10 +121,14 @@ module FieldStruct
 
       private
 
+      def field_struct_klass
+        @field_struct_klass ||= Object.const_get(meta.name)
+      end
+
       def build_namespace
-        parts = meta.schema_name.split('.')
+        parts = field_struct_klass.schema_record_name.split('.')
         @record_name = parts.pop
-        @namespace = parts.join '.'
+        @namespace = parts.join('.')
       end
 
       def build_extras
@@ -167,7 +171,7 @@ module FieldStruct
       end
 
       def build_dsl
-        @dsl = Kafka.builder_store.set meta.schema_name, @template
+        @dsl = Kafka.builder_store.set field_struct_klass.schema_record_name, @template
       end
 
       def add_field_type_for(attr, hsh)

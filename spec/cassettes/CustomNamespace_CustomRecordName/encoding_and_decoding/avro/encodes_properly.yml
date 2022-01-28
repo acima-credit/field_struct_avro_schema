@@ -1,0 +1,32 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8081/schemas/ids/12
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+  response:
+    status:
+      code: 200
+      message: null
+    headers:
+      Date:
+      - Thu, 27 Jan 2022 23:56:43 GMT
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+      Vary:
+      - Accept-Encoding, User-Agent
+      Content-Length:
+      - '266'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"schema":"{\"type\":\"record\",\"name\":\"record\",\"namespace\":\"custom\",\"doc\":\"|
+        version 8e0963f3\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
+        string\"}]}"}'
+  recorded_at: Thu, 27 Jan 2022 23:56:43 GMT
+recorded_with: VCR 6.0.0

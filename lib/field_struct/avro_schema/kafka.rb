@@ -65,6 +65,17 @@ module FieldStruct
         @builder_store ||= SchemaStore.new builder_store_path
       end
 
+      def build_subject_name(klass)
+        case klass.schema_naming_strategy
+        when :none
+          klass.topic_name
+        when :topic_name
+          "#{klass.topic_name}-value"
+        else
+          raise(NotImplementedError, "Naming strategy #{klass.schema_naming_strategy} is not implemented.")
+        end
+      end
+
       def register_event(klass)
         events[klass.name] = klass
       end
@@ -75,7 +86,7 @@ module FieldStruct
       end
 
       def register_event_schema(klass)
-        id = schema_registry.register klass.topic_name, klass.schema
+        id = schema_registry.register build_subject_name(klass), klass.schema
         klass.schema_id id
         klass
       rescue StandardError => e

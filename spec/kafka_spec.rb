@@ -19,6 +19,7 @@ RSpec.describe FieldStruct::AvroSchema::Kafka do
     it('is a hash') do
       expect(subject).to be_a Hash
       expect(subject.keys.sort).to eq %w[
+        CustomNamespace::CustomRecordName
         ExampleApp::Examples::Friend
         Examples::Base
         Examples::Company
@@ -84,7 +85,7 @@ RSpec.describe FieldStruct::AvroSchema::Kafka do
   describe '.register_event_schemas', :vcr do
     subject { described_class.register_event_schemas }
     it 'register all events' do
-      expect(described_class).to receive(:register_event_schema).exactly(8).times
+      expect(described_class).to receive(:register_event_schema).exactly(9).times
       expect { subject }.to_not raise_error
     end
   end

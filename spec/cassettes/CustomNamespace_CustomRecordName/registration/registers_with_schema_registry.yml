@@ -2,11 +2,11 @@
 http_interactions:
 - request:
     method: post
-    uri: http://localhost:8081/subjects/examples.person-value/versions
+    uri: http://localhost:8081/subjects/custom_namespace.custom_record_name-value/versions
     body:
       encoding: UTF-8
-      string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"person\",\n  \"namespace\":
-        \"examples\",\n  \"doc\": \"| version 75b71433\",\n  \"fields\": [\n    {\n      \"name\":
+      string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"record\",\n  \"namespace\":
+        \"custom\",\n  \"doc\": \"| version 8e0963f3\",\n  \"fields\": [\n    {\n      \"name\":
         \"first_name\",\n      \"type\": \"string\",\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\":
         \"last_name\",\n      \"type\": \"string\",\n      \"doc\": \"| type string\"\n    }\n  ]\n}"}'
     headers:
@@ -15,10 +15,10 @@ http_interactions:
   response:
     status:
       code: 200
-      message:
+      message: null
     headers:
       Date:
-      - Tue, 09 Feb 2021 20:53:42 GMT
+      - Thu, 27 Jan 2022 23:44:23 GMT
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -27,6 +27,6 @@ http_interactions:
       - '8'
     body:
       encoding: ASCII-8BIT
-      string: '{"id":6}'
-  recorded_at: Tue, 09 Feb 2021 20:53:43 GMT
+      string: '{"id":12}'
+  recorded_at: Thu, 27 Jan 2022 23:44:23 GMT
 recorded_with: VCR 6.0.0
