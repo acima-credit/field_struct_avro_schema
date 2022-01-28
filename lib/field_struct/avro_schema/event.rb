@@ -50,7 +50,14 @@ module FieldStruct
         end
 
         def schema_naming_strategy(value = :none)
-          @schema_naming_strategy = value unless value == :none
+          unless value == :none
+            unless AvroSchema::Kafka::SCHEMA_NAMING_STRATEGIES.include?(value)
+              raise(ArgumentError, "must be one of [#{AvroSchema::Kafka::SCHEMA_NAMING_STRATEGIES.join(',')}]")
+            end
+
+            @schema_naming_strategy = value
+          end
+
           @schema_naming_strategy || default_schema_naming_strategy
         end
 
