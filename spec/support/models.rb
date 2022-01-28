@@ -4,6 +4,10 @@ module Examples
   class Base < FieldStruct.flexible
     # include FieldStruct::AvroExtension
     include FieldStruct::AvroSchema::Event
+
+    def self.default_schema_naming_strategy
+      :topic_name
+    end
   end
 
   class User < Base

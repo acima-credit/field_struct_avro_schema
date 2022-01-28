@@ -6,9 +6,17 @@ require 'field_struct/avro_schema/version'
 
 Gem::Specification.new do |spec|
   spec.name = 'field_struct_avro_schema'
-  spec.version = FieldStruct::AvroSchema::VERSION
   spec.authors = ['Adrian Esteban Madrid']
   spec.email = ['adrian.madrid@acimacredit.com']
+
+  current_branch = `git branch --remote --contains | sed "s|[[:space:]]*origin/||"`.strip
+  branch_commit = `git rev-parse HEAD`.strip[0..6]
+
+  if current_branch == 'master'
+    spec.version = FieldStruct::AvroSchema::VERSION
+  else
+    spec.version = "#{FieldStruct::AvroSchema::VERSION}-#{branch_commit}"
+  end
 
   spec.summary = 'Support for Avro schemas in FieldStruct'
   spec.description = 'Adds support for Avro schemas for FieldStruct classes'

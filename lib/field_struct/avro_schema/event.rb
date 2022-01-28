@@ -46,7 +46,7 @@ module FieldStruct
         end
 
         def default_schema_naming_strategy
-          :topic_name
+          :legacy_topic_name
         end
 
         def schema_naming_strategy(value = :none)

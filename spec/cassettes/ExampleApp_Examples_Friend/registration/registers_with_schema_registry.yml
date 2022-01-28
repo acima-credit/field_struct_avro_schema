@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: http://localhost:8081/subjects/example_app.examples.friend-value/versions
+    uri: http://localhost:8081/subjects/example_app.examples.friend/versions
     body:
       encoding: UTF-8
       string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"friend\",\n  \"namespace\":
