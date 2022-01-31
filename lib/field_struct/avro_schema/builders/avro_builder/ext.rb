@@ -43,7 +43,7 @@ module Avro
         file_path = if namespace
                       begin
                         find_file([namespace, name].join('.'))
-                      rescue
+                      rescue StandardError
                         find_file(name)
                       end
                     else
