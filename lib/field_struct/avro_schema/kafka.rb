@@ -22,6 +22,8 @@ module FieldStruct
 
       MAGIC_BYTE = [0].pack('C').freeze
 
+      SCHEMA_NAMING_STRATEGIES = %i[legacy_topic_name topic_name record_name topic_record_name].freeze
+
       module_function
 
       def logger
@@ -65,6 +67,21 @@ module FieldStruct
         @builder_store ||= SchemaStore.new builder_store_path
       end
 
+      def build_subject_name(klass)
+        case klass.schema_naming_strategy
+        when :legacy_topic_name
+          klass.topic_name
+        when :topic_name
+          "#{klass.topic_name}-value"
+        when :record_name
+          "#{klass.schema_record_name}-value"
+        when :topic_record_name
+          "#{klass.topic_name}-#{klass.schema_record_name}-value"
+        else
+          raise(StandardError, "Naming strategy #{klass.schema_naming_strategy} is invalid or not supported.")
+        end
+      end
+
       def register_event(klass)
         events[klass.name] = klass
       end
@@ -75,7 +92,7 @@ module FieldStruct
       end
 
       def register_event_schema(klass)
-        id = schema_registry.register klass.topic_name, klass.schema
+        id = schema_registry.register build_subject_name(klass), klass.schema
         klass.schema_id id
         klass
       rescue StandardError => e

@@ -36,6 +36,31 @@ module FieldStruct
           @topic_name || default_topic_name
         end
 
+        def default_schema_record_name
+          metadata.schema_name
+        end
+
+        def schema_record_name(value = :none)
+          @schema_record_name = value unless value == :none
+          @schema_record_name || default_schema_record_name
+        end
+
+        def default_schema_naming_strategy
+          :legacy_topic_name
+        end
+
+        def schema_naming_strategy(value = :none)
+          unless value == :none
+            unless AvroSchema::Kafka::SCHEMA_NAMING_STRATEGIES.include?(value)
+              raise(ArgumentError, "must be one of [#{AvroSchema::Kafka::SCHEMA_NAMING_STRATEGIES.join(',')}]")
+            end
+
+            @schema_naming_strategy = value
+          end
+
+          @schema_naming_strategy || default_schema_naming_strategy
+        end
+
         def default_topic_key
           :guid
         end

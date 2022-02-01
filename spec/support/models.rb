@@ -4,6 +4,10 @@ module Examples
   class Base < FieldStruct.flexible
     # include FieldStruct::AvroExtension
     include FieldStruct::AvroSchema::Event
+
+    def self.default_schema_naming_strategy
+      :topic_name
+    end
   end
 
   class User < Base
@@ -54,6 +58,16 @@ module Examples
     required :legal_name, :string
     optional :development_team, Team
     optional :marketing_team, Team
+  end
+end
+
+module CustomNamespace
+  class CustomRecordName < Examples::Base
+    topic_key :last_name
+    schema_record_name('custom.record')
+
+    required :first_name, :string
+    required :last_name, :string
   end
 end
 

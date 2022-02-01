@@ -121,10 +121,14 @@ module FieldStruct
 
       private
 
+      def field_struct_klass
+        @field_struct_klass ||= Object.const_get(meta.name)
+      end
+
       def build_namespace
-        parts = meta.schema_name.split('.')
+        parts = field_struct_klass.schema_record_name.split('.')
         @record_name = parts.pop
-        @namespace = parts.join '.'
+        @namespace = parts.join('.')
       end
 
       def build_extras
@@ -167,7 +171,7 @@ module FieldStruct
       end
 
       def build_dsl
-        @dsl = Kafka.builder_store.set meta.schema_name, @template
+        @dsl = Kafka.builder_store.set field_struct_klass.schema_record_name, @template
       end
 
       def add_field_type_for(attr, hsh)
@@ -184,7 +188,7 @@ module FieldStruct
         elsif (type_key = ACTIVE_MODEL_TYPES[type])
           hsh[:items] = type_key.to_s
         elsif type.field_struct?
-          hsh[:items] = type.metadata.schema_name
+          hsh[:items] = type.schema_record_name
         end
       end
 
@@ -196,7 +200,7 @@ module FieldStruct
         elsif (type_key = ACTIVE_MODEL_TYPES[type])
           hsh[:type] = type_key.to_s
         elsif type.field_struct?
-          hsh[:type] = type.metadata.schema_name
+          hsh[:type] = type.schema_record_name
         end
       end
 
@@ -213,9 +217,9 @@ module FieldStruct
         hsh[:doc] += '| type '
         if attr.of
           hsh[:doc] += 'array:'
-          hsh[:doc] += attr.of.field_struct? ? attr.of.metadata.schema_name : attr.of.to_s
+          hsh[:doc] += attr.of.field_struct? ? attr.of.schema_record_name : attr.of.to_s
         else
-          hsh[:doc] += attr.type.field_struct? ? attr.type.metadata.schema_name : attr.type.to_s
+          hsh[:doc] += attr.type.field_struct? ? attr.type.schema_record_name : attr.type.to_s
         end
       end
     end
