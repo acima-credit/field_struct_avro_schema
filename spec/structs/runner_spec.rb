@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe PublishableApp::Examples::Runner, :focus do
+RSpec.describe PublishableApp::Examples::Runner do
   subject { described_class.metadata }
   let(:exp_schema_id) { 2 }
 

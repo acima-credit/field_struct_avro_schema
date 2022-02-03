@@ -18,6 +18,7 @@ RSpec.describe FieldStruct::AvroSchema::Kafka do
       'PublishableApp::Examples::Runner' => PublishableApp::Examples::Runner
     }
   end
+  let(:publishable_events) { known_events.select { |_k, v| v.publishable? } }
   describe '.logger' do
     subject { described_class.logger }
     it('is a logger') { expect(subject).to be_a Logger }
@@ -33,7 +34,6 @@ RSpec.describe FieldStruct::AvroSchema::Kafka do
     subject { described_class.events }
     it('is a hash') do
       expect(subject).to be_a Hash
-      puts subject.keys.sort
       expect(subject.keys.sort).to eq known_events.keys
       known_events.each do |name, event|
         expect(subject[name]).to eq event
@@ -86,7 +86,7 @@ RSpec.describe FieldStruct::AvroSchema::Kafka do
   describe '.register_event_schemas', :vcr, :registers do
     subject { described_class.register_event_schemas }
     it 'register all events' do
-      expect(described_class).to receive(:register_event_schema).exactly(known_events.size).times
+      expect(described_class).to receive(:register_event_schema).exactly(publishable_events.size).times
       expect { subject }.to_not raise_error
     end
   end

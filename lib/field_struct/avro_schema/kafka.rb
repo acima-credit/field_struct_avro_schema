@@ -94,6 +94,8 @@ module FieldStruct
       end
 
       def register_event_schema(klass)
+        return nil unless klass.publishable?
+
         id = schema_registry.register build_subject_name(klass), klass.schema
         klass.schema_id id
         klass

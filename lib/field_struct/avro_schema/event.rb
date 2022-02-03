@@ -23,6 +23,8 @@ module FieldStruct
         end
 
         def schema_id(value = :none)
+          return nil unless publishable?
+
           @schema_id = value unless value == :none
           @schema_id
         end
@@ -32,6 +34,8 @@ module FieldStruct
         end
 
         def topic_name(value = :none)
+          return nil unless publishable?
+
           @topic_name = value unless value == :none
           @topic_name || default_topic_name
         end
@@ -66,6 +70,8 @@ module FieldStruct
         end
 
         def topic_key(value = :none)
+          return nil unless publishable?
+
           @topic_key = value unless value == :none
           @topic_key || default_topic_key
         end
@@ -76,7 +82,9 @@ module FieldStruct
 
         def publishable(value = :none)
           @publishable = value unless value == :none
-          @publishable || default_publishable
+          return @publishable if instance_variable_defined?(:@publishable)
+
+          default_publishable
         end
 
         def publishable?
@@ -97,6 +105,8 @@ module FieldStruct
       end
 
       def topic_key
+        return nil unless publishable?
+
         send self.class.topic_key
       end
 

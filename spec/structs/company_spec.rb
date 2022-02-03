@@ -527,7 +527,7 @@ RSpec.describe Examples::Company do
       end
       let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
       it('encodes properly') { compare encoded, exp_encoded }
-      it('decodes properly', :focus) { compare decoded, exp_decoded }
+      it('decodes properly') { compare decoded, exp_decoded }
     end
     context 'json' do
       let(:encoded) { kafka.encode_json instance }
