@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Examples::Developer do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 8 }
+  let(:exp_schema_id) { 5 }
 
   let(:exp_hash) do
     {
@@ -225,13 +225,13 @@ RSpec.describe Examples::Developer do
       expect(described_class.schema_id).to eq exp_schema_id
     end
   end
-  context 'encoding and decoding', :vcr do
+  context 'encoding and decoding', :vcr, :serde do
     let(:instance) { described_class.new developer_attrs }
     let(:decoded) { kafka.decode encoded, described_class.topic_name }
     context 'avro' do
       let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
-        "\0\0\0\0\b\bJohn\x06Max\x02\"VP of Engineering\x0EHaskell"
+        "\u0000\u0000\u0000\u0000\u0005\bJohn\u0006Max\u0002\"VP of Engineering\u000EHaskell"
       end
       let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
       it('encodes properly') { compare encoded, exp_encoded }

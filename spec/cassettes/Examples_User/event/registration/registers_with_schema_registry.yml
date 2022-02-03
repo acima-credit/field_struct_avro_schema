@@ -25,18 +25,18 @@ http_interactions:
   response:
     status:
       code: 200
-      message:
+      message: null
     headers:
       Date:
-      - Tue, 09 Feb 2021 20:44:29 GMT
+      - Thu, 03 Feb 2022 01:12:55 GMT
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
       - Accept-Encoding, User-Agent
       Content-Length:
-      - '8'
+      - '9'
     body:
       encoding: ASCII-8BIT
-      string: '{"id":5}'
-  recorded_at: Tue, 09 Feb 2021 20:44:29 GMT
+      string: '{"id":10}'
+  recorded_at: Thu, 03 Feb 2022 01:12:55 GMT
 recorded_with: VCR 6.0.0

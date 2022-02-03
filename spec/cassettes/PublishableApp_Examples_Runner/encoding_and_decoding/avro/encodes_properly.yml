@@ -1,0 +1,35 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8081/schemas/ids/2
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+  response:
+    status:
+      code: 200
+      message: null
+    headers:
+      Date:
+      - Thu, 03 Feb 2022 01:18:58 GMT
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+      Vary:
+      - Accept-Encoding, User-Agent
+      Content-Length:
+      - '583'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"schema":"{\"type\":\"record\",\"name\":\"runner\",\"namespace\":\"publishable_app.examples\",\"doc\":\"|
+        version c0555685\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"races_count\",\"type\":\"int\",\"doc\":\"| type
+        integer\"},{\"name\":\"address\",\"type\":{\"type\":\"record\",\"name\":\"address\",\"doc\":\"|
+        version c1580c68\",\"fields\":[{\"name\":\"street\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"city\",\"type\":\"string\",\"doc\":\"| type string\"}]},\"doc\":\"|
+        type publishable_app.examples.address\"}]}"}'
+  recorded_at: Thu, 03 Feb 2022 01:18:58 GMT
+recorded_with: VCR 6.0.0

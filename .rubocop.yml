@@ -1,6 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.6
   SuggestExtensions: false
+  NewCops: enable
   Include:
     - '**/*.rake'
     - '**/Rakefile'
@@ -147,4 +148,7 @@ Style/SwapValues:
   Enabled: true
 
 Security/MarshalLoad:
+  Enabled: false
+
+Style/OpenStructUse:
   Enabled: false

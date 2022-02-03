@@ -12,10 +12,10 @@ http_interactions:
   response:
     status:
       code: 200
-      message:
+      message: null
     headers:
       Date:
-      - Wed, 10 Feb 2021 23:14:58 GMT
+      - Thu, 03 Feb 2022 01:18:58 GMT
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -36,5 +36,5 @@ http_interactions:
         string\"},{\"name\":\"title\",\"type\":[\"null\",\"string\"],\"doc\":\"| type
         string\",\"default\":null},{\"name\":\"language\",\"type\":\"string\",\"doc\":\"|
         type string\"}]}},\"doc\":\"Team members | type array:examples.developer\"}]}"}'
-  recorded_at: Wed, 10 Feb 2021 23:14:58 GMT
+  recorded_at: Thu, 03 Feb 2022 01:18:58 GMT
 recorded_with: VCR 6.0.0

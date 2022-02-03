@@ -17,7 +17,7 @@ module Avro
         found = schema_store.get_by_full_name(name)
         return found.filename if found
 
-        file_name = "/#{name.to_s.tr('.', '/').sub(%r{^/}, '').sub(/\.rb$/, '')}.rb"
+        file_name = "/#{name.to_s.tr('.', '/').sub(%r{^/}, '').sub(/\.rb$/, '')}.rb".gsub(%r{/rb\.rb$}i, '.rb')
         matches = real_load_paths.flat_map do |load_path|
           Dir["#{load_path}/**/*.rb"].select do |file_path|
             file_path.end_with?(file_name)

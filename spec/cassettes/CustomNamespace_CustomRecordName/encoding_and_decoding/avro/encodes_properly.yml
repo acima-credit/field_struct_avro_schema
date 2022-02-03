@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8081/schemas/ids/12
+    uri: http://localhost:8081/schemas/ids/4
     body:
       encoding: US-ASCII
       string: ''
@@ -15,7 +15,7 @@ http_interactions:
       message: null
     headers:
       Date:
-      - Thu, 27 Jan 2022 23:56:43 GMT
+      - Thu, 03 Feb 2022 01:18:58 GMT
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -28,5 +28,5 @@ http_interactions:
         version 8e0963f3\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
         string\"}]}"}'
-  recorded_at: Thu, 27 Jan 2022 23:56:43 GMT
+  recorded_at: Thu, 03 Feb 2022 01:18:58 GMT
 recorded_with: VCR 6.0.0

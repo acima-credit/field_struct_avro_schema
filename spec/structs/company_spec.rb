@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Examples::Company do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 10 }
+  let(:exp_schema_id) { 3 }
 
   let(:exp_hash) do
     {
@@ -503,28 +503,31 @@ RSpec.describe Examples::Company do
       it('to_hash') { compare instance.to_hash, company_attrs.deep_stringify_keys }
     end
   end
-  context 'registration' do
+  context 'registration', :vcr, :registers do
     let(:registration) { kafka.register_event_schema described_class }
     it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
-    it 'registers with schema_registry', :vcr, :registers do
+    it 'registers with schema_registry' do
       expect { registration }.to_not raise_error
       expect(described_class.schema_id).to eq exp_schema_id
     end
   end
-  context 'encoding and decoding', :vcr do
+  context 'encoding and decoding', :vcr, :serde do
     let(:instance) { described_class.new company_attrs }
     let(:decoded) { kafka.decode encoded, described_class.topic_name }
     context 'avro' do
       let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
-        "\0\0\0\0\n My Super Company\x02\x14Duper Team\bKarl\bMarx\x02\x12Team Lead\x04\bJohn\x14Stalingrad\x02\x12" \
-          "Developer\bRuby\nSteve\x10Romanoff\x02\x10Designer\x12In Design\0\x02\x18Growing Team\bEvan\fMajors\x02" \
-          "\x12Team Lead\x04\x06Rob\fMorris\x02\x12Developer\x14Javascript\bZach\x0EEvanoff\x02\x10Designer\x12" \
-          "Photoshop\0"
+        "\u0000\u0000\u0000\u0000\u0003 My Super Company\u0002\u0014Duper Team" \
+          "\bKarl\bMarx\u0002\u0012Team Lead\u0004\bJohn\u0014Stalingrad\u0002" \
+          "\u0012Developer\bRuby\nSteve\u0010Romanoff\u0002\u0010Designer" \
+          "\u0012In Design\u0000\u0002\u0018Growing Team\bEvan\fMajors\u0002" \
+          "\u0012Team Lead\u0004\u0006Rob\fMorris\u0002\u0012Developer" \
+          "\u0014Javascript\bZach\u000EEvanoff\u0002\u0010Designer" \
+          "\u0012Photoshop\u0000"
       end
       let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
       it('encodes properly') { compare encoded, exp_encoded }
-      it('decodes properly') { compare decoded, exp_decoded }
+      it('decodes properly', :focus) { compare decoded, exp_decoded }
     end
     context 'json' do
       let(:encoded) { kafka.encode_json instance }

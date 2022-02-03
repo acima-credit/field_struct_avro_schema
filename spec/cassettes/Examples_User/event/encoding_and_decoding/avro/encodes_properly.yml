@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8081/schemas/ids/5
+    uri: http://localhost:8081/schemas/ids/10
     body:
       encoding: US-ASCII
       string: ''
@@ -12,10 +12,10 @@ http_interactions:
   response:
     status:
       code: 200
-      message:
+      message: null
     headers:
       Date:
-      - Wed, 10 Feb 2021 22:55:46 GMT
+      - Thu, 03 Feb 2022 01:18:58 GMT
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -33,5 +33,5 @@ http_interactions:
         type string\"},{\"name\":\"level\",\"type\":\"int\",\"doc\":\"| type integer\"},{\"name\":\"at\",\"type\":[\"null\",{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}],\"doc\":\"|
         type time\",\"default\":null},{\"name\":\"active\",\"type\":\"boolean\",\"doc\":\"|
         type boolean\",\"default\":false}]}"}'
-  recorded_at: Wed, 10 Feb 2021 22:55:46 GMT
+  recorded_at: Thu, 03 Feb 2022 01:18:58 GMT
 recorded_with: VCR 6.0.0

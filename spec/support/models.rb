@@ -90,3 +90,24 @@ module ExampleApp
     end
   end
 end
+
+module PublishableApp
+  module Examples
+    class Address < FieldStruct.flexible
+      include FieldStruct::AvroSchema::Event
+      publishable false
+
+      required :street, :string
+      required :city, :string
+    end
+
+    class Runner < FieldStruct.flexible
+      include FieldStruct::AvroSchema::Event
+      topic_key :name
+
+      required :name, :string
+      required :races_count, :integer
+      required :address, Address
+    end
+  end
+end

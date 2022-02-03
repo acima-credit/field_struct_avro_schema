@@ -87,7 +87,9 @@ module FieldStruct
       end
 
       def register_event_schemas
-        events.values.each { |klass| register_event_schema klass }
+        events.values
+              .select(&:publishable?)
+              .each { |klass| register_event_schema klass }
         events
       end
 

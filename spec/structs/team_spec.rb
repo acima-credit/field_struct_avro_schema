@@ -395,7 +395,7 @@ RSpec.describe Examples::Team do
       expect(described_class.schema_id).to eq exp_schema_id
     end
   end
-  context 'encoding and decoding', :vcr do
+  context 'encoding and decoding', :vcr, :serde do
     let(:instance) { described_class.new team_attrs }
     let(:decoded) { kafka.decode encoded, described_class.topic_name }
     context 'avro' do

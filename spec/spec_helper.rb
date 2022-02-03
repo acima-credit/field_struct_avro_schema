@@ -29,6 +29,7 @@ RSpec.configure do |config|
   config.filter_run focus: true if ENV['FOCUS'].to_s == 'true'
   config.filter_run focus2: true if ENV['FOCUS2'].to_s == 'true'
   config.filter_run registers: true if ENV['REGISTERS'].to_s == 'true'
+  config.filter_run serde: true if ENV['SERDE'].to_s == 'true'
   config.filter_run vcr: true if ENV['VCR'].to_s == 'true'
   config.expect_with :rspec do |c|
     c.syntax = :expect

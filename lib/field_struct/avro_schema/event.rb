@@ -70,6 +70,19 @@ module FieldStruct
           @topic_key || default_topic_key
         end
 
+        def default_publishable
+          true
+        end
+
+        def publishable(value = :none)
+          @publishable = value unless value == :none
+          @publishable || default_publishable
+        end
+
+        def publishable?
+          publishable
+        end
+
         def avro_template
           @avro_template ||= metadata.as_avro_template
         end
@@ -89,6 +102,10 @@ module FieldStruct
 
       def schema_id
         self.class.schema_id
+      end
+
+      def publishable?
+        self.class.publishable
       end
 
       def topic_encoded(mode = :json)

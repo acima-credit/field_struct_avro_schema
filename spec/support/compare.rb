@@ -83,8 +83,8 @@ module CompareHelpers
     exp_cnv = block_given? ? yield(exp) : exp
     expect(act_cnv).to eq(exp_cnv),
                        "[#{klass}] expected #{prefix} (#{act.class.name}) #{act_cnv.inspect}\n" \
-                     "[#{klass}]    to eq #{prefix} (#{exp.class.name}) #{exp_cnv.inspect}\n" \
-                     'but was different'
+                       "[#{klass}]    to eq #{prefix} (#{exp.class.name}) #{exp_cnv.inspect}\n" \
+                       'but was different'
   end
 end
 

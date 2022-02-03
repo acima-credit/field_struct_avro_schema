@@ -14,3 +14,4 @@
 .tool-versions
 Gemfile.lock
 *.gem
+.ruby-version

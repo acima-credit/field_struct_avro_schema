@@ -3,6 +3,21 @@
 require 'spec_helper'
 
 RSpec.describe FieldStruct::AvroSchema::Kafka do
+  let(:known_events) do
+    {
+      'CustomNamespace::CustomRecordName' => CustomNamespace::CustomRecordName,
+      'ExampleApp::Examples::Friend' => ExampleApp::Examples::Friend,
+      'Examples::Base' => Examples::Base,
+      'Examples::Company' => Examples::Company,
+      'Examples::Developer' => Examples::Developer,
+      'Examples::Employee' => Examples::Employee,
+      'Examples::Person' => Examples::Person,
+      'Examples::Team' => Examples::Team,
+      'Examples::User' => Examples::User,
+      'PublishableApp::Examples::Address' => PublishableApp::Examples::Address,
+      'PublishableApp::Examples::Runner' => PublishableApp::Examples::Runner
+    }
+  end
   describe '.logger' do
     subject { described_class.logger }
     it('is a logger') { expect(subject).to be_a Logger }
@@ -18,25 +33,11 @@ RSpec.describe FieldStruct::AvroSchema::Kafka do
     subject { described_class.events }
     it('is a hash') do
       expect(subject).to be_a Hash
-      expect(subject.keys.sort).to eq %w[
-        CustomNamespace::CustomRecordName
-        ExampleApp::Examples::Friend
-        Examples::Base
-        Examples::Company
-        Examples::Developer
-        Examples::Employee
-        Examples::Person
-        Examples::Team
-        Examples::User
-      ]
-      expect(subject['Examples::Base']).to eq Examples::Base
-      expect(subject['Examples::User']).to eq Examples::User
-      expect(subject['Examples::Person']).to eq Examples::Person
-      expect(subject['Examples::Employee']).to eq Examples::Employee
-      expect(subject['Examples::Developer']).to eq Examples::Developer
-      expect(subject['Examples::Team']).to eq Examples::Team
-      expect(subject['Examples::Company']).to eq Examples::Company
-      expect(subject['ExampleApp::Examples::Friend']).to eq ExampleApp::Examples::Friend
+      puts subject.keys.sort
+      expect(subject.keys.sort).to eq known_events.keys
+      known_events.each do |name, event|
+        expect(subject[name]).to eq event
+      end
     end
   end
   describe '.schema_registry' do
@@ -82,10 +83,10 @@ RSpec.describe FieldStruct::AvroSchema::Kafka do
     subject { described_class.builder_store }
     it { expect(subject).to be_a FieldStruct::AvroSchema::Kafka::SchemaStore }
   end
-  describe '.register_event_schemas', :vcr do
+  describe '.register_event_schemas', :vcr, :registers do
     subject { described_class.register_event_schemas }
     it 'register all events' do
-      expect(described_class).to receive(:register_event_schema).exactly(9).times
+      expect(described_class).to receive(:register_event_schema).exactly(known_events.size).times
       expect { subject }.to_not raise_error
     end
   end

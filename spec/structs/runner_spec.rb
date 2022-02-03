@@ -1,48 +1,65 @@
 # frozen_string_literal: true
 
-RSpec.describe ExampleApp::Examples::Friend do
+RSpec.describe PublishableApp::Examples::Runner, :focus do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 7 }
+  let(:exp_schema_id) { 2 }
 
   let(:exp_hash) do
     {
-      name: 'ExampleApp::Examples::Friend',
-      schema_name: 'example_app.examples.friend',
+      name: 'PublishableApp::Examples::Runner',
+      schema_name: 'publishable_app.examples.runner',
       attributes: {
         name: { type: :string, required: true },
-        age: { type: :integer },
-        balance_owed: { type: :currency, default: 0.0 },
-        gamer_level: { type: :integer, enum: [1, 2, 3], default: '<proc>' },
-        zip_code: { type: :string, format: /\A[0-9]{5}?\z/ }
+        races_count: { type: :integer, required: true },
+        address: {
+          type: {
+            name: 'PublishableApp::Examples::Address',
+            schema_name: 'publishable_app.examples.address',
+            attributes: {
+              street: { type: :string, required: true },
+              city: { type: :string, required: true }
+            },
+            version: 'c1580c68'
+          },
+          version: 'c1580c68',
+          required: true
+        }
       },
-      version: '82f78509'
+      version: 'c0555685'
     }
   end
   let(:exp_template) do
     <<~CODE.chomp
-      namespace 'example_app.examples'
+      namespace 'publishable_app.examples'
 
-      record :friend, :doc=>"| version 82f78509" do
+      record :runner, :doc=>"| version c0555685" do
         required :name, :string, doc: "| type string"
-        optional :age, :int, doc: "| type integer"
-        optional :balance_owed, :int, default: 0.0, doc: "| type currency"
-        optional :gamer_level, :int, doc: "| type integer"
-        optional :zip_code, :string, doc: "| type string"
+        required :races_count, :int, doc: "| type integer"
+        required :address, "publishable_app.examples.address", doc: "| type publishable_app.examples.address"
       end
     CODE
   end
   let(:exp_schema) do
     {
       type: 'record',
-      name: 'friend',
-      namespace: 'example_app.examples',
-      doc: '| version 82f78509',
+      name: 'runner',
+      namespace: 'publishable_app.examples',
+      doc: '| version c0555685',
       fields: [
         { name: 'name', type: 'string', doc: '| type string' },
-        { name: 'age', type: %w[null int], default: nil, doc: '| type integer' },
-        { name: 'balance_owed', type: %w[null int], default: nil, doc: '| type currency' },
-        { name: 'gamer_level', type: %w[null int], default: nil, doc: '| type integer' },
-        { name: 'zip_code', type: %w[null string], default: nil, doc: '| type string' }
+        { name: 'races_count', type: 'int', doc: '| type integer' },
+        { name: 'address',
+          type: {
+            type: 'record',
+            name: 'address',
+            namespace: 'publishable_app.examples',
+            doc: '| version c1580c68',
+            fields: [
+              { name: 'street', type: 'string', doc: '| type string' },
+              { name: 'city', type: 'string', doc: '| type string' }
+            ]
+          },
+          doc: '| type publishable_app.examples.address' }
       ]
     }
   end
@@ -50,9 +67,9 @@ RSpec.describe ExampleApp::Examples::Friend do
     <<~JSON.chomp
       {
         "type": "record",
-        "name": "friend",
-        "namespace": "example_app.examples",
-        "doc": "| version 82f78509",
+        "name": "runner",
+        "namespace": "publishable_app.examples",
+        "doc": "| version c0555685",
         "fields": [
           {
             "name": "name",
@@ -60,40 +77,31 @@ RSpec.describe ExampleApp::Examples::Friend do
             "doc": "| type string"
           },
           {
-            "name": "age",
-            "type": [
-              "null",
-              "int"
-            ],
-            "default": null,
+            "name": "races_count",
+            "type": "int",
             "doc": "| type integer"
           },
           {
-            "name": "balance_owed",
-            "type": [
-              "null",
-              "int"
-            ],
-            "default": null,
-            "doc": "| type currency"
-          },
-          {
-            "name": "gamer_level",
-            "type": [
-              "null",
-              "int"
-            ],
-            "default": null,
-            "doc": "| type integer"
-          },
-          {
-            "name": "zip_code",
-            "type": [
-              "null",
-              "string"
-            ],
-            "default": null,
-            "doc": "| type string"
+            "name": "address",
+            "type": {
+              "type": "record",
+              "name": "address",
+              "namespace": "publishable_app.examples",
+              "doc": "| version c1580c68",
+              "fields": [
+                {
+                  "name": "street",
+                  "type": "string",
+                  "doc": "| type string"
+                },
+                {
+                  "name": "city",
+                  "type": "string",
+                  "doc": "| type string"
+                }
+              ]
+            },
+            "doc": "| type publishable_app.examples.address"
           }
         ]
       }
@@ -102,16 +110,23 @@ RSpec.describe ExampleApp::Examples::Friend do
   let(:exp_version_meta) do
     [
       {
-        name: 'Schemas::ExampleApp::Examples::Friend::V82f78509',
-        schema_name: 'schemas.example_app.examples.friend.v82f78509',
+        name: 'Schemas::PublishableApp::Examples::Address::Vc1580c68',
+        schema_name: 'schemas.publishable_app.examples.address.vc1580c68',
+        attributes: {
+          street: { type: :string, required: true },
+          city: { type: :string, required: true }
+        },
+        version: 'c1580c68'
+      },
+      {
+        name: 'Schemas::PublishableApp::Examples::Runner::Vc0555685',
+        schema_name: 'schemas.publishable_app.examples.runner.vc0555685',
         attributes: {
           name: { type: :string, required: true },
-          age: { type: :integer },
-          balance_owed: { type: :currency },
-          gamer_level: { type: :integer },
-          zip_code: { type: :string }
+          races_count: { type: :integer, required: true },
+          address: { type: 'Schemas::PublishableApp::Examples::Address::Vc1580c68', required: true }
         },
-        version: '82f78509'
+        version: 'c0555685'
       }
     ]
   end
@@ -121,6 +136,7 @@ RSpec.describe ExampleApp::Examples::Friend do
   let(:act_avro) { subject.as_avro_schema }
   let(:blt_meta) { FieldStruct::Metadata.from_avro_schema act_avro }
   let(:blt_klas) { FieldStruct.from_metadata blt_meta.last }
+  let(:addr_klas) { FieldStruct.from_metadata blt_meta.first }
 
   it('matches') { compare act_hash, exp_hash }
 
@@ -134,63 +150,62 @@ RSpec.describe ExampleApp::Examples::Friend do
     it 'builds a valid metadata' do
       expect { blt_meta }.to_not raise_error
       expect(blt_meta).to be_a Array
-      expect(blt_meta.size).to eq 1
+      expect(blt_meta.size).to eq 2
       expect(blt_meta.first).to be_a FieldStruct::Metadata
+      expect(blt_meta.last).to be_a FieldStruct::Metadata
       compare blt_meta.map(&:to_hash), exp_version_meta
     end
   end
 
   context 'to and from Avro' do
-    let(:original) { described_class.new friend_attrs }
-    let(:clone) { blt_klas.new friend_attrs }
+    let(:original) { described_class.new runner_attrs }
+    let(:clone) { blt_klas.new runner_attrs }
+    let(:exp_comp_hsh) { runner_attrs.deep_stringify_keys }
+
     it 'works' do
       expect { original }.to_not raise_error
 
       expect(original).to be_valid
-      expect(original.name).to eq 'Carl Rovers'
-      expect(original.age).to eq 45
-      expect(original.balance_owed).to eq 25.75
-      expect(original.gamer_level).to eq 2
-      expect(original.zip_code).to eq '84120'
+      expect(original.to_hash).to eq exp_comp_hsh
+
+      expect { addr_klas }.to_not raise_error
+      expect(addr_klas).to eq Schemas::PublishableApp::Examples::Address::Vc1580c68
+
+      expect(original.name).to eq 'Usain Bolt'
+      expect(original.races_count).to eq 150
+      expect(original.address).to be_a PublishableApp::Examples::Address
+      expect(original.address.street).to eq '123 Fast'
+      expect(original.address.city).to eq 'Speedy'
 
       expect { blt_klas }.to_not raise_error
 
       expect { clone }.to_not raise_error
 
-      expect(clone).to be_valid
-      expect(clone.name).to eq 'Carl Rovers'
-      expect(clone.age).to eq 45
-      expect(clone.balance_owed).to eq 25.75
-      expect(clone.gamer_level).to eq 2
-      expect(clone.zip_code).to eq '84120'
+      expect(clone.name).to eq 'Usain Bolt'
+      expect(clone.races_count).to eq 150
+      expect(clone.address).to be_a addr_klas
+      expect(clone.address.street).to eq '123 Fast'
+      expect(clone.address.city).to eq 'Speedy'
     end
   end
 
   context 'to Avro hash' do
-    let(:instance) { described_class.new friend_attrs }
+    let(:instance) { described_class.new runner_attrs }
     let(:act_hash) { instance.to_avro_hash }
     let(:cloned_attrs) { described_class.convert_avro_attributes act_hash }
     let(:cloned) { described_class.from_avro_hash act_hash }
     let(:cloned_hsh) { cloned.to_hash.deep_symbolize_keys }
-    let(:exp_avro_hsh) do
-      {
-        name: 'Carl Rovers',
-        age: 45,
-        balance_owed: 2575,
-        gamer_level: 2,
-        zip_code: '84120'
-      }
-    end
     let(:exp_hsh) do
       {
-        name: 'Carl Rovers',
-        age: 45,
-        balance_owed: 25.75,
-        gamer_level: 2,
-        zip_code: '84120'
+        name: 'Usain Bolt',
+        races_count: 150,
+        address: {
+          street: '123 Fast',
+          city: 'Speedy'
+        }
       }
     end
-    it('#to_avro_hash') { compare instance.to_avro_hash, exp_avro_hsh }
+    it('#to_avro_hash') { compare instance.to_avro_hash, exp_hsh }
     it('.convert_avro_attributes') do
       expect { cloned_attrs }.to_not raise_error
       expect(cloned_attrs).to be_a Hash
@@ -205,9 +220,9 @@ RSpec.describe ExampleApp::Examples::Friend do
   end
 
   context 'event' do
-    let(:source) { OpenStruct.new attributes: friend_attrs }
+    let(:source) { OpenStruct.new attributes: runner_attrs }
     let(:instance) { described_class.from source }
-    let(:topic_name) { 'example_app.examples.friend' }
+    let(:topic_name) { 'publishable_app.examples.runner' }
     let(:topic_key) { :name }
     let(:new_schema_id) { 99 }
     let(:new_topic_name) { 'some.topic' }
@@ -242,9 +257,9 @@ RSpec.describe ExampleApp::Examples::Friend do
     context 'instance' do
       it('event') { expect(instance).to be_a described_class }
       it('#topic_name') { expect(instance.topic_name).to eq topic_name }
-      it('#topic_key') { compare instance.topic_key, 'Carl Rovers' }
+      it('#topic_key') { compare instance.topic_key, 'Usain Bolt' }
       it('#schema_id') { expect(instance.schema_id).to be_nil }
-      it('to_hash') { compare instance.to_hash, friend_attrs.deep_stringify_keys }
+      it('to_hash') { compare instance.to_hash, runner_attrs.deep_stringify_keys }
     end
   end
   context 'registration' do
@@ -256,12 +271,12 @@ RSpec.describe ExampleApp::Examples::Friend do
     end
   end
   context 'encoding and decoding', :vcr, :serde do
-    let(:instance) { described_class.new friend_attrs }
+    let(:instance) { described_class.new runner_attrs }
     let(:decoded) { kafka.decode encoded, described_class.topic_name }
     context 'avro' do
       let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
-        "\u0000\u0000\u0000\u0000\a\u0016Carl Rovers\u0002Z\u0002\x9E(\u0002\u0004\u0002\n84120"
+        "\u0000\u0000\u0000\u0000\u0002\u0014Usain Bolt\xAC\u0002\u0010123 Fast\fSpeedy"
       end
       let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
       it('encodes properly') { compare encoded, exp_encoded }
@@ -270,7 +285,7 @@ RSpec.describe ExampleApp::Examples::Friend do
     context 'json' do
       let(:encoded) { kafka.encode_json instance }
       let(:exp_encoded) do
-        '{"name":"Carl Rovers","age":45,"balance_owed":25.75,"gamer_level":2,"zip_code":"84120"}'
+        '{"name":"Usain Bolt","races_count":150,"address":{"street":"123 Fast","city":"Speedy"}}'
       end
       let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
       it('encodes properly') { compare encoded, exp_encoded }

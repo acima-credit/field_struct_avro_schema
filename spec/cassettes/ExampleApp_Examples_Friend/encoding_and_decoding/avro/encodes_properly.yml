@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8081/schemas/ids/11
+    uri: http://localhost:8081/schemas/ids/7
     body:
       encoding: US-ASCII
       string: ''
@@ -12,10 +12,10 @@ http_interactions:
   response:
     status:
       code: 200
-      message:
+      message: null
     headers:
       Date:
-      - Wed, 10 Feb 2021 23:14:58 GMT
+      - Thu, 03 Feb 2022 01:18:58 GMT
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -31,5 +31,5 @@ http_interactions:
         type currency\",\"default\":null},{\"name\":\"gamer_level\",\"type\":[\"null\",\"int\"],\"doc\":\"|
         type integer\",\"default\":null},{\"name\":\"zip_code\",\"type\":[\"null\",\"string\"],\"doc\":\"|
         type string\",\"default\":null}]}"}'
-  recorded_at: Wed, 10 Feb 2021 23:14:58 GMT
+  recorded_at: Thu, 03 Feb 2022 01:18:58 GMT
 recorded_with: VCR 6.0.0

@@ -2,8 +2,6 @@
 
 source 'https://rubygems.org'
 
-source 'https://rubygems.pkg.github.com/acima-credit' do
-  gem 'field_struct'
-end
+gem 'field_struct', git: 'https://github.com/acima-credit/field_struct.git'
 
 gemspec

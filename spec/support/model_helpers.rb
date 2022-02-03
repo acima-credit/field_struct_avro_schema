@@ -90,6 +90,21 @@ module ModelHelpers
       zip_code: '84120'
     }
   end
+
+  let(:runner_attrs) do
+    {
+      name: 'Usain Bolt',
+      races_count: 150,
+      address: address_attrs
+    }
+  end
+
+  let(:address_attrs) do
+    {
+      street: '123 Fast',
+      city: 'Speedy'
+    }
+  end
 end
 
 RSpec.configure do |config|

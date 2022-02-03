@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Examples::User do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 5 }
+  let(:exp_schema_id) { 10 }
 
   let(:exp_hash) do
     {
@@ -255,12 +255,12 @@ RSpec.describe Examples::User do
     let(:new_topic_name) { 'some.topic' }
     let(:new_topic_key) { :other }
     let(:exp_avro_encoded) do
-      "\u0000\u0000\u0000\u0000\u0005\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1\u0012\u0002B\u0004\u0002\xA6" \
-        "\xBCƉ\xA9Z\u0001"
+      "\u0000\u0000\u0000\u0000\n\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1" \
+        "\u0012\u0002B\u0004\u0002\xA6\xBCƉ\xA9Z\u0001"
     end
     let(:exp_json_encoded) do
       '{"username":"some_user","password":"some_password","age":45,"owed":1537.25,"source":"B","level":2,"at":' \
-            '"2019-03-04T05:06:07.891-07:00","active":true}'
+        '"2019-03-04T05:06:07.891-07:00","active":true}'
     end
 
     context 'class' do
@@ -304,7 +304,7 @@ RSpec.describe Examples::User do
         expect(described_class.schema_id).to eq exp_schema_id
       end
     end
-    context 'encoding and decoding', :vcr do
+    context 'encoding and decoding', :vcr, :serde do
       let(:instance) { described_class.new user_attrs }
       let(:decoded) { kafka.decode encoded, described_class.topic_name }
       context 'avro' do
@@ -337,7 +337,7 @@ RSpec.describe Examples::User do
         it('decodes properly') { compare decoded, exp_decoded }
       end
     end
-    context 'karafka', :vcr do
+    context 'karafka', :vcr, :serde do
       before { described_class.schema_id exp_schema_id }
       let(:result) { coder.new.call instance }
       context 'serialization' do

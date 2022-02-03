@@ -1,0 +1,40 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:8081/subjects/publishable_app.examples.runner/versions
+    body:
+      encoding: UTF-8
+      string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"runner\",\n  \"namespace\":
+        \"publishable_app.examples\",\n  \"doc\": \"| version c0555685\",\n  \"fields\":
+        [\n    {\n      \"name\": \"name\",\n      \"type\": \"string\",\n      \"doc\":
+        \"| type string\"\n    },\n    {\n      \"name\": \"races_count\",\n      \"type\":
+        \"int\",\n      \"doc\": \"| type integer\"\n    },\n    {\n      \"name\":
+        \"address\",\n      \"type\": {\n        \"type\": \"record\",\n        \"name\":
+        \"address\",\n        \"namespace\": \"publishable_app.examples\",\n        \"doc\":
+        \"| version c1580c68\",\n        \"fields\": [\n          {\n            \"name\":
+        \"street\",\n            \"type\": \"string\",\n            \"doc\": \"| type
+        string\"\n          },\n          {\n            \"name\": \"city\",\n            \"type\":
+        \"string\",\n            \"doc\": \"| type string\"\n          }\n        ]\n      },\n      \"doc\":
+        \"| type publishable_app.examples.address\"\n    }\n  ]\n}"}'
+    headers:
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+  response:
+    status:
+      code: 200
+      message: null
+    headers:
+      Date:
+      - Thu, 03 Feb 2022 01:12:54 GMT
+      Content-Type:
+      - application/vnd.schemaregistry.v1+json
+      Vary:
+      - Accept-Encoding, User-Agent
+      Content-Length:
+      - '8'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":2}'
+  recorded_at: Thu, 03 Feb 2022 01:12:54 GMT
+recorded_with: VCR 6.0.0

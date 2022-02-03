@@ -18,7 +18,7 @@ http_interactions:
       message: null
     headers:
       Date:
-      - Thu, 27 Jan 2022 23:44:23 GMT
+      - Thu, 03 Feb 2022 01:12:54 GMT
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -27,6 +27,6 @@ http_interactions:
       - '8'
     body:
       encoding: ASCII-8BIT
-      string: '{"id":12}'
-  recorded_at: Thu, 27 Jan 2022 23:44:23 GMT
+      string: '{"id":4}'
+  recorded_at: Thu, 03 Feb 2022 01:12:54 GMT
 recorded_with: VCR 6.0.0
