@@ -7,7 +7,7 @@ module FieldStruct
         handles :currency
 
         def to_avro
-          (value * 100).to_i
+          (value * 100).round
         end
 
         def from_avro
