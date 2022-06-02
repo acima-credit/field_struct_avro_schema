@@ -47,7 +47,7 @@ module FieldStruct
       end
 
       def registry_url
-        @registry_url ||= ENV['SCHEMA_REGISTRY_URL'] || ENV['KAFKA_SCHEMA_REGISTRY_URL'] || 'http://localhost:8081'
+        @registry_url || ENV['SCHEMA_REGISTRY_URL'] || ENV.fetch('KAFKA_SCHEMA_REGISTRY_URL', 'http://localhost:8081')
       end
 
       def schema_registry_cache
