@@ -107,16 +107,16 @@ module FieldStruct
         raise e
       end
 
-      def encode_avro(*args)
-        AvroEncoder.encode(*args)
+      def encode_avro(*args, **kwargs)
+        AvroEncoder.encode(*args, **kwargs)
       end
 
-      def encode_json(*args)
-        JsonEncoder.encode(*args)
+      def encode_json(*args, **kwargs)
+        JsonEncoder.encode(*args, **kwargs)
       end
 
-      def encode_string(*args)
-        StringEncoder.encode(*args)
+      def encode_string(*args, **kwargs)
+        StringEncoder.encode(*args, **kwargs)
       end
 
       def decode(payload, topic)

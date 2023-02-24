@@ -4,11 +4,11 @@ module FieldStruct
   module AvroSchema
     module Kafka
       class BaseEncoder
-        def self.encode(*args, **kwargs)
-          new(*args, **kwargs).encode
+        def self.encode(*args)
+          new(*args).encode
         end
 
-        def initialize(message, *_args, **kwargs)
+        def initialize(message, *_args)
           @message = prepare_message message
         end
 
