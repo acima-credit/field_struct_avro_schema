@@ -4,11 +4,11 @@ module FieldStruct
   module AvroSchema
     module Kafka
       class BaseDecoder
-        def self.decode(*args)
-          new(*args).decode
+        def self.decode(*args, **kwargs)
+          new(*args, **kwargs).decode
         end
 
-        def initialize(payload, *_args)
+        def initialize(payload, *_args, **kwargs)
           @data = payload.to_s
         end
 

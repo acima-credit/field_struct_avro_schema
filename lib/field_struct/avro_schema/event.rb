@@ -130,7 +130,7 @@ module FieldStruct
       end
 
       def to_avro_messaging
-        ::FieldStruct::AvroSchema::Kafka.encode_avro to_avro_hash, schema_id: schema_id
+        ::FieldStruct::AvroSchema::Kafka.encode_avro **to_avro_hash, schema_id: schema_id
       end
     end
   end
