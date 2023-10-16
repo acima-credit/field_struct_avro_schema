@@ -22,7 +22,7 @@ module FieldStruct
         end
 
         def convert
-          klass.new **convert_attributes
+          klass.new(**convert_attributes)
         end
 
         private

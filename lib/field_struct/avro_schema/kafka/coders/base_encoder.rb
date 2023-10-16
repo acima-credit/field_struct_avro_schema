@@ -8,7 +8,7 @@ module FieldStruct
           new(*args, **kwargs).encode
         end
 
-        def initialize(message, *_args, **kwargs)
+        def initialize(message, *_args, **_kwargs)
           @message = prepare_message message
         end
 

@@ -13,11 +13,11 @@ module AvroBuilder
         super('string', field: field, cache: cache)
       end
 
-      def serialize(reference_state, overrides: {})
+      def serialize(reference_state, _overrides: {})
         super(reference_state, overrides: serialized_attributes)
       end
 
-      def to_h(reference_state, overrides: {})
+      def to_h(reference_state, _overrides: {})
         super(reference_state, overrides: serialized_attributes)
       end
 
@@ -34,4 +34,3 @@ module AvroBuilder
     end
   end
 end
-

@@ -8,7 +8,7 @@ module FieldStruct
           new(*args, **kwargs).decode
         end
 
-        def initialize(payload, *_args, **kwargs)
+        def initialize(payload, *_args, **_kwargs)
           @data = payload.to_s
         end
 

@@ -114,7 +114,7 @@ module FieldStruct
       end
 
       def initialize(schemas, options = {})
-        @schemas = Array([schemas]).flatten
+        @schemas = [schemas].flatten
         @options = self.class.default_options.merge(schema_names: {}).merge(options)
         @dependencies = []
         @results = []

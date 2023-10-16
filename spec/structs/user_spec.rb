@@ -20,7 +20,7 @@ RSpec.describe Examples::User do
         level: { type: :integer, required: true, default: '<proc>' },
         at: { type: :time },
         active: { type: :boolean, required: true, default: false },
-        ssn: { type: :string, avro: { logical_type: 'sensitive-data', field_id: 'social_security_number'} }
+        ssn: { type: :string, avro: { logical_type: 'sensitive-data', field_id: 'social_security_number' } }
       }
     }
   end
@@ -63,7 +63,7 @@ RSpec.describe Examples::User do
         { name: 'active', type: 'boolean', default: false, doc: '| type boolean' },
         {
           name: 'ssn',
-          type: ['null', { type: 'string', logicalType: 'sensitive-data', fieldId: 'social_security_number'}],
+          type: ['null', { type: 'string', logicalType: 'sensitive-data', fieldId: 'social_security_number' }],
           default: nil,
           doc: '| type string'
         }
@@ -378,7 +378,7 @@ RSpec.describe Examples::User do
         end
         context 'other' do
           let(:instance) { ExampleApp::Examples::Stranger.new name: 'unknown', age: 25 }
-          it('raises error') { expect { result }.to raise_error ::Karafka::Errors::SerializationError, instance }
+          it('raises error') { expect { result }.to raise_error Karafka::Errors::SerializationError, instance }
         end
       end
       context 'deserialization' do
@@ -407,7 +407,7 @@ RSpec.describe Examples::User do
         end
         context 'other' do
           let(:raw_payload) { { a: 1 }.to_json }
-          it('raises error') { expect { result }.to raise_error ::Karafka::Errors::DeserializationError }
+          it('raises error') { expect { result }.to raise_error Karafka::Errors::DeserializationError }
         end
       end
     end

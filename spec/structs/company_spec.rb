@@ -534,8 +534,8 @@ RSpec.describe Examples::Company do
       let(:exp_encoded) do
         '{"legal_name":"My Super Company","development_team":{"name":"Duper Team","leader":{"first_name":"Karl","las' \
           't_name":"Marx","title":"Team Lead"},"members":[{"first_name":"John","last_name":"Stalingrad","title":"Dev' \
-          'eloper","language":"Ruby"},{"first_name":"Steve","last_name":"Romanoff","title":"Designer","language":"In' \
-          ' Design"}]},"marketing_team":{"name":"Growing Team","leader":{"first_name":"Evan","last_name":"Majors","t' \
+          'eloper","language":"Ruby"},{"first_name":"Steve","last_name":"Romanoff","title":"Designer","language":"In ' \
+          'Design"}]},"marketing_team":{"name":"Growing Team","leader":{"first_name":"Evan","last_name":"Majors","t' \
           'itle":"Team Lead"},"members":[{"first_name":"Rob","last_name":"Morris","title":"Developer","language":"Ja' \
           'vascript"},{"first_name":"Zach","last_name":"Evanoff","title":"Designer","language":"Photoshop"}]}}'
       end

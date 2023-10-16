@@ -49,7 +49,8 @@ module FieldStruct
                    type_parts.join('.').inspect
                  elsif attr[:logical_type] == 'sensitive-data'
                    field_id = attr.dig(:avro, :field_id)
-                   raise "Missing field_id" unless field_id
+                   raise 'Missing field_id' unless field_id
+
                    "AvroBuilder::Extensions::SensitiveData.new(cache: nil, field_id: '#{field_id}')"
                  else
                    ":#{attr[:type]}"
@@ -210,7 +211,7 @@ module FieldStruct
       end
 
       def logical_type_tuple(attr, type)
-        if !attr.avro.nil? && attr.avro.has_key?(:logical_type)
+        if !attr.avro.nil? && attr.avro.key?(:logical_type)
           [type, attr.avro[:logical_type]]
         elsif (type_ary = LOGICAL_TYPES[type])
           type_ary

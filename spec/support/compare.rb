@@ -37,8 +37,8 @@ module CompareHelpers
       compare act, exp, "#{prefix}[#{k}]"
     end
     expect(act_hash.keys.sort).to eq(exp_hash.keys.sort),
-                                  "expected actual keys #{prefix} #{act_hash.keys.inspect}\n" \
-                                  "          to eq keys #{prefix} #{exp_hash.keys.inspect}\n" \
+                                  "expected actual keys #{prefix} #{act_hash.keys.inspect}\n          " \
+                                  "to eq keys #{prefix} #{exp_hash.keys.inspect}\n" \
                                   'but were different'
   end
 
@@ -51,8 +51,8 @@ module CompareHelpers
       compare act_val, exp_val, "#{prefix}[#{idx}]"
     end
     expect(act_ary.size).to eq(exp_ary.size),
-                            "expected actual size #{prefix} #{act_ary.size}\n" \
-                            "          to eq size #{prefix} #{exp_ary.size}\n" \
+                            "expected actual size #{prefix} #{act_ary.size}\n          " \
+                            "to eq size #{prefix} #{exp_ary.size}\n" \
                             'but was different'
   end
 

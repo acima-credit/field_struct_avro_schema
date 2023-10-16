@@ -2,7 +2,7 @@
 
 require 'bundler/setup'
 require 'field_struct/avro_schema'
-require "avro_acima/encryption/dummy_encryption_provider"
+require 'avro_acima/encryption/dummy_encryption_provider'
 require 'fileutils'
 
 FieldStruct::AvroSchema.logger.level = ENV.fetch('LOG_LEVEL', Logger::INFO).to_i
