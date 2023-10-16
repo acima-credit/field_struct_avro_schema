@@ -37,8 +37,8 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'activesupport'
   spec.add_dependency 'activemodel'
-  spec.add_dependency 'field_struct'
-  spec.add_dependency 'avro', '~> 1.9.2'
+  spec.add_dependency 'avro', '~> 1.11.0'
+  spec.add_dependency 'avro_acima', '0.3.0.pre'
   spec.add_dependency 'avro-builder'
   spec.add_dependency 'excon'
 

@@ -31,9 +31,9 @@ module FieldStruct
         def fetch_schema_from_registry
           fetch_schema_by_id || fetch_schema || register_schema || missing_get_schema_args
         rescue Excon::Error::NotFound
-          raise SchemaNotFoundError, "Schema with id: #{schema_id} is not found on registry" if schema_id
+          raise SchemaNotFoundError, "Schema with id: #{@schema_id} is not found on registry" if @schema_id
 
-          raise SchemaNotFoundError, "Schema with subject: `#{subject}` version: `#{version}` is not found on registry"
+          raise SchemaNotFoundError, "Schema with subject: `#{@subject}` version: `#{@version}` is not found on registry"
         end
 
         def fetch_schema_by_id

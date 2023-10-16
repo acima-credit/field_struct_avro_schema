@@ -2,6 +2,8 @@
 
 require 'bundler/setup'
 require 'field_struct/avro_schema'
+require "avro_acima/encryption/dummy_encryption_provider"
+require 'fileutils'
 
 FieldStruct::AvroSchema.logger.level = ENV.fetch('LOG_LEVEL', Logger::INFO).to_i
 
@@ -56,4 +58,8 @@ VCR.configure do |c|
   c.hook_into :excon
   c.configure_rspec_metadata!
   # c.allow_http_connections_when_no_cassette = true
+end
+
+AvroAcima.configure do |c|
+  c.encryption_provider = AvroAcima::Encryption::DummyEncryptionProvider.new
 end

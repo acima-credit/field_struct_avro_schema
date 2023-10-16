@@ -6,7 +6,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"user\",\n  \"namespace\":
-        \"examples\",\n  \"doc\": \"| version 53d47729\",\n  \"fields\": [\n    {\n      \"name\":
+        \"examples\",\n  \"doc\": \"| version daff3d9a\",\n  \"fields\": [\n    {\n      \"name\":
         \"username\",\n      \"type\": \"string\",\n      \"doc\": \"login | type
         string\"\n    },\n    {\n      \"name\": \"password\",\n      \"type\": [\n        \"null\",\n        \"string\"\n      ],\n      \"default\":
         null,\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\": \"age\",\n      \"type\":
@@ -18,25 +18,31 @@ http_interactions:
         \"at\",\n      \"type\": [\n        \"null\",\n        {\n          \"type\":
         \"long\",\n          \"logicalType\": \"timestamp-millis\"\n        }\n      ],\n      \"default\":
         null,\n      \"doc\": \"| type time\"\n    },\n    {\n      \"name\": \"active\",\n      \"type\":
-        \"boolean\",\n      \"default\": false,\n      \"doc\": \"| type boolean\"\n    }\n  ]\n}"}'
+        \"boolean\",\n      \"default\": false,\n      \"doc\": \"| type boolean\"\n    },\n    {\n      \"name\":
+        \"ssn\",\n      \"type\": [\n        \"null\",\n        {\n          \"type\":
+        \"string\",\n          \"logicalType\": \"sensitive-data\",\n          \"fieldId\":
+        \"social_security_number\"\n        }\n      ],\n      \"default\": null,\n      \"doc\":
+        \"| type string\"\n    }\n  ]\n}"}'
     headers:
       Content-Type:
       - application/vnd.schemaregistry.v1+json
   response:
     status:
       code: 200
-      message: null
+      message:
     headers:
       Date:
-      - Thu, 03 Feb 2022 01:12:55 GMT
+      - Mon, 16 Oct 2023 20:07:43 GMT
+      X-Request-ID:
+      - 4c07d371-d01c-4f68-ba1c-230b5157bdac
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
       - Accept-Encoding, User-Agent
       Content-Length:
-      - '9'
+      - '8'
     body:
       encoding: ASCII-8BIT
-      string: '{"id":10}'
-  recorded_at: Thu, 03 Feb 2022 01:12:55 GMT
-recorded_with: VCR 6.0.0
+      string: '{"id":1}'
+  recorded_at: Mon, 16 Oct 2023 20:07:43 GMT
+recorded_with: VCR 6.2.0

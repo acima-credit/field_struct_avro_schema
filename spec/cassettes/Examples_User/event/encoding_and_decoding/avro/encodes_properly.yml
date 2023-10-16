@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8081/schemas/ids/10
+    uri: http://localhost:8081/schemas/ids/1
     body:
       encoding: US-ASCII
       string: ''
@@ -12,26 +12,29 @@ http_interactions:
   response:
     status:
       code: 200
-      message: null
+      message:
     headers:
       Date:
-      - Thu, 03 Feb 2022 01:18:58 GMT
+      - Mon, 16 Oct 2023 20:07:20 GMT
+      X-Request-ID:
+      - 640dccb1-e231-44fc-8e63-581e5487f3c8
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
       - Accept-Encoding, User-Agent
       Content-Length:
-      - '809'
+      - '987'
     body:
       encoding: ASCII-8BIT
       string: '{"schema":"{\"type\":\"record\",\"name\":\"user\",\"namespace\":\"examples\",\"doc\":\"|
-        version 53d47729\",\"fields\":[{\"name\":\"username\",\"type\":\"string\",\"doc\":\"login
+        version daff3d9a\",\"fields\":[{\"name\":\"username\",\"type\":\"string\",\"doc\":\"login
         | type string\"},{\"name\":\"password\",\"type\":[\"null\",\"string\"],\"doc\":\"|
         type string\",\"default\":null},{\"name\":\"age\",\"type\":\"int\",\"doc\":\"|
         type integer\"},{\"name\":\"owed\",\"type\":\"int\",\"doc\":\"amount owed
         to the company | type currency\"},{\"name\":\"source\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"level\",\"type\":\"int\",\"doc\":\"| type integer\"},{\"name\":\"at\",\"type\":[\"null\",{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}],\"doc\":\"|
         type time\",\"default\":null},{\"name\":\"active\",\"type\":\"boolean\",\"doc\":\"|
-        type boolean\",\"default\":false}]}"}'
-  recorded_at: Thu, 03 Feb 2022 01:18:58 GMT
-recorded_with: VCR 6.0.0
+        type boolean\",\"default\":false},{\"name\":\"ssn\",\"type\":[\"null\",{\"type\":\"string\",\"logicalType\":\"sensitive-data\",\"fieldId\":\"social_security_number\"}],\"doc\":\"|
+        type string\",\"default\":null}]}"}'
+  recorded_at: Mon, 16 Oct 2023 20:07:20 GMT
+recorded_with: VCR 6.2.0

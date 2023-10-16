@@ -21,6 +21,7 @@ module Examples
     required :level, :integer, default: -> { 2 }
     optional :at, :time
     required :active, :boolean, default: false
+    optional :ssn, :string, avro: { logical_type: 'sensitive-data', field_id: 'social_security_number' }
   end
 
   class Person < Base
