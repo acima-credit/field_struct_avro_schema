@@ -14,7 +14,8 @@ module ModelHelpers
       source: 'B',
       level: 2,
       at: past_time,
-      active: true
+      active: true,
+      ssn: '123-45-6789'
     }
   end
 

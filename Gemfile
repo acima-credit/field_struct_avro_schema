@@ -2,6 +2,9 @@
 
 source 'https://rubygems.org'
 
-gem 'field_struct', git: 'https://github.com/acima-credit/field_struct.git'
+source 'https://rubygems.pkg.github.com/acima-credit/' do
+  gem 'field_struct', '0.2.27'
+  gem 'avro_acima', '0.3.0.pre'
+end
 
 gemspec

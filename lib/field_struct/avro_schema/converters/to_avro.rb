@@ -41,8 +41,8 @@ module FieldStruct
         end
       end
 
-      def self.to_avro(*args)
-        ToAvro.new(*args).convert
+      def self.to_avro(*args, **kwargs)
+        ToAvro.new(*args, **kwargs).convert
       end
     end
   end

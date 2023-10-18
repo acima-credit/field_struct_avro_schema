@@ -47,6 +47,11 @@ module FieldStruct
           type_parts = attr[:type].to_s.split('.')
           ary << if type_parts.size > 1
                    type_parts.join('.').inspect
+                 elsif attr[:logical_type] == 'sensitive-data'
+                   field_id = attr.dig(:avro, :field_id)
+                   raise 'Missing field_id' unless field_id
+
+                   "AvroBuilder::Extensions::SensitiveData.new(cache: nil, field_id: '#{field_id}')"
                  else
                    ":#{attr[:type]}"
                  end
@@ -158,7 +163,8 @@ module FieldStruct
       def build_attribute(name, attr)
         hsh = {
           name: name,
-          mode: attr.required? ? :required : :optional
+          mode: attr.required? ? :required : :optional,
+          avro: attr.avro
         }
         add_field_type_for attr, hsh
         add_field_default_for attr, hsh
@@ -183,7 +189,7 @@ module FieldStruct
 
         hsh[:type] = :array
         type = attr.of
-        if (type_ary = LOGICAL_TYPES[type])
+        if (type_ary = logical_type_tuple(attr, type))
           hsh[:items] = type_ary
         elsif (type_key = ACTIVE_MODEL_TYPES[type])
           hsh[:items] = type_key.to_s
@@ -194,13 +200,21 @@ module FieldStruct
 
       def add_single_field_type_for(attr, hsh)
         type = attr.type
-        if (type_ary = LOGICAL_TYPES[type])
+        if (type_ary = logical_type_tuple(attr, type))
           hsh[:type] = type_ary.first.to_s
           hsh[:logical_type] = type_ary.last
         elsif (type_key = ACTIVE_MODEL_TYPES[type])
           hsh[:type] = type_key.to_s
         elsif type.field_struct?
           hsh[:type] = type.schema_record_name
+        end
+      end
+
+      def logical_type_tuple(attr, type)
+        if !attr.avro.nil? && attr.avro.key?(:logical_type)
+          [type, attr.avro[:logical_type]]
+        elsif (type_ary = LOGICAL_TYPES[type])
+          type_ary
         end
       end
 

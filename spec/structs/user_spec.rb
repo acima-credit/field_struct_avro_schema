@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Examples::User do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 10 }
+  let(:exp_schema_id) { 1 }
 
   let(:exp_hash) do
     {
       name: 'Examples::User',
       schema_name: 'examples.user',
-      version: '53d47729',
+      version: 'daff3d9a',
       attributes: {
         username: { type: :string, required: true, format: /\A[a-z]/i, description: 'login' },
         password: { type: :string },
@@ -19,7 +19,8 @@ RSpec.describe Examples::User do
         source: { type: :string, required: true, enum: %w[A B C] },
         level: { type: :integer, required: true, default: '<proc>' },
         at: { type: :time },
-        active: { type: :boolean, required: true, default: false }
+        active: { type: :boolean, required: true, default: false },
+        ssn: { type: :string, avro: { logical_type: 'sensitive-data', field_id: 'social_security_number' } }
       }
     }
   end
@@ -27,7 +28,7 @@ RSpec.describe Examples::User do
     <<~CODE.chomp
       namespace 'examples'
 
-      record :user, :doc=>"| version 53d47729" do
+      record :user, :doc=>"| version daff3d9a" do
         required :username, :string, doc: "login | type string"
         optional :password, :string, doc: "| type string"
         required :age, :int, doc: "| type integer"
@@ -36,6 +37,7 @@ RSpec.describe Examples::User do
         required :level, :int, doc: "| type integer"
         optional :at, :long, logical_type: "timestamp-millis", doc: "| type time"
         required :active, :boolean, default: false, doc: "| type boolean"
+        optional :ssn, AvroBuilder::Extensions::SensitiveData.new(cache: nil, field_id: 'social_security_number'), logical_type: "sensitive-data", doc: "| type string"
       end
     CODE
   end
@@ -44,7 +46,7 @@ RSpec.describe Examples::User do
       type: 'record',
       name: 'user',
       namespace: 'examples',
-      doc: '| version 53d47729',
+      doc: '| version daff3d9a',
       fields: [
         { name: 'username', type: 'string', doc: 'login | type string' },
         { name: 'password', type: %w[null string], default: nil, doc: '| type string' },
@@ -58,7 +60,13 @@ RSpec.describe Examples::User do
           default: nil,
           doc: '| type time'
         },
-        { name: 'active', type: 'boolean', default: false, doc: '| type boolean' }
+        { name: 'active', type: 'boolean', default: false, doc: '| type boolean' },
+        {
+          name: 'ssn',
+          type: ['null', { type: 'string', logicalType: 'sensitive-data', fieldId: 'social_security_number' }],
+          default: nil,
+          doc: '| type string'
+        }
       ]
     }
   end
@@ -68,7 +76,7 @@ RSpec.describe Examples::User do
         "type": "record",
         "name": "user",
         "namespace": "examples",
-        "doc": "| version 53d47729",
+        "doc": "| version daff3d9a",
         "fields": [
           {
             "name": "username",
@@ -121,6 +129,19 @@ RSpec.describe Examples::User do
             "type": "boolean",
             "default": false,
             "doc": "| type boolean"
+          },
+          {
+            "name": "ssn",
+            "type": [
+              "null",
+              {
+                "type": "string",
+                "logicalType": "sensitive-data",
+                "fieldId": "social_security_number"
+              }
+            ],
+            "default": null,
+            "doc": "| type string"
           }
         ]
       }
@@ -129,9 +150,9 @@ RSpec.describe Examples::User do
   let(:exp_version_meta) do
     [
       {
-        name: 'Schemas::Examples::User::V53d47729',
-        schema_name: 'schemas.examples.user.v53d47729',
-        version: '53d47729',
+        name: 'Schemas::Examples::User::Vdaff3d9a',
+        schema_name: 'schemas.examples.user.vdaff3d9a',
+        version: 'daff3d9a',
         attributes: {
           username: { type: :string, required: true, description: 'login' },
           password: { type: :string },
@@ -140,7 +161,8 @@ RSpec.describe Examples::User do
           source: { type: :string, required: true },
           level: { type: :integer, required: true },
           at: { type: :time },
-          active: { type: :boolean, required: true, default: false }
+          active: { type: :boolean, required: true, default: false },
+          ssn: { type: :string }
         }
       }
     ]
@@ -185,6 +207,7 @@ RSpec.describe Examples::User do
       expect(original.level).to eq 2
       expect(original.at).to eq past_time
       expect(original.active).to eq true
+      expect(original.ssn).to eq '123-45-6789'
 
       expect { blt_klas }.to_not raise_error
 
@@ -199,6 +222,7 @@ RSpec.describe Examples::User do
       expect(clone.level).to eq 2
       expect(clone.at).to eq past_time
       expect(clone.active).to eq true
+      expect(clone.ssn).to eq '123-45-6789'
     end
   end
 
@@ -217,7 +241,8 @@ RSpec.describe Examples::User do
         source: 'B',
         level: 2,
         at: 1_551_701_167_891,
-        active: true
+        active: true,
+        ssn: '123-45-6789'
       }
     end
     let(:exp_hsh) do
@@ -229,7 +254,8 @@ RSpec.describe Examples::User do
         source: 'B',
         level: 2,
         at: past_time.utc,
-        active: true
+        active: true,
+        ssn: '123-45-6789'
       }
     end
     it('#to_avro_hash') { compare instance.to_avro_hash, exp_avro_hsh }
@@ -255,12 +281,12 @@ RSpec.describe Examples::User do
     let(:new_topic_name) { 'some.topic' }
     let(:new_topic_key) { :other }
     let(:exp_avro_encoded) do
-      "\u0000\u0000\u0000\u0000\n\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1" \
-        "\u0012\u0002B\u0004\u0002\xA6\xBCƉ\xA9Z\u0001"
+      "\u0000\u0000\u0000\u0000\u0001\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1" \
+        "\u0012\u0002B\u0004\u0002\xA6\xBCƉ\xA9Z\u0001\u0002XENCRYPTED:social_security_number:123-45-6789"
     end
     let(:exp_json_encoded) do
       '{"username":"some_user","password":"some_password","age":45,"owed":1537.25,"source":"B","level":2,"at":' \
-        '"2019-03-04T05:06:07.891-07:00","active":true}'
+        '"2019-03-04T05:06:07.891-07:00","active":true,"ssn":"123-45-6789"}'
     end
 
     context 'class' do
@@ -330,7 +356,7 @@ RSpec.describe Examples::User do
         let(:encoded) { instance.topic_encoded(:json) }
         let(:exp_encoded) do
           '{"username":"some_user","password":"some_password","age":45,"owed":1537.25,"source":"B","level":2,"at":' \
-            '"2019-03-04T05:06:07.891-07:00","active":true}'
+            '"2019-03-04T05:06:07.891-07:00","active":true,"ssn":"123-45-6789"}'
         end
         let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
         it('encodes properly') { compare encoded, exp_encoded }
@@ -352,7 +378,7 @@ RSpec.describe Examples::User do
         end
         context 'other' do
           let(:instance) { ExampleApp::Examples::Stranger.new name: 'unknown', age: 25 }
-          it('raises error') { expect { result }.to raise_error ::Karafka::Errors::SerializationError, instance }
+          it('raises error') { expect { result }.to raise_error Karafka::Errors::SerializationError, instance }
         end
       end
       context 'deserialization' do
@@ -369,7 +395,8 @@ RSpec.describe Examples::User do
               source: 'B',
               level: 2,
               at: past_time.utc,
-              active: true
+              active: true,
+              ssn: '123-45-6789'
             }
           end
           it('decodes') { compare result, exp_hsh }
@@ -380,7 +407,7 @@ RSpec.describe Examples::User do
         end
         context 'other' do
           let(:raw_payload) { { a: 1 }.to_json }
-          it('raises error') { expect { result }.to raise_error ::Karafka::Errors::DeserializationError }
+          it('raises error') { expect { result }.to raise_error Karafka::Errors::DeserializationError }
         end
       end
     end
