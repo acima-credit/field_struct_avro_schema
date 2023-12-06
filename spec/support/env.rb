@@ -7,7 +7,7 @@ module EnvHelpers
     return false unless block_given?
 
     name      = name.to_s.upcase
-    old_value = ENV[name]
+    old_value = ENV.fetch(name, nil)
     ENV[name] = new_value
 
     res = yield
@@ -22,7 +22,7 @@ module EnvHelpers
     previous = {}
     set.each do |name, value|
       new_name           = name.to_s.upcase
-      previous[new_name] = ENV[new_name]
+      previous[new_name] = ENV.fetch(new_name, nil)
       if value.nil?
         ENV.delete new_name
       else
