@@ -322,7 +322,8 @@ RSpec.describe Examples::User do
       it('#schema_id') { expect(instance.schema_id).to be_nil }
       it('attributes') { compare instance.attributes, user_attrs.stringify_keys }
     end
-    context 'registration' do
+    context 'registration', :env_change do
+      let(:env) { { 'KAFKA_AUTO_REGISTER' => 'true' } }
       let(:registration) { kafka.register_event_schema described_class }
       it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
       it 'registers with schema_registry', :vcr, :registers do

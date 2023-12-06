@@ -99,9 +99,16 @@ module FieldStruct
       def register_event_schema(klass)
         return nil unless klass.publishable?
 
-        id = schema_registry.register build_subject_name(klass), klass.schema
-        klass.schema_id id
-        klass
+        if ENV.fetch('KAFKA_AUTO_REGISTER', 'false') == 'true'
+          id = schema_registry.register build_subject_name(klass), klass.schema
+          klass.schema_id id
+          klass
+        else
+          id = schema_registry.check build_subject_name(klass), klass.schema
+          klass.schema_id id
+          klass
+        end
+
       rescue StandardError => e
         logger.error "Could not register event schema for #{klass} : #{e.class.name} : #{e.message}"
         raise e
