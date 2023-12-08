@@ -64,4 +64,5 @@ end
 RSpec.configure do |config|
   config.include EnvHelpers
   config.around(:example, env_change: true) { |example| change_env_set(env) { example.run } }
+  config.around(:example, env_set: true) { |example| change_env(env, val) { example.run } }
 end

@@ -503,11 +503,11 @@ RSpec.describe Examples::Company do
       it('to_hash') { compare instance.to_hash, company_attrs.deep_stringify_keys }
     end
   end
-  context 'registration', :vcr, :registers, :env_change do
-    let(:env) { { 'KAFKA_AUTO_REGISTER' => 'true' } }
+  context 'registration', :vcr, :registers do
     let(:registration) { kafka.register_event_schema described_class }
     it('Kafka has event registered') { expect(kafka.events[described_class.name]).to eq described_class }
     it 'registers with schema_registry' do
+      expect(kafka.configuration).to receive(:automatic_schema_registration).and_return(true)
       expect { registration }.to_not raise_error
       expect(described_class.schema_id).to eq exp_schema_id
     end
