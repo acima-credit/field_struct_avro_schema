@@ -10,12 +10,13 @@ RSpec.describe Examples::Developer do
     {
       name: 'Examples::Developer',
       schema_name: 'examples.developer',
-      version: '5251a97e',
+      version: '57552ad2',
       attributes: {
         first_name: { type: :string, required: true, min_length: 3, max_length: 20 },
         last_name: { type: :string, required: true },
         title: { type: :string, default: '<proc>' },
-        language: { type: :string, required: true }
+        language: { type: :string, required: true },
+        password: { type: :string, required: true, avro: { logical_type: 'sensitive-data', field_id: 'dev_pw' } }
       }
     }
   end
@@ -23,11 +24,12 @@ RSpec.describe Examples::Developer do
     <<~CODE.chomp
       namespace 'examples'
 
-      record :developer, :doc=>"| version 5251a97e" do
+      record :developer, :doc=>"| version 57552ad2" do
         required :first_name, :string, doc: "| type string"
         required :last_name, :string, doc: "| type string"
         optional :title, :string, doc: "| type string"
         required :language, :string, doc: "| type string"
+        required :password, AvroBuilder::Extensions::SensitiveData.new(cache: nil, field_id: 'dev_pw'), logical_type: "sensitive-data", doc: "| type string"
       end
     CODE
   end
@@ -36,12 +38,13 @@ RSpec.describe Examples::Developer do
       type: 'record',
       name: 'developer',
       namespace: 'examples',
-      doc: '| version 5251a97e',
+      doc: '| version 57552ad2',
       fields: [
         { name: 'first_name', type: 'string', doc: '| type string' },
         { name: 'last_name', type: 'string', doc: '| type string' },
         { name: 'title', type: %w[null string], default: nil, doc: '| type string' },
-        { name: 'language', type: 'string', doc: '| type string' }
+        { name: 'language', type: 'string', doc: '| type string' },
+        { name: 'password', type: { type: 'string', logicalType: 'sensitive-data', fieldId: 'dev_pw' }, doc: '| type string' }
       ]
     }
   end
@@ -51,7 +54,7 @@ RSpec.describe Examples::Developer do
         "type": "record",
         "name": "developer",
         "namespace": "examples",
-        "doc": "| version 5251a97e",
+        "doc": "| version 57552ad2",
         "fields": [
           {
             "name": "first_name",
@@ -76,6 +79,15 @@ RSpec.describe Examples::Developer do
             "name": "language",
             "type": "string",
             "doc": "| type string"
+          },
+          {
+            "name": "password",
+            "type": {
+              "type": "string",
+              "logicalType": "sensitive-data",
+              "fieldId": "dev_pw"
+            },
+            "doc": "| type string"
           }
         ]
       }
@@ -84,14 +96,15 @@ RSpec.describe Examples::Developer do
   let(:exp_version_meta) do
     [
       {
-        name: 'Schemas::Examples::Developer::V5251a97e',
-        schema_name: 'schemas.examples.developer.v5251a97e',
-        version: '5251a97e',
+        name: 'Schemas::Examples::Developer::V57552ad2',
+        schema_name: 'schemas.examples.developer.v57552ad2',
+        version: '57552ad2',
         attributes: {
           first_name: { type: :string, required: true },
           last_name: { type: :string, required: true },
           title: { type: :string },
-          language: { type: :string, required: true }
+          language: { type: :string, required: true },
+          password: { type: :string, required: true }
         }
       }
     ]
@@ -157,7 +170,8 @@ RSpec.describe Examples::Developer do
         first_name: 'John',
         last_name: 'Max',
         title: 'VP of Engineering',
-        language: 'Haskell'
+        language: 'Haskell',
+        password: 'password123!'
       }
     end
     it('#to_avro_hash') { compare instance.to_avro_hash, exp_avro_hsh }
@@ -231,7 +245,7 @@ RSpec.describe Examples::Developer do
     context 'avro' do
       let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
-        "\u0000\u0000\u0000\u0000\u0005\bJohn\u0006Max\u0002\"VP of Engineering\u000EHaskell"
+        "\u0000\u0000\u0000\u0000\u0005\bJohn\u0006Max\u0002\"VP of Engineering\u000EHaskell:ENCRYPTED:dev_pw:password123!"
       end
       let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
       it('encodes properly') { compare encoded, exp_encoded }
@@ -240,7 +254,7 @@ RSpec.describe Examples::Developer do
     context 'json' do
       let(:encoded) { kafka.encode_json instance }
       let(:exp_encoded) do
-        '{"first_name":"John","last_name":"Max","title":"VP of Engineering","language":"Haskell"}'
+        '{"first_name":"John","last_name":"Max","title":"VP of Engineering","language":"Haskell","password":"password123!"}'
       end
       let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
       it('encodes properly') { compare encoded, exp_encoded }

@@ -19,9 +19,10 @@ module Examples
     required :owed, :currency, description: 'amount owed to the company'
     required :source, :string, enum: %w[A B C]
     required :level, :integer, default: -> { 2 }
-    optional :at, :time
+    optional :at, :time, avro: { logical_type: 'timestamp-millis' }
     required :active, :boolean, default: false
     optional :ssn, :string, avro: { logical_type: 'sensitive-data', field_id: 'social_security_number' }
+    required :paycheck, :binary, avro: { logical_type: 'decimal', precision: 6, scale: 2 }
   end
 
   class Person < Base
@@ -42,6 +43,7 @@ module Examples
 
   class Developer < Employee
     required :language, :string
+    required :password, :string, avro: { logical_type: 'sensitive-data', field_id: 'dev_pw' }
   end
 
   class Team < Base

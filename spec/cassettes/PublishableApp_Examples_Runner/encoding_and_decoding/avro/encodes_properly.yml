@@ -12,10 +12,12 @@ http_interactions:
   response:
     status:
       code: 200
-      message: null
+      message:
     headers:
       Date:
-      - Thu, 03 Feb 2022 01:18:58 GMT
+      - Fri, 08 Dec 2023 14:48:31 GMT
+      X-Request-ID:
+      - 077da3be-9352-4d55-8b7f-6b74d3ad944d
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -31,5 +33,5 @@ http_interactions:
         version c1580c68\",\"fields\":[{\"name\":\"street\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"city\",\"type\":\"string\",\"doc\":\"| type string\"}]},\"doc\":\"|
         type publishable_app.examples.address\"}]}"}'
-  recorded_at: Thu, 03 Feb 2022 01:18:58 GMT
-recorded_with: VCR 6.0.0
+  recorded_at: Fri, 08 Dec 2023 14:48:31 GMT
+recorded_with: VCR 6.2.0

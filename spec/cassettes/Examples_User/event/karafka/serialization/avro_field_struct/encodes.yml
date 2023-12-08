@@ -15,9 +15,9 @@ http_interactions:
       message:
     headers:
       Date:
-      - Fri, 08 Dec 2023 15:20:52 GMT
+      - Fri, 08 Dec 2023 15:21:00 GMT
       X-Request-ID:
-      - f439622d-b10c-45c6-b22f-458859efdfa1
+      - 8f75ff2a-ae53-4bf2-b7a0-16e21a5b175d
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -37,5 +37,5 @@ http_interactions:
         type boolean\",\"default\":false},{\"name\":\"ssn\",\"type\":[\"null\",{\"type\":\"string\",\"logicalType\":\"sensitive-data\",\"fieldId\":\"social_security_number\"}],\"doc\":\"|
         type string\",\"default\":null},{\"name\":\"paycheck\",\"type\":{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":6,\"scale\":2},\"doc\":\"|
         type binary\"}]}"}'
-  recorded_at: Fri, 08 Dec 2023 15:20:52 GMT
+  recorded_at: Fri, 08 Dec 2023 15:21:00 GMT
 recorded_with: VCR 6.2.0

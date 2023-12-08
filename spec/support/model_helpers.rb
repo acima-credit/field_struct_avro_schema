@@ -15,7 +15,8 @@ module ModelHelpers
       level: 2,
       at: past_time,
       active: true,
-      ssn: '123-45-6789'
+      ssn: '123-45-6789',
+      paycheck: BigDecimal('1234.56')
     }
   end
 
@@ -31,7 +32,7 @@ module ModelHelpers
   end
 
   let(:developer_attrs) do
-    employee_attrs.merge language: 'Haskell'
+    employee_attrs.merge language: 'Haskell', password: 'password123!'
   end
 
   let(:leader_attrs) do
@@ -43,19 +44,19 @@ module ModelHelpers
   end
 
   let(:dev1_attrs) do
-    { first_name: 'John', last_name: 'Stalingrad', title: 'Developer', language: 'Ruby' }
+    { first_name: 'John', last_name: 'Stalingrad', title: 'Developer', language: 'Ruby', password: 'rubyroxx' }
   end
 
   let(:dev2_attrs) do
-    { first_name: 'Steve', last_name: 'Romanoff', title: 'Designer', language: 'In Design' }
+    { first_name: 'Steve', last_name: 'Romanoff', title: 'Designer', language: 'In Design', password: 'IHeartComputers' }
   end
 
   let(:mke1_attrs) do
-    { first_name: 'Rob', last_name: 'Morris', title: 'Developer', language: 'Javascript' }
+    { first_name: 'Rob', last_name: 'Morris', title: 'Developer', language: 'Javascript', password: 'hurrdurr' }
   end
 
   let(:mke2_attrs) do
-    { first_name: 'Zach', last_name: 'Evanoff', title: 'Designer', language: 'Photoshop' }
+    { first_name: 'Zach', last_name: 'Evanoff', title: 'Designer', language: 'Photoshop', password: 'drool' }
   end
 
   let(:team_attrs) do

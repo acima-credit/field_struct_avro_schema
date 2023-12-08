@@ -12,10 +12,12 @@ http_interactions:
   response:
     status:
       code: 200
-      message: null
+      message:
     headers:
       Date:
-      - Thu, 03 Feb 2022 01:18:58 GMT
+      - Fri, 08 Dec 2023 15:16:02 GMT
+      X-Request-ID:
+      - ca7df98d-a5d1-40fa-a40d-fd48f3ad83f8
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -29,5 +31,5 @@ http_interactions:
         type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
         string\"},{\"name\":\"title\",\"type\":[\"null\",\"string\"],\"doc\":\"| type
         string\",\"default\":null}]}"}'
-  recorded_at: Thu, 03 Feb 2022 01:18:58 GMT
-recorded_with: VCR 6.0.0
+  recorded_at: Fri, 08 Dec 2023 15:16:02 GMT
+recorded_with: VCR 6.2.0

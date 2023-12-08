@@ -6,22 +6,27 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"developer\",\n  \"namespace\":
-        \"examples\",\n  \"doc\": \"| version 5251a97e\",\n  \"fields\": [\n    {\n      \"name\":
+        \"examples\",\n  \"doc\": \"| version 57552ad2\",\n  \"fields\": [\n    {\n      \"name\":
         \"first_name\",\n      \"type\": \"string\",\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\":
         \"last_name\",\n      \"type\": \"string\",\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\":
         \"title\",\n      \"type\": [\n        \"null\",\n        \"string\"\n      ],\n      \"default\":
         null,\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\": \"language\",\n      \"type\":
-        \"string\",\n      \"doc\": \"| type string\"\n    }\n  ]\n}"}'
+        \"string\",\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\":
+        \"password\",\n      \"type\": {\n        \"type\": \"string\",\n        \"logicalType\":
+        \"sensitive-data\",\n        \"fieldId\": \"dev_pw\"\n      },\n      \"doc\":
+        \"| type string\"\n    }\n  ]\n}"}'
     headers:
       Content-Type:
       - application/vnd.schemaregistry.v1+json
   response:
     status:
       code: 200
-      message: null
+      message:
     headers:
       Date:
-      - Thu, 03 Feb 2022 01:12:54 GMT
+      - Fri, 08 Dec 2023 15:15:16 GMT
+      X-Request-ID:
+      - 57493aae-143f-4398-ae99-bc37b1086eef
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -31,5 +36,5 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":5}'
-  recorded_at: Thu, 03 Feb 2022 01:12:54 GMT
-recorded_with: VCR 6.0.0
+  recorded_at: Fri, 08 Dec 2023 15:15:16 GMT
+recorded_with: VCR 6.2.0

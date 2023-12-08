@@ -12,10 +12,12 @@ http_interactions:
   response:
     status:
       code: 200
-      message: null
+      message:
     headers:
       Date:
-      - Thu, 03 Feb 2022 01:18:58 GMT
+      - Fri, 08 Dec 2023 15:16:33 GMT
+      X-Request-ID:
+      - 897bd246-9b20-47a3-8b50-134fe9450a7b
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -31,5 +33,5 @@ http_interactions:
         type currency\",\"default\":null},{\"name\":\"gamer_level\",\"type\":[\"null\",\"int\"],\"doc\":\"|
         type integer\",\"default\":null},{\"name\":\"zip_code\",\"type\":[\"null\",\"string\"],\"doc\":\"|
         type string\",\"default\":null}]}"}'
-  recorded_at: Thu, 03 Feb 2022 01:18:58 GMT
-recorded_with: VCR 6.0.0
+  recorded_at: Fri, 08 Dec 2023 15:16:33 GMT
+recorded_with: VCR 6.2.0

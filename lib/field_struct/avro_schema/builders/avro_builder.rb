@@ -45,9 +45,10 @@ module FieldStruct
 
         def build_attr_type_line(attr, ary)
           type_parts = attr[:type].to_s.split('.')
+          logical_type = attr.dig(:avro, :logical_type)
           ary << if type_parts.size > 1
                    type_parts.join('.').inspect
-                 elsif attr[:logical_type] == 'sensitive-data'
+                 elsif logical_type == 'sensitive-data'
                    field_id = attr.dig(:avro, :field_id)
                    raise 'Missing field_id' unless field_id
 
@@ -55,7 +56,12 @@ module FieldStruct
                  else
                    ":#{attr[:type]}"
                  end
-          ary << "logical_type: #{attr[:logical_type].inspect}" if attr[:logical_type]
+
+          if logical_type.present?
+            ary << "logical_type: #{logical_type.inspect}" if logical_type
+            logical_type_options = attr.dig(:avro)&.except(:logical_type, :field_id)
+            logical_type_options.each { |k, v| ary << ":#{k} => #{v}" }
+          end
         end
 
         def build_attr_items_line(attr, ary)
@@ -202,7 +208,6 @@ module FieldStruct
         type = attr.type
         if (type_ary = logical_type_tuple(attr, type))
           hsh[:type] = type_ary.first.to_s
-          hsh[:logical_type] = type_ary.last
         elsif (type_key = ACTIVE_MODEL_TYPES[type])
           hsh[:type] = type_key.to_s
         elsif type.field_struct?
@@ -212,9 +217,8 @@ module FieldStruct
 
       def logical_type_tuple(attr, type)
         if !attr.avro.nil? && attr.avro.key?(:logical_type)
-          [type, attr.avro[:logical_type]]
-        elsif (type_ary = LOGICAL_TYPES[type])
-          type_ary
+          resolved_type = ACTIVE_MODEL_TYPES.key?(type) ? ACTIVE_MODEL_TYPES[type] : type
+          [resolved_type, attr.avro[:logical_type]]
         end
       end
 
