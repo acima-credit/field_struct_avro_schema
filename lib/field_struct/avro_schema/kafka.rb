@@ -112,7 +112,7 @@ module FieldStruct
                schema_registry.register build_subject_name(klass), klass.schema
              else
                data = schema_registry.check build_subject_name(klass), klass.schema
-               data.fetch('id')
+               data&.fetch('id')
              end
         raise StandardError, "Schema Not Found -- Schema Name: #{klass.default_schema_record_name}" if id.blank?
 
