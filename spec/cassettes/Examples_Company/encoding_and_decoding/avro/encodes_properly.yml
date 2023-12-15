@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8081/schemas/ids/3
+    uri: http://localhost:8081/schemas/ids/6
     body:
       encoding: US-ASCII
       string: ''
@@ -15,9 +15,9 @@ http_interactions:
       message:
     headers:
       Date:
-      - Fri, 08 Dec 2023 14:50:05 GMT
+      - Fri, 15 Dec 2023 16:21:12 GMT
       X-Request-ID:
-      - dfdfa013-9a68-41a5-a4f2-c91815e4b4ae
+      - a9f85fc8-0cb7-4030-99b2-3974bbb91ed3
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -43,5 +43,5 @@ http_interactions:
         type string\"}]}},\"doc\":\"Team members | type array:examples.developer\"}]}],\"doc\":\"|
         type examples.team\",\"default\":null},{\"name\":\"marketing_team\",\"type\":[\"null\",\"team\"],\"doc\":\"|
         type examples.team\",\"default\":null}]}"}'
-  recorded_at: Fri, 08 Dec 2023 14:50:05 GMT
+  recorded_at: Fri, 15 Dec 2023 16:21:12 GMT
 recorded_with: VCR 6.2.0

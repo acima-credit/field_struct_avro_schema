@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Examples::Company do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 3 }
+  let(:exp_schema_id) { 6 }
 
   let(:exp_hash) do
     {
@@ -530,7 +530,7 @@ RSpec.describe Examples::Company do
     context 'avro' do
       let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
-        "\u0000\u0000\u0000\u0000\u0003 My Super Company\u0002\u0014Duper Team" \
+        "\u0000\u0000\u0000\u0000\u0006 My Super Company\u0002\u0014Duper Team" \
           "\bKarl\bMarx\u0002\u0012Team Lead\u0004\bJohn\u0014Stalingrad\u0002\u0012" \
           "Developer\bRuby2ENCRYPTED:dev_pw:rubyroxx\nSteve\u0010Romanoff\u0002\u0010" \
           "Designer\u0012In Design@ENCRYPTED:dev_pw:IHeartComputers\u0000\u0002\u0018" \

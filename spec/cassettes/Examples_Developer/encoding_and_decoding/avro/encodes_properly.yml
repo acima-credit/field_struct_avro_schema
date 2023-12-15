@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8081/schemas/ids/5
+    uri: http://localhost:8081/schemas/ids/4
     body:
       encoding: US-ASCII
       string: ''
@@ -15,9 +15,9 @@ http_interactions:
       message:
     headers:
       Date:
-      - Fri, 08 Dec 2023 15:15:28 GMT
+      - Fri, 15 Dec 2023 16:21:13 GMT
       X-Request-ID:
-      - 61d27fc2-47ad-479a-81eb-dd5bc191393e
+      - 20d21bc8-4a6c-4fd9-beab-6d8df14a6f95
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -33,5 +33,5 @@ http_interactions:
         string\",\"default\":null},{\"name\":\"language\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"password\",\"type\":{\"type\":\"string\",\"logicalType\":\"sensitive-data\",\"fieldId\":\"dev_pw\"},\"doc\":\"|
         type string\"}]}"}'
-  recorded_at: Fri, 08 Dec 2023 15:15:28 GMT
+  recorded_at: Fri, 15 Dec 2023 16:21:13 GMT
 recorded_with: VCR 6.2.0

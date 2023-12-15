@@ -2,7 +2,7 @@
 
 RSpec.describe ExampleApp::Examples::Friend do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 7 }
+  let(:exp_schema_id) { 8 }
 
   let(:exp_hash) do
     {
@@ -261,7 +261,7 @@ RSpec.describe ExampleApp::Examples::Friend do
     context 'avro' do
       let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
-        "\u0000\u0000\u0000\u0000\a\u0016Carl Rovers\u0002Z\u0002\x9E(\u0002\u0004\u0002\n84120"
+        "\u0000\u0000\u0000\u0000\b\u0016Carl Rovers\u0002Z\u0002\x9E(\u0002\u0004\u0002\n84120"
       end
       let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
       it('encodes properly') { compare encoded, exp_encoded }

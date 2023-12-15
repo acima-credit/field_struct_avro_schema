@@ -2,7 +2,7 @@
 
 RSpec.describe PublishableApp::Examples::Runner do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 2 }
+  let(:exp_schema_id) { 9 }
 
   let(:exp_hash) do
     {
@@ -276,7 +276,7 @@ RSpec.describe PublishableApp::Examples::Runner do
     context 'avro' do
       let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
-        "\u0000\u0000\u0000\u0000\u0002\u0014Usain Bolt\xAC\u0002\u0010123 Fast\fSpeedy"
+        "\u0000\u0000\u0000\u0000\u0009\u0014Usain Bolt\xAC\u0002\u0010123 Fast\fSpeedy"
       end
       let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
       it('encodes properly') { compare encoded, exp_encoded }

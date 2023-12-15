@@ -5,6 +5,8 @@ module Examples
     # include FieldStruct::AvroExtension
     include FieldStruct::AvroSchema::Event
 
+    publishable false
+
     def self.default_schema_naming_strategy
       :topic_name
     end

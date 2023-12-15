@@ -41,9 +41,9 @@ http_interactions:
       message:
     headers:
       Date:
-      - Fri, 08 Dec 2023 15:19:49 GMT
+      - Fri, 15 Dec 2023 16:19:28 GMT
       X-Request-ID:
-      - 52a05d6c-b621-4999-86ee-f4dccc95ff0d
+      - 31068961-acea-4257-84c8-95ba3c77b1b5
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -52,6 +52,6 @@ http_interactions:
       - '8'
     body:
       encoding: ASCII-8BIT
-      string: '{"id":9}'
-  recorded_at: Fri, 08 Dec 2023 15:19:49 GMT
+      string: '{"id":5}'
+  recorded_at: Fri, 15 Dec 2023 16:19:28 GMT
 recorded_with: VCR 6.2.0
