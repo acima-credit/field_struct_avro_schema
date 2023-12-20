@@ -34,7 +34,7 @@ module FieldStruct
           when Array
             convert_array_value attr, value
           else
-            convert_simple_value attr.of || attr.type, value
+            convert_simple_value attr, value
           end
         end
 
@@ -47,16 +47,16 @@ module FieldStruct
             if attr.of.field_struct?
               attr.of.from_avro_hash(x).to_hash
             else
-              convert_simple_value attr.of, x
+              convert_simple_value attr, x
             end
           end
         end
 
-        def convert_simple_value(type, value)
-          converter = ValueConverters::Registry.find type
+        def convert_simple_value(attr, value)
+          converter = ValueConverters::Registry.find attr.of || attr.type
           return value unless converter
 
-          converter.from_avro value
+          converter.from_avro value, attr.avro&.fetch(:logical_type)
         end
       end
 

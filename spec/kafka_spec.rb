@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe FieldStruct::AvroSchema::Kafka do
   let(:known_events) do
     {
+      'Coercions::Examples::TestStruct' => Coercions::Examples::TestStruct,
       'CustomNamespace::CustomRecordName' => CustomNamespace::CustomRecordName,
       'ExampleApp::Examples::Friend' => ExampleApp::Examples::Friend,
       'Examples::Base' => Examples::Base,

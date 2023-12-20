@@ -6,12 +6,12 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"friend\",\n  \"namespace\":
-        \"example_app.examples\",\n  \"doc\": \"| version 82f78509\",\n  \"fields\":
+        \"example_app.examples\",\n  \"doc\": \"| version 154b4038\",\n  \"fields\":
         [\n    {\n      \"name\": \"name\",\n      \"type\": \"string\",\n      \"doc\":
         \"| type string\"\n    },\n    {\n      \"name\": \"age\",\n      \"type\":
         [\n        \"null\",\n        \"int\"\n      ],\n      \"default\": null,\n      \"doc\":
         \"| type integer\"\n    },\n    {\n      \"name\": \"balance_owed\",\n      \"type\":
-        [\n        \"null\",\n        \"int\"\n      ],\n      \"default\": null,\n      \"doc\":
+          [\n        \"null\",\n        {\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":8,\"scale\":2}\n      ],\n      \"default\": null,\n      \"doc\":
         \"| type currency\"\n    },\n    {\n      \"name\": \"gamer_level\",\n      \"type\":
         [\n        \"null\",\n        \"int\"\n      ],\n      \"default\": null,\n      \"doc\":
         \"| type integer\"\n    },\n    {\n      \"name\": \"zip_code\",\n      \"type\":

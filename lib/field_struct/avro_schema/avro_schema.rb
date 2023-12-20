@@ -6,14 +6,26 @@ module FieldStruct
       float: :float,
       big_integer: :float,
       decimal: :float,
-      currency: :int,
       integer: :int,
       binary: :bytes,
       string: :string,
-      date: :int,
-      datetime: :long,
+      date: {
+        nil    => :int,
+        'date' => :int
+      },
+      datetime: {
+        nil                 => :int,
+        :date               => :int,
+        :'timestamp-millis' => :long,
+        :'timestamp-micros' => :long
+      },
       immutable_string: :string,
-      time: :long,
+      time: {
+        nil                 => :int,
+        :date               => :int,
+        :'timestamp-millis' => :long,
+        :'timestamp-micros' => :long
+      },
       boolean: :boolean,
       array: :array
     }.with_indifferent_access.freeze

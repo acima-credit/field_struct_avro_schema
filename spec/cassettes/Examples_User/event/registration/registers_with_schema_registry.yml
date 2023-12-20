@@ -6,13 +6,11 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"user\",\n  \"namespace\":
-        \"examples\",\n  \"doc\": \"| version 5272f558\",\n  \"fields\": [\n    {\n      \"name\":
+        \"examples\",\n  \"doc\": \"| version 94712206\",\n  \"fields\": [\n    {\n      \"name\":
         \"username\",\n      \"type\": \"string\",\n      \"doc\": \"login | type
         string\"\n    },\n    {\n      \"name\": \"password\",\n      \"type\": [\n        \"null\",\n        \"string\"\n      ],\n      \"default\":
         null,\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\": \"age\",\n      \"type\":
-        \"int\",\n      \"doc\": \"| type integer\"\n    },\n    {\n      \"name\":
-        \"owed\",\n      \"type\": \"int\",\n      \"doc\": \"amount owed to the company
-        | type currency\"\n    },\n    {\n      \"name\": \"source\",\n      \"type\":
+        \"int\",\n      \"doc\": \"| type integer\"\n    },\n    {\n      \"name\": \"source\",\n      \"type\":
         \"string\",\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\":
         \"level\",\n      \"type\": \"int\",\n      \"doc\": \"| type integer\"\n    },\n    {\n      \"name\":
         \"at\",\n      \"type\": [\n        \"null\",\n        {\n          \"type\":

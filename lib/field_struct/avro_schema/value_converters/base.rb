@@ -10,19 +10,20 @@ module FieldStruct
             @values || []
           end
 
-          def to_avro(value)
-            new(value).to_avro
+          def to_avro(value, logical_type)
+            new(value, logical_type).to_avro
           end
 
-          def from_avro(value)
-            new(value).from_avro
+          def from_avro(value, logical_type)
+            new(value, logical_type).from_avro
           end
         end
 
         attr_reader :value
 
-        def initialize(value)
-          @value = value
+        def initialize(value, logical_type)
+          @value        = value
+          @logical_type = logical_type
         end
 
         def to_avro

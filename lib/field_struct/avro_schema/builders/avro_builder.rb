@@ -198,7 +198,12 @@ module FieldStruct
         if (type_ary = logical_type_tuple(attr, type))
           hsh[:items] = type_ary
         elsif (type_key = ACTIVE_MODEL_TYPES[type])
-          hsh[:items] = type_key.to_s
+          result = if type_key.is_a?(Hash)
+                     type_key[nil]
+                   else
+                     type_key
+                   end
+          hsh[:items] = result.to_s
         elsif type.field_struct?
           hsh[:items] = type.schema_record_name
         end
@@ -209,7 +214,12 @@ module FieldStruct
         if (type_ary = logical_type_tuple(attr, type))
           hsh[:type] = type_ary.first.to_s
         elsif (type_key = ACTIVE_MODEL_TYPES[type])
-          hsh[:type] = type_key.to_s
+          result = if type_key.is_a?(Hash)
+                     type_key[nil]
+                   else
+                     type_key
+                   end
+          hsh[:type] = result.to_s
         elsif type.field_struct?
           hsh[:type] = type.schema_record_name
         end
@@ -217,8 +227,18 @@ module FieldStruct
 
       def logical_type_tuple(attr, type)
         if !attr.avro.nil? && attr.avro.key?(:logical_type)
-          resolved_type = ACTIVE_MODEL_TYPES.key?(type) ? ACTIVE_MODEL_TYPES[type] : type
-          [resolved_type, attr.avro[:logical_type]]
+          logical_type = attr.avro[:logical_type]
+          resolved = resolve_type(type, logical_type)
+          [resolved, logical_type]
+        end
+      end
+
+      def resolve_type(type, logical_type)
+        resolved_type = ACTIVE_MODEL_TYPES.key?(type) ? ACTIVE_MODEL_TYPES[type] : type
+        if resolved_type.is_a?(Hash)
+          resolved_type[logical_type.to_s]
+        else
+          resolved_type
         end
       end
 

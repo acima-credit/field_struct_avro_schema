@@ -37,7 +37,7 @@ module FieldStruct
           converter = ValueConverters::Registry.find attr.of || attr.type
           return value unless converter
 
-          converter.to_avro value
+          converter.to_avro value, attr.avro&.fetch(:logical_type)
         end
       end
 

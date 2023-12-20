@@ -27,11 +27,10 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"schema":"{\"type\":\"record\",\"name\":\"user\",\"namespace\":\"examples\",\"doc\":\"|
-        version 5272f558\",\"fields\":[{\"name\":\"username\",\"type\":\"string\",\"doc\":\"login
+        version 94712206\",\"fields\":[{\"name\":\"username\",\"type\":\"string\",\"doc\":\"login
         | type string\"},{\"name\":\"password\",\"type\":[\"null\",\"string\"],\"doc\":\"|
         type string\",\"default\":null},{\"name\":\"age\",\"type\":\"int\",\"doc\":\"|
-        type integer\"},{\"name\":\"owed\",\"type\":\"int\",\"doc\":\"amount owed
-        to the company | type currency\"},{\"name\":\"source\",\"type\":\"string\",\"doc\":\"|
+        type integer\"},{\"name\":\"source\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"level\",\"type\":\"int\",\"doc\":\"| type integer\"},{\"name\":\"at\",\"type\":[\"null\",{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}],\"doc\":\"|
         type time\",\"default\":null},{\"name\":\"active\",\"type\":\"boolean\",\"doc\":\"|
         type boolean\",\"default\":false},{\"name\":\"ssn\",\"type\":[\"null\",{\"type\":\"string\",\"logicalType\":\"sensitive-data\",\"fieldId\":\"social_security_number\"}],\"doc\":\"|
