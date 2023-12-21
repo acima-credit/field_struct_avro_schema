@@ -27,9 +27,10 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"schema":"{\"type\":\"record\",\"name\":\"friend\",\"namespace\":\"example_app.examples\",\"doc\":\"|
-        version 154b4038\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
+        version ddcef2cf\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"age\",\"type\":[\"null\",\"int\"],\"doc\":\"| type
-        integer\",\"default\":null},{\"name\":\"balance_owed\",\"type\":[\"null\",{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":8,\"scale\":2}],\"doc\":\"|
+        integer\",\"default\":null},{\"name\":\"balance_owed\",\"type\":[\"null\",\"int\"],\"doc\":\"|
+        type currency\",\"default\":null},{\"name\":\"balance_owed\",\"type\":[\"null\",{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":8,\"scale\":2}],\"doc\":\"|
         type binary\",\"default\":null},{\"name\":\"gamer_level\",\"type\":[\"null\",\"int\"],\"doc\":\"|
         type integer\",\"default\":null},{\"name\":\"zip_code\",\"type\":[\"null\",\"string\"],\"doc\":\"|
         type string\",\"default\":null}]}"}'

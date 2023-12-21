@@ -86,7 +86,8 @@ module ModelHelpers
     {
       name: 'Carl Rovers',
       age: 45,
-      balance_owed: BigDecimal("25.75"),
+      balance_owed: 25.75,
+      balance_owed_d: BigDecimal("25.75"),
       gamer_level: 2,
       zip_code: '84120'
     }

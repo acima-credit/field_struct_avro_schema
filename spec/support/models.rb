@@ -83,7 +83,8 @@ module ExampleApp
 
       required :name, :string
       optional :age, :integer
-      optional :balance_owed, :binary, avro: { logical_type: 'decimal', precision: 8, scale: 2 }, default: 0.0
+      optional :balance_owed, :currency, default: 0.0
+      optional :balance_owed_d, :binary, avro: { logical_type: 'decimal', precision: 8, scale: 2 }, default: 0.0
       optional :gamer_level, :integer, enum: [1, 2, 3], default: -> { 1 }
       optional :zip_code, :string, format: /\A[0-9]{5}?\z/
     end

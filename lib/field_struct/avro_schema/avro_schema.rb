@@ -6,6 +6,7 @@ module FieldStruct
       float: :float,
       big_integer: :float,
       decimal: :float,
+      currency: :int,
       integer: :int,
       binary: :bytes,
       string: :string,
