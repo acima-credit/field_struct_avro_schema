@@ -12,12 +12,12 @@ module FieldStruct
 
         def register(*klasses)
           klasses.each do |klass|
-            klass.handles.each { |type| all[type.to_s] = klass }
+            klass.handles.each { |type| all[type] = klass }
           end
         end
 
         def find(type)
-          all[type.to_s]
+          all[type]
         end
       end
     end

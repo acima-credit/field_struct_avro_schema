@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe CustomNamespace::CustomRecordName do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 4 }
+  let(:exp_schema_id) { 7 }
 
   let(:exp_hash) do
     {
@@ -203,7 +203,7 @@ RSpec.describe CustomNamespace::CustomRecordName do
     context 'avro' do
       let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
-        "\u0000\u0000\u0000\u0000\u0004\bJohn\u0006Max"
+        "\u0000\u0000\u0000\u0000\u0007\bJohn\u0006Max"
       end
       let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
       it('encodes properly') { compare encoded, exp_encoded }

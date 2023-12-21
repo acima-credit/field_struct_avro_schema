@@ -17,10 +17,12 @@ http_interactions:
   response:
     status:
       code: 200
-      message: null
+      message:
     headers:
       Date:
-      - Thu, 03 Feb 2022 01:12:54 GMT
+      - Fri, 15 Dec 2023 16:19:27 GMT
+      X-Request-ID:
+      - 68e31239-a2e3-4dd2-917b-b52a6b189601
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -29,6 +31,6 @@ http_interactions:
       - '8'
     body:
       encoding: ASCII-8BIT
-      string: '{"id":6}'
-  recorded_at: Thu, 03 Feb 2022 01:12:54 GMT
-recorded_with: VCR 6.0.0
+      string: '{"id":3}'
+  recorded_at: Fri, 15 Dec 2023 16:19:27 GMT
+recorded_with: VCR 6.2.0

@@ -6,13 +6,11 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"user\",\n  \"namespace\":
-        \"examples\",\n  \"doc\": \"| version daff3d9a\",\n  \"fields\": [\n    {\n      \"name\":
+        \"examples\",\n  \"doc\": \"| version 94712206\",\n  \"fields\": [\n    {\n      \"name\":
         \"username\",\n      \"type\": \"string\",\n      \"doc\": \"login | type
         string\"\n    },\n    {\n      \"name\": \"password\",\n      \"type\": [\n        \"null\",\n        \"string\"\n      ],\n      \"default\":
         null,\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\": \"age\",\n      \"type\":
-        \"int\",\n      \"doc\": \"| type integer\"\n    },\n    {\n      \"name\":
-        \"owed\",\n      \"type\": \"int\",\n      \"doc\": \"amount owed to the company
-        | type currency\"\n    },\n    {\n      \"name\": \"source\",\n      \"type\":
+        \"int\",\n      \"doc\": \"| type integer\"\n    },\n    {\n      \"name\": \"source\",\n      \"type\":
         \"string\",\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\":
         \"level\",\n      \"type\": \"int\",\n      \"doc\": \"| type integer\"\n    },\n    {\n      \"name\":
         \"at\",\n      \"type\": [\n        \"null\",\n        {\n          \"type\":
@@ -22,7 +20,9 @@ http_interactions:
         \"ssn\",\n      \"type\": [\n        \"null\",\n        {\n          \"type\":
         \"string\",\n          \"logicalType\": \"sensitive-data\",\n          \"fieldId\":
         \"social_security_number\"\n        }\n      ],\n      \"default\": null,\n      \"doc\":
-        \"| type string\"\n    }\n  ]\n}"}'
+        \"| type string\"\n    },\n    {\n      \"name\": \"paycheck\",\n      \"type\":
+        {\n        \"type\": \"bytes\",\n        \"logicalType\": \"decimal\",\n        \"precision\":
+        6,\n        \"scale\": 2\n      },\n      \"doc\": \"| type binary\"\n    }\n  ]\n}"}'
     headers:
       Content-Type:
       - application/vnd.schemaregistry.v1+json
@@ -32,9 +32,9 @@ http_interactions:
       message:
     headers:
       Date:
-      - Mon, 16 Oct 2023 20:07:43 GMT
+      - Fri, 15 Dec 2023 16:19:28 GMT
       X-Request-ID:
-      - 4c07d371-d01c-4f68-ba1c-230b5157bdac
+      - 499d423d-e8b4-4d64-b090-629b665e5b11
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -44,5 +44,5 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":1}'
-  recorded_at: Mon, 16 Oct 2023 20:07:43 GMT
+  recorded_at: Fri, 15 Dec 2023 16:19:28 GMT
 recorded_with: VCR 6.2.0

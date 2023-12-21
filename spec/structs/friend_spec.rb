@@ -2,7 +2,7 @@
 
 RSpec.describe ExampleApp::Examples::Friend do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 7 }
+  let(:exp_schema_id) { 8 }
 
   let(:exp_hash) do
     {
@@ -12,20 +12,22 @@ RSpec.describe ExampleApp::Examples::Friend do
         name: { type: :string, required: true },
         age: { type: :integer },
         balance_owed: { type: :currency, default: 0.0 },
+        balance_owed_d: { type: :binary, avro: { logical_type: 'decimal', precision: 8, scale: 2 }, default: 0.0 },
         gamer_level: { type: :integer, enum: [1, 2, 3], default: '<proc>' },
         zip_code: { type: :string, format: /\A[0-9]{5}?\z/ }
       },
-      version: '82f78509'
+      version: 'ddcef2cf'
     }
   end
   let(:exp_template) do
     <<~CODE.chomp
       namespace 'example_app.examples'
 
-      record :friend, :doc=>"| version 82f78509" do
+      record :friend, :doc=>"| version ddcef2cf" do
         required :name, :string, doc: "| type string"
         optional :age, :int, doc: "| type integer"
         optional :balance_owed, :int, default: 0.0, doc: "| type currency"
+        optional :balance_owed_d, :bytes, logical_type: "decimal", :precision => 8, :scale => 2, default: 0.0, doc: "| type binary"
         optional :gamer_level, :int, doc: "| type integer"
         optional :zip_code, :string, doc: "| type string"
       end
@@ -36,11 +38,17 @@ RSpec.describe ExampleApp::Examples::Friend do
       type: 'record',
       name: 'friend',
       namespace: 'example_app.examples',
-      doc: '| version 82f78509',
+      doc: '| version ddcef2cf',
       fields: [
         { name: 'name', type: 'string', doc: '| type string' },
         { name: 'age', type: %w[null int], default: nil, doc: '| type integer' },
         { name: 'balance_owed', type: %w[null int], default: nil, doc: '| type currency' },
+        {
+          name: 'balance_owed_d',
+          type: ['null', { type: 'bytes', logicalType: 'decimal', precision: 8, scale: 2 }],
+          default: nil,
+          doc: '| type binary'
+        },
         { name: 'gamer_level', type: %w[null int], default: nil, doc: '| type integer' },
         { name: 'zip_code', type: %w[null string], default: nil, doc: '| type string' }
       ]
@@ -52,7 +60,7 @@ RSpec.describe ExampleApp::Examples::Friend do
         "type": "record",
         "name": "friend",
         "namespace": "example_app.examples",
-        "doc": "| version 82f78509",
+        "doc": "| version ddcef2cf",
         "fields": [
           {
             "name": "name",
@@ -76,6 +84,20 @@ RSpec.describe ExampleApp::Examples::Friend do
             ],
             "default": null,
             "doc": "| type currency"
+          },
+          {
+            "name": "balance_owed_d",
+            "type": [
+              "null",
+              {
+                "type": "bytes",
+                "logicalType": "decimal",
+                "precision": 8,
+                "scale": 2
+              }
+            ],
+            "default": null,
+            "doc": "| type binary"
           },
           {
             "name": "gamer_level",
@@ -102,16 +124,17 @@ RSpec.describe ExampleApp::Examples::Friend do
   let(:exp_version_meta) do
     [
       {
-        name: 'Schemas::ExampleApp::Examples::Friend::V82f78509',
-        schema_name: 'schemas.example_app.examples.friend.v82f78509',
+        name: 'Schemas::ExampleApp::Examples::Friend::Vddcef2cf',
+        schema_name: 'schemas.example_app.examples.friend.vddcef2cf',
         attributes: {
           name: { type: :string, required: true },
           age: { type: :integer },
           balance_owed: { type: :currency },
+          balance_owed_d: { type: :binary },
           gamer_level: { type: :integer },
           zip_code: { type: :string }
         },
-        version: '82f78509'
+        version: 'ddcef2cf'
       }
     ]
   end
@@ -177,6 +200,7 @@ RSpec.describe ExampleApp::Examples::Friend do
         name: 'Carl Rovers',
         age: 45,
         balance_owed: 2575,
+        balance_owed_d: BigDecimal("25.75"),
         gamer_level: 2,
         zip_code: '84120'
       }
@@ -186,6 +210,7 @@ RSpec.describe ExampleApp::Examples::Friend do
         name: 'Carl Rovers',
         age: 45,
         balance_owed: 25.75,
+        balance_owed_d: 25.75,
         gamer_level: 2,
         zip_code: '84120'
       }
@@ -261,7 +286,7 @@ RSpec.describe ExampleApp::Examples::Friend do
     context 'avro' do
       let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
-        "\u0000\u0000\u0000\u0000\a\u0016Carl Rovers\u0002Z\u0002\x9E(\u0002\u0004\u0002\n84120"
+        "\u0000\u0000\u0000\u0000\b\u0016Carl Rovers\u0002Z\u0002\x9E(\u0002\u0004\n\u000F\u0002\u0004\u0002\n84120"
       end
       let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
       it('encodes properly') { compare encoded, exp_encoded }
@@ -270,7 +295,7 @@ RSpec.describe ExampleApp::Examples::Friend do
     context 'json' do
       let(:encoded) { kafka.encode_json instance }
       let(:exp_encoded) do
-        '{"name":"Carl Rovers","age":45,"balance_owed":25.75,"gamer_level":2,"zip_code":"84120"}'
+        '{"name":"Carl Rovers","age":45,"balance_owed":25.75,"balance_owed_d":"25.75","gamer_level":2,"zip_code":"84120"}'
       end
       let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
       it('encodes properly') { compare encoded, exp_encoded }

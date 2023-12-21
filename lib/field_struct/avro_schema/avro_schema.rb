@@ -2,15 +2,6 @@
 
 module FieldStruct
   module AvroSchema
-    AVRO_TYPES = {
-      float: %i[float big_integer decimal],
-      int: %i[integer currency],
-      bytes: [:binary],
-      string: %i[string date datetime immutable_string time],
-      boolean: [:boolean],
-      array: [:array]
-    }.with_indifferent_access.freeze
-
     ACTIVE_MODEL_TYPES = {
       float: :float,
       big_integer: :float,
@@ -19,18 +10,25 @@ module FieldStruct
       integer: :int,
       binary: :bytes,
       string: :string,
-      date: :int,
-      datetime: :int,
+      date: {
+        nil    => :int,
+        'date' => :int
+      },
+      datetime: {
+        nil                 => :int,
+        :date               => :int,
+        :'timestamp-millis' => :long,
+        :'timestamp-micros' => :long
+      },
       immutable_string: :string,
-      time: :int,
+      time: {
+        nil                 => :int,
+        :date               => :int,
+        :'timestamp-millis' => :long,
+        :'timestamp-micros' => :long
+      },
       boolean: :boolean,
       array: :array
-    }.with_indifferent_access.freeze
-
-    LOGICAL_TYPES = {
-      date: [:int, 'date'],
-      datetime: [:long, 'timestamp-millis'],
-      time: [:long, 'timestamp-millis']
     }.with_indifferent_access.freeze
 
     def self.logger

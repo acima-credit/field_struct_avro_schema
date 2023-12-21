@@ -6,7 +6,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"schema":"{\n  \"type\": \"record\",\n  \"name\": \"team\",\n  \"namespace\":
-        \"examples\",\n  \"doc\": \"| version c055f985\",\n  \"fields\": [\n    {\n      \"name\":
+        \"examples\",\n  \"doc\": \"| version 0f4f0194\",\n  \"fields\": [\n    {\n      \"name\":
         \"name\",\n      \"type\": \"string\",\n      \"doc\": \"| type string\"\n    },\n    {\n      \"name\":
         \"leader\",\n      \"type\": {\n        \"type\": \"record\",\n        \"name\":
         \"employee\",\n        \"namespace\": \"examples\",\n        \"doc\": \"|
@@ -19,7 +19,7 @@ http_interactions:
         \"| type examples.employee\"\n    },\n    {\n      \"name\": \"members\",\n      \"type\":
         {\n        \"type\": \"array\",\n        \"items\": {\n          \"type\":
         \"record\",\n          \"name\": \"developer\",\n          \"namespace\":
-        \"examples\",\n          \"doc\": \"| version 5251a97e\",\n          \"fields\":
+        \"examples\",\n          \"doc\": \"| version 57552ad2\",\n          \"fields\":
         [\n            {\n              \"name\": \"first_name\",\n              \"type\":
         \"string\",\n              \"doc\": \"| type string\"\n            },\n            {\n              \"name\":
         \"last_name\",\n              \"type\": \"string\",\n              \"doc\":
@@ -27,6 +27,9 @@ http_interactions:
         \"title\",\n              \"type\": [\n                \"null\",\n                \"string\"\n              ],\n              \"default\":
         null,\n              \"doc\": \"| type string\"\n            },\n            {\n              \"name\":
         \"language\",\n              \"type\": \"string\",\n              \"doc\":
+        \"| type string\"\n            },\n            {\n              \"name\":
+        \"password\",\n              \"type\": {\n                \"type\": \"string\",\n                \"logicalType\":
+        \"sensitive-data\",\n                \"fieldId\": \"dev_pw\"\n              },\n              \"doc\":
         \"| type string\"\n            }\n          ]\n        }\n      },\n      \"doc\":
         \"Team members | type array:examples.developer\"\n    }\n  ]\n}"}'
     headers:
@@ -35,10 +38,12 @@ http_interactions:
   response:
     status:
       code: 200
-      message: null
+      message:
     headers:
       Date:
-      - Thu, 03 Feb 2022 01:12:55 GMT
+      - Fri, 15 Dec 2023 16:19:28 GMT
+      X-Request-ID:
+      - 31068961-acea-4257-84c8-95ba3c77b1b5
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -47,6 +52,6 @@ http_interactions:
       - '8'
     body:
       encoding: ASCII-8BIT
-      string: '{"id":9}'
-  recorded_at: Thu, 03 Feb 2022 01:12:54 GMT
-recorded_with: VCR 6.0.0
+      string: '{"id":5}'
+  recorded_at: Fri, 15 Dec 2023 16:19:28 GMT
+recorded_with: VCR 6.2.0

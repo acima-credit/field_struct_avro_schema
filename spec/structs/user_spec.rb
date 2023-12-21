@@ -10,17 +10,17 @@ RSpec.describe Examples::User do
     {
       name: 'Examples::User',
       schema_name: 'examples.user',
-      version: 'daff3d9a',
+      version: '94712206',
       attributes: {
         username: { type: :string, required: true, format: /\A[a-z]/i, description: 'login' },
         password: { type: :string },
         age: { type: :integer, required: true },
-        owed: { type: :currency, required: true, description: 'amount owed to the company' },
         source: { type: :string, required: true, enum: %w[A B C] },
         level: { type: :integer, required: true, default: '<proc>' },
-        at: { type: :time },
+        at: { type: :time, avro: { logical_type: 'timestamp-millis' } },
         active: { type: :boolean, required: true, default: false },
-        ssn: { type: :string, avro: { logical_type: 'sensitive-data', field_id: 'social_security_number' } }
+        ssn: { type: :string, avro: { logical_type: 'sensitive-data', field_id: 'social_security_number' } },
+        paycheck: { type: :binary, required: true, avro: { logical_type: 'decimal', precision: 6, scale: 2 } }
       }
     }
   end
@@ -28,16 +28,16 @@ RSpec.describe Examples::User do
     <<~CODE.chomp
       namespace 'examples'
 
-      record :user, :doc=>"| version daff3d9a" do
+      record :user, :doc=>"| version 94712206" do
         required :username, :string, doc: "login | type string"
         optional :password, :string, doc: "| type string"
         required :age, :int, doc: "| type integer"
-        required :owed, :int, doc: "amount owed to the company | type currency"
         required :source, :string, doc: "| type string"
         required :level, :int, doc: "| type integer"
         optional :at, :long, logical_type: "timestamp-millis", doc: "| type time"
         required :active, :boolean, default: false, doc: "| type boolean"
         optional :ssn, AvroBuilder::Extensions::SensitiveData.new(cache: nil, field_id: 'social_security_number'), logical_type: "sensitive-data", doc: "| type string"
+        required :paycheck, :bytes, logical_type: "decimal", :precision => 6, :scale => 2, doc: "| type binary"
       end
     CODE
   end
@@ -46,12 +46,11 @@ RSpec.describe Examples::User do
       type: 'record',
       name: 'user',
       namespace: 'examples',
-      doc: '| version daff3d9a',
+      doc: '| version 94712206',
       fields: [
         { name: 'username', type: 'string', doc: 'login | type string' },
         { name: 'password', type: %w[null string], default: nil, doc: '| type string' },
         { name: 'age', type: 'int', doc: '| type integer' },
-        { name: 'owed', type: 'int', doc: 'amount owed to the company | type currency' },
         { name: 'source', type: 'string', doc: '| type string' },
         { name: 'level', type: 'int', doc: '| type integer' },
         {
@@ -66,6 +65,11 @@ RSpec.describe Examples::User do
           type: ['null', { type: 'string', logicalType: 'sensitive-data', fieldId: 'social_security_number' }],
           default: nil,
           doc: '| type string'
+        },
+        {
+          name: 'paycheck',
+          type: { type: 'bytes', logicalType: 'decimal', precision: 6, scale: 2 },
+          doc: '| type binary'
         }
       ]
     }
@@ -76,7 +80,7 @@ RSpec.describe Examples::User do
         "type": "record",
         "name": "user",
         "namespace": "examples",
-        "doc": "| version daff3d9a",
+        "doc": "| version 94712206",
         "fields": [
           {
             "name": "username",
@@ -96,11 +100,6 @@ RSpec.describe Examples::User do
             "name": "age",
             "type": "int",
             "doc": "| type integer"
-          },
-          {
-            "name": "owed",
-            "type": "int",
-            "doc": "amount owed to the company | type currency"
           },
           {
             "name": "source",
@@ -142,6 +141,16 @@ RSpec.describe Examples::User do
             ],
             "default": null,
             "doc": "| type string"
+          },
+          {
+            "name": "paycheck",
+            "type": {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 6,
+              "scale": 2
+            },
+            "doc": "| type binary"
           }
         ]
       }
@@ -150,19 +159,19 @@ RSpec.describe Examples::User do
   let(:exp_version_meta) do
     [
       {
-        name: 'Schemas::Examples::User::Vdaff3d9a',
-        schema_name: 'schemas.examples.user.vdaff3d9a',
-        version: 'daff3d9a',
+        name: 'Schemas::Examples::User::V94712206',
+        schema_name: 'schemas.examples.user.v94712206',
+        version: '94712206',
         attributes: {
           username: { type: :string, required: true, description: 'login' },
           password: { type: :string },
           age: { type: :integer, required: true },
-          owed: { type: :currency, required: true, description: 'amount owed to the company' },
           source: { type: :string, required: true },
           level: { type: :integer, required: true },
           at: { type: :time },
           active: { type: :boolean, required: true, default: false },
-          ssn: { type: :string }
+          ssn: { type: :string },
+          paycheck: { type: :binary, required: true }
         }
       }
     ]
@@ -202,7 +211,6 @@ RSpec.describe Examples::User do
       expect(original.username).to eq 'some_user'
       expect(original.password).to eq 'some_password'
       expect(original.age).to eq 45
-      expect(original.owed).to eq 1537.25
       expect(original.source).to eq 'B'
       expect(original.level).to eq 2
       expect(original.at).to eq past_time
@@ -217,7 +225,6 @@ RSpec.describe Examples::User do
       expect(clone.username).to eq 'some_user'
       expect(clone.password).to eq 'some_password'
       expect(clone.age).to eq 45
-      expect(clone.owed).to eq 1537.25
       expect(clone.source).to eq 'B'
       expect(clone.level).to eq 2
       expect(clone.at).to eq past_time
@@ -237,12 +244,12 @@ RSpec.describe Examples::User do
         username: 'some_user',
         password: 'some_password',
         age: 45,
-        owed: 153_725,
         source: 'B',
         level: 2,
         at: 1_551_701_167_891,
         active: true,
-        ssn: '123-45-6789'
+        ssn: '123-45-6789',
+        paycheck: BigDecimal('1234.56')
       }
     end
     let(:exp_hsh) do
@@ -250,12 +257,12 @@ RSpec.describe Examples::User do
         username: 'some_user',
         password: 'some_password',
         age: 45,
-        owed: 1537.25,
         source: 'B',
         level: 2,
         at: past_time.utc,
         active: true,
-        ssn: '123-45-6789'
+        ssn: '123-45-6789',
+        paycheck: BigDecimal('1234.56')
       }
     end
     it('#to_avro_hash') { compare instance.to_avro_hash, exp_avro_hsh }
@@ -281,12 +288,13 @@ RSpec.describe Examples::User do
     let(:new_topic_name) { 'some.topic' }
     let(:new_topic_key) { :other }
     let(:exp_avro_encoded) do
-      "\u0000\u0000\u0000\u0000\u0001\u0012some_user\u0002\u001Asome_passwordZ\xFA\xE1" \
-        "\u0012\u0002B\u0004\u0002\xA6\xBCƉ\xA9Z\u0001\u0002XENCRYPTED:social_security_number:123-45-6789"
+      "\u0000\u0000\u0000\u0000\u0001\u0012some_user\u0002\u001Asome_passwordZ" \
+        "\u0002B\u0004\u0002\xA6\xBCƉ\xA9Z\u0001\u0002" \
+        "XENCRYPTED:social_security_number:123-45-6789\u0006\u0001\xE2@"
     end
     let(:exp_json_encoded) do
-      '{"username":"some_user","password":"some_password","age":45,"owed":1537.25,"source":"B","level":2,"at":' \
-        '"2019-03-04T05:06:07.891-07:00","active":true,"ssn":"123-45-6789"}'
+      '{"username":"some_user","password":"some_password","age":45,"source":"B","level":2,"at":' \
+        '"2019-03-04T05:06:07.891-07:00","active":true,"ssn":"123-45-6789","paycheck":"1234.56"}'
     end
 
     context 'class' do
@@ -355,8 +363,8 @@ RSpec.describe Examples::User do
       context 'json_event' do
         let(:encoded) { instance.topic_encoded(:json) }
         let(:exp_encoded) do
-          '{"username":"some_user","password":"some_password","age":45,"owed":1537.25,"source":"B","level":2,"at":' \
-            '"2019-03-04T05:06:07.891-07:00","active":true,"ssn":"123-45-6789"}'
+          '{"username":"some_user","password":"some_password","age":45,"source":"B","level":2,"at":' \
+            '"2019-03-04T05:06:07.891-07:00","active":true,"ssn":"123-45-6789","paycheck":"1234.56"}'
         end
         let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
         it('encodes properly') { compare encoded, exp_encoded }
@@ -391,12 +399,12 @@ RSpec.describe Examples::User do
               username: 'some_user',
               password: 'some_password',
               age: 45,
-              owed: 1537.25,
               source: 'B',
               level: 2,
               at: past_time.utc,
               active: true,
-              ssn: '123-45-6789'
+              ssn: '123-45-6789',
+              paycheck: BigDecimal("1234.56")
             }
           end
           it('decodes') { compare result, exp_hsh }

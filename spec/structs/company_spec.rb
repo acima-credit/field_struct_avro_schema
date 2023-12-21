@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Examples::Company do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 3 }
+  let(:exp_schema_id) { 6 }
 
   let(:exp_hash) do
     {
@@ -34,7 +34,7 @@ RSpec.describe Examples::Company do
               },
               members: {
                 type: :array,
-                version: '5251a97e',
+                version: '57552ad2',
                 required: true,
                 of: {
                   name: 'Examples::Developer',
@@ -43,16 +43,17 @@ RSpec.describe Examples::Company do
                     first_name: { type: :string, required: true, min_length: 3, max_length: 20 },
                     last_name: { type: :string, required: true },
                     title: { type: :string, default: '<proc>' },
-                    language: { type: :string, required: true }
+                    language: { type: :string, required: true },
+                    password: { type: :string, required: true, avro: { logical_type: 'sensitive-data', field_id: 'dev_pw' } }
                   },
-                  version: '5251a97e'
+                  version: '57552ad2'
                 },
                 description: 'Team members'
               }
             },
-            version: 'c055f985'
+            version: '0f4f0194'
           },
-          version: 'c055f985'
+          version: '0f4f0194'
         },
         marketing_team: {
           type: {
@@ -75,7 +76,7 @@ RSpec.describe Examples::Company do
               },
               members: {
                 type: :array,
-                version: '5251a97e',
+                version: '57552ad2',
                 required: true,
                 of: {
                   name: 'Examples::Developer',
@@ -84,26 +85,27 @@ RSpec.describe Examples::Company do
                     first_name: { type: :string, required: true, min_length: 3, max_length: 20 },
                     last_name: { type: :string, required: true },
                     title: { type: :string, default: '<proc>' },
-                    language: { type: :string, required: true }
+                    language: { type: :string, required: true },
+                    password: { type: :string, required: true, avro: { logical_type: 'sensitive-data', field_id: 'dev_pw' } }
                   },
-                  version: '5251a97e'
+                  version: '57552ad2'
                 },
                 description: 'Team members'
               }
             },
-            version: 'c055f985'
+            version: '0f4f0194'
           },
-          version: 'c055f985'
+          version: '0f4f0194'
         }
       },
-      version: '2e14ef35'
+      version: '1085bbad'
     }
   end
   let(:exp_template) do
     <<~CODE.chomp
       namespace 'examples'
 
-      record :company, :doc=>"| version 2e14ef35" do
+      record :company, :doc=>"| version 1085bbad" do
         required :legal_name, :string, doc: "| type string"
         optional :development_team, "examples.team", doc: "| type examples.team"
         optional :marketing_team, "examples.team", doc: "| type examples.team"
@@ -115,7 +117,7 @@ RSpec.describe Examples::Company do
       type: 'record',
       name: 'company',
       namespace: 'examples',
-      doc: '| version 2e14ef35',
+      doc: '| version 1085bbad',
       fields: [
         { name: 'legal_name', type: 'string', doc: '| type string' },
         { name: 'development_team',
@@ -123,7 +125,7 @@ RSpec.describe Examples::Company do
                  { type: 'record',
                    name: 'team',
                    namespace: 'examples',
-                   doc: '| version c055f985',
+                   doc: '| version 0f4f0194',
                    fields: [
                      { name: 'name', type: 'string', doc: '| type string' },
                      { name: 'leader',
@@ -146,12 +148,13 @@ RSpec.describe Examples::Company do
                            type: 'record',
                            name: 'developer',
                            namespace: 'examples',
-                           doc: '| version 5251a97e',
+                           doc: '| version 57552ad2',
                            fields: [
                              { name: 'first_name', type: 'string', doc: '| type string' },
                              { name: 'last_name', type: 'string', doc: '| type string' },
                              { name: 'title', type: %w[null string], default: nil, doc: '| type string' },
-                             { name: 'language', type: 'string', doc: '| type string' }
+                             { name: 'language', type: 'string', doc: '| type string' },
+                             { name: 'password', type: { type: 'string', logicalType: 'sensitive-data', fieldId: 'dev_pw' }, doc: '| type string' }
                            ]
                          }
                        },
@@ -169,7 +172,7 @@ RSpec.describe Examples::Company do
         "type": "record",
         "name": "company",
         "namespace": "examples",
-        "doc": "| version 2e14ef35",
+        "doc": "| version 1085bbad",
         "fields": [
           {
             "name": "legal_name",
@@ -184,7 +187,7 @@ RSpec.describe Examples::Company do
                 "type": "record",
                 "name": "team",
                 "namespace": "examples",
-                "doc": "| version c055f985",
+                "doc": "| version 0f4f0194",
                 "fields": [
                   {
                     "name": "name",
@@ -230,7 +233,7 @@ RSpec.describe Examples::Company do
                         "type": "record",
                         "name": "developer",
                         "namespace": "examples",
-                        "doc": "| version 5251a97e",
+                        "doc": "| version 57552ad2",
                         "fields": [
                           {
                             "name": "first_name",
@@ -254,6 +257,15 @@ RSpec.describe Examples::Company do
                           {
                             "name": "language",
                             "type": "string",
+                            "doc": "| type string"
+                          },
+                          {
+                            "name": "password",
+                            "type": {
+                              "type": "string",
+                              "logicalType": "sensitive-data",
+                              "fieldId": "dev_pw"
+                            },
                             "doc": "| type string"
                           }
                         ]
@@ -283,14 +295,15 @@ RSpec.describe Examples::Company do
   let(:exp_version_meta) do
     [
       {
-        name: 'Schemas::Examples::Developer::V5251a97e',
-        schema_name: 'schemas.examples.developer.v5251a97e',
-        version: '5251a97e',
+        name: 'Schemas::Examples::Developer::V57552ad2',
+        schema_name: 'schemas.examples.developer.v57552ad2',
+        version: '57552ad2',
         attributes: {
           first_name: { type: :string, required: true },
           last_name: { type: :string, required: true },
           title: { type: :string },
-          language: { type: :string, required: true }
+          language: { type: :string, required: true },
+          password: { type: :string, required: true }
         }
       },
       {
@@ -304,27 +317,27 @@ RSpec.describe Examples::Company do
         }
       },
       {
-        name: 'Schemas::Examples::Team::Vc055f985',
-        schema_name: 'schemas.examples.team.vc055f985',
-        version: 'c055f985',
+        name: 'Schemas::Examples::Team::V0f4f0194',
+        schema_name: 'schemas.examples.team.v0f4f0194',
+        version: '0f4f0194',
         attributes: {
           name: { type: :string, required: true },
           leader: { type: 'Schemas::Examples::Employee::V115d6e02', required: true },
           members: {
             description: 'Team members',
             type: :array,
-            of: 'Schemas::Examples::Developer::V5251a97e',
+            of: 'Schemas::Examples::Developer::V57552ad2',
             required: true
           }
         }
       },
       {
-        name: 'Schemas::Examples::Company::V2e14ef35',
-        schema_name: 'schemas.examples.company.v2e14ef35',
+        name: 'Schemas::Examples::Company::V1085bbad',
+        schema_name: 'schemas.examples.company.v1085bbad',
         attributes: { legal_name: { type: :string, required: true },
-                      development_team: { type: 'Schemas::Examples::Team::Vc055f985' },
-                      marketing_team: { type: 'Schemas::Examples::Team::Vc055f985' } },
-        version: '2e14ef35'
+                      development_team: { type: 'Schemas::Examples::Team::V0f4f0194' },
+                      marketing_team: { type: 'Schemas::Examples::Team::V0f4f0194' } },
+        version: '1085bbad'
       }
     ]
   end
@@ -374,16 +387,16 @@ RSpec.describe Examples::Company do
           'name' => 'Duper Team',
           'leader' => { 'first_name' => 'Karl', 'last_name' => 'Marx', 'title' => 'Team Lead' },
           'members' => [
-            { 'first_name' => 'John', 'last_name' => 'Stalingrad', 'title' => 'Developer', 'language' => 'Ruby' },
-            { 'first_name' => 'Steve', 'last_name' => 'Romanoff', 'title' => 'Designer', 'language' => 'In Design' }
+            { 'first_name' => 'John', 'last_name' => 'Stalingrad', 'title' => 'Developer', 'language' => 'Ruby', 'password' => 'rubyroxx' },
+            { 'first_name' => 'Steve', 'last_name' => 'Romanoff', 'title' => 'Designer', 'language' => 'In Design', 'password' => 'IHeartComputers' }
           ]
         },
         'marketing_team' => {
           'name' => 'Growing Team',
           'leader' => { 'first_name' => 'Evan', 'last_name' => 'Majors', 'title' => 'Team Lead' },
           'members' => [
-            { 'first_name' => 'Rob', 'last_name' => 'Morris', 'title' => 'Developer', 'language' => 'Javascript' },
-            { 'first_name' => 'Zach', 'last_name' => 'Evanoff', 'title' => 'Designer', 'language' => 'Photoshop' }
+            { 'first_name' => 'Rob', 'last_name' => 'Morris', 'title' => 'Developer', 'language' => 'Javascript', 'password' => 'hurrdurr' },
+            { 'first_name' => 'Zach', 'last_name' => 'Evanoff', 'title' => 'Designer', 'language' => 'Photoshop', 'password' => 'drool' }
           ]
         }
       }
@@ -398,17 +411,17 @@ RSpec.describe Examples::Company do
       expect(emp_klass).to eq Schemas::Examples::Employee::V115d6e02
 
       expect { dev_klass }.to_not raise_error
-      expect(dev_klass).to eq Schemas::Examples::Developer::V5251a97e
+      expect(dev_klass).to eq Schemas::Examples::Developer::V57552ad2
 
       expect { team_klass }.to_not raise_error
-      expect(team_klass).to eq Schemas::Examples::Team::Vc055f985
+      expect(team_klass).to eq Schemas::Examples::Team::V0f4f0194
 
       expect { comp_klass }.to_not raise_error
-      expect(comp_klass).to eq Schemas::Examples::Company::V2e14ef35
+      expect(comp_klass).to eq Schemas::Examples::Company::V1085bbad
 
       expect { clone }.to_not raise_error
 
-      expect(clone).to be_a Schemas::Examples::Company::V2e14ef35
+      expect(clone).to be_a Schemas::Examples::Company::V1085bbad
       expect(clone).to be_valid
       expect(clone.to_hash).to eq exp_comp_hsh
       expect(clone.development_team).to be_a team_klass
@@ -432,16 +445,16 @@ RSpec.describe Examples::Company do
           name: 'Duper Team',
           leader: { first_name: 'Karl', last_name: 'Marx', title: 'Team Lead' },
           members: [
-            { first_name: 'John', last_name: 'Stalingrad', title: 'Developer', language: 'Ruby' },
-            { first_name: 'Steve', last_name: 'Romanoff', title: 'Designer', language: 'In Design' }
+            { first_name: 'John', last_name: 'Stalingrad', title: 'Developer', language: 'Ruby', password: 'rubyroxx' },
+            { first_name: 'Steve', last_name: 'Romanoff', title: 'Designer', language: 'In Design', password: 'IHeartComputers' }
           ]
         },
         marketing_team: {
           name: 'Growing Team',
           leader: { first_name: 'Evan', last_name: 'Majors', title: 'Team Lead' },
           members: [
-            { first_name: 'Rob', last_name: 'Morris', title: 'Developer', language: 'Javascript' },
-            { first_name: 'Zach', last_name: 'Evanoff', title: 'Designer', language: 'Photoshop' }
+            { first_name: 'Rob', last_name: 'Morris', title: 'Developer', language: 'Javascript', password: 'hurrdurr' },
+            { first_name: 'Zach', last_name: 'Evanoff', title: 'Designer', language: 'Photoshop', password: 'drool' }
           ]
         }
       }
@@ -517,13 +530,13 @@ RSpec.describe Examples::Company do
     context 'avro' do
       let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
-        "\u0000\u0000\u0000\u0000\u0003 My Super Company\u0002\u0014Duper Team" \
-          "\bKarl\bMarx\u0002\u0012Team Lead\u0004\bJohn\u0014Stalingrad\u0002" \
-          "\u0012Developer\bRuby\nSteve\u0010Romanoff\u0002\u0010Designer" \
-          "\u0012In Design\u0000\u0002\u0018Growing Team\bEvan\fMajors\u0002" \
-          "\u0012Team Lead\u0004\u0006Rob\fMorris\u0002\u0012Developer" \
-          "\u0014Javascript\bZach\u000EEvanoff\u0002\u0010Designer" \
-          "\u0012Photoshop\u0000"
+        "\u0000\u0000\u0000\u0000\u0006 My Super Company\u0002\u0014Duper Team" \
+          "\bKarl\bMarx\u0002\u0012Team Lead\u0004\bJohn\u0014Stalingrad\u0002\u0012" \
+          "Developer\bRuby2ENCRYPTED:dev_pw:rubyroxx\nSteve\u0010Romanoff\u0002\u0010" \
+          "Designer\u0012In Design@ENCRYPTED:dev_pw:IHeartComputers\u0000\u0002\u0018" \
+          "Growing Team\bEvan\fMajors\u0002\u0012Team Lead\u0004\u0006Rob\fMorris\u0002" \
+          "\u0012Developer\u0014Javascript2ENCRYPTED:dev_pw:hurrdurr\bZach\u000EEvanoff" \
+          "\u0002\u0010Designer\u0012Photoshop,ENCRYPTED:dev_pw:drool\u0000"
       end
       let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
       it('encodes properly') { compare encoded, exp_encoded }
@@ -534,10 +547,11 @@ RSpec.describe Examples::Company do
       let(:exp_encoded) do
         '{"legal_name":"My Super Company","development_team":{"name":"Duper Team","leader":{"first_name":"Karl","las' \
           't_name":"Marx","title":"Team Lead"},"members":[{"first_name":"John","last_name":"Stalingrad","title":"Dev' \
-          'eloper","language":"Ruby"},{"first_name":"Steve","last_name":"Romanoff","title":"Designer","language":"In ' \
-          'Design"}]},"marketing_team":{"name":"Growing Team","leader":{"first_name":"Evan","last_name":"Majors","t' \
-          'itle":"Team Lead"},"members":[{"first_name":"Rob","last_name":"Morris","title":"Developer","language":"Ja' \
-          'vascript"},{"first_name":"Zach","last_name":"Evanoff","title":"Designer","language":"Photoshop"}]}}'
+          'eloper","language":"Ruby","password":"rubyroxx"},{"first_name":"Steve","last_name":"Romanoff","title":"Des' \
+          'igner","language":"In Design","password":"IHeartComputers"}]},"marketing_team":{"name":"Growing Team","lea' \
+          'der":{"first_name":"Evan","last_name":"Majors","title":"Team Lead"},"members":[{"first_name":"Rob","last_n' \
+          'ame":"Morris","title":"Developer","language":"Javascript","password":"hurrdurr"},{"first_name":"Zach","las' \
+          't_name":"Evanoff","title":"Designer","language":"Photoshop","password":"drool"}]}}'
       end
       let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
       it('encodes properly') { compare encoded, exp_encoded }

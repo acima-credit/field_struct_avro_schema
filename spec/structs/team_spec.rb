@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Examples::Team do
   subject { described_class.metadata }
-  let(:exp_schema_id) { 9 }
+  let(:exp_schema_id) { 5 }
 
   let(:exp_hash) do
     {
@@ -28,7 +28,7 @@ RSpec.describe Examples::Team do
         },
         members: {
           type: :array,
-          version: '5251a97e',
+          version: '57552ad2',
           required: true,
           of: {
             name: 'Examples::Developer',
@@ -37,21 +37,22 @@ RSpec.describe Examples::Team do
               first_name: { type: :string, required: true, min_length: 3, max_length: 20 },
               last_name: { type: :string, required: true },
               title: { type: :string, default: '<proc>' },
-              language: { type: :string, required: true }
+              language: { type: :string, required: true },
+              password: { type: :string, required: true, avro: { logical_type: 'sensitive-data', field_id: 'dev_pw' } }
             },
-            version: '5251a97e'
+            version: '57552ad2'
           },
           description: 'Team members'
         }
       },
-      version: 'c055f985'
+      version: '0f4f0194'
     }
   end
   let(:exp_template) do
     <<~CODE.chomp
       namespace 'examples'
 
-      record :team, :doc=>"| version c055f985" do
+      record :team, :doc=>"| version 0f4f0194" do
         required :name, :string, doc: "| type string"
         required :leader, "examples.employee", doc: "| type examples.employee"
         required :members, :array, items: "examples.developer", doc: "Team members | type array:examples.developer"
@@ -62,7 +63,7 @@ RSpec.describe Examples::Team do
     { type: 'record',
       name: 'team',
       namespace: 'examples',
-      doc: '| version c055f985',
+      doc: '| version 0f4f0194',
       fields: [
         { name: 'name', type: 'string', doc: '| type string' },
         {
@@ -87,12 +88,13 @@ RSpec.describe Examples::Team do
             items: { type: 'record',
                      name: 'developer',
                      namespace: 'examples',
-                     doc: '| version 5251a97e',
+                     doc: '| version 57552ad2',
                      fields: [
                        { name: 'first_name', type: 'string', doc: '| type string' },
                        { name: 'last_name', type: 'string', doc: '| type string' },
                        { name: 'title', type: %w[null string], default: nil, doc: '| type string' },
-                       { name: 'language', type: 'string', doc: '| type string' }
+                       { name: 'language', type: 'string', doc: '| type string' },
+                       { name: 'password', type: { type: 'string', logicalType: 'sensitive-data', fieldId: 'dev_pw' }, doc: '| type string' }
                      ] }
           },
           doc: 'Team members | type array:examples.developer'
@@ -105,7 +107,7 @@ RSpec.describe Examples::Team do
         "type": "record",
         "name": "team",
         "namespace": "examples",
-        "doc": "| version c055f985",
+        "doc": "| version 0f4f0194",
         "fields": [
           {
             "name": "name",
@@ -151,7 +153,7 @@ RSpec.describe Examples::Team do
                 "type": "record",
                 "name": "developer",
                 "namespace": "examples",
-                "doc": "| version 5251a97e",
+                "doc": "| version 57552ad2",
                 "fields": [
                   {
                     "name": "first_name",
@@ -176,6 +178,15 @@ RSpec.describe Examples::Team do
                     "name": "language",
                     "type": "string",
                     "doc": "| type string"
+                  },
+                  {
+                    "name": "password",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "sensitive-data",
+                      "fieldId": "dev_pw"
+                    },
+                    "doc": "| type string"
                   }
                 ]
               }
@@ -189,14 +200,15 @@ RSpec.describe Examples::Team do
   let(:exp_version_meta) do
     [
       {
-        name: 'Schemas::Examples::Developer::V5251a97e',
-        schema_name: 'schemas.examples.developer.v5251a97e',
-        version: '5251a97e',
+        name: 'Schemas::Examples::Developer::V57552ad2',
+        schema_name: 'schemas.examples.developer.v57552ad2',
+        version: '57552ad2',
         attributes: {
           first_name: { type: :string, required: true },
           last_name: { type: :string, required: true },
           title: { type: :string },
-          language: { type: :string, required: true }
+          language: { type: :string, required: true },
+          password: { type: :string, required: true }
         }
       },
       {
@@ -210,16 +222,16 @@ RSpec.describe Examples::Team do
         }
       },
       {
-        name: 'Schemas::Examples::Team::Vc055f985',
-        schema_name: 'schemas.examples.team.vc055f985',
-        version: 'c055f985',
+        name: 'Schemas::Examples::Team::V0f4f0194',
+        schema_name: 'schemas.examples.team.v0f4f0194',
+        version: '0f4f0194',
         attributes: {
           name: { type: :string, required: true },
           leader: { type: 'Schemas::Examples::Employee::V115d6e02', required: true },
           members: {
             description: 'Team members',
             type: :array,
-            of: 'Schemas::Examples::Developer::V5251a97e',
+            of: 'Schemas::Examples::Developer::V57552ad2',
             required: true
           }
         }
@@ -283,7 +295,7 @@ RSpec.describe Examples::Team do
       expect(leaderb.title).to eq leader_attrs[:title]
 
       expect { dev_klass }.to_not raise_error
-      expect(dev_klass).to eq Schemas::Examples::Developer::V5251a97e
+      expect(dev_klass).to eq Schemas::Examples::Developer::V57552ad2
 
       expect { dev1b }.to_not raise_error
       expect(dev1b.first_name).to eq dev1_attrs[:first_name]
@@ -298,10 +310,10 @@ RSpec.describe Examples::Team do
       expect(dev2b.language).to eq dev2_attrs[:language]
 
       expect { team_klass }.to_not raise_error
-      expect(team_klass).to eq Schemas::Examples::Team::Vc055f985
+      expect(team_klass).to eq Schemas::Examples::Team::V0f4f0194
 
       expect { clone }.to_not raise_error
-      expect(clone).to be_a Schemas::Examples::Team::Vc055f985
+      expect(clone).to be_a Schemas::Examples::Team::V0f4f0194
       expect(clone).to be_valid
       expect(clone.name).to eq 'Duper Team'
       expect(clone.leader).to eq leaderb
@@ -324,8 +336,8 @@ RSpec.describe Examples::Team do
           title: 'Team Lead'
         },
         members: [
-          { first_name: 'John', last_name: 'Stalingrad', title: 'Developer', language: 'Ruby' },
-          { first_name: 'Steve', last_name: 'Romanoff', title: 'Designer', language: 'In Design' }
+          { first_name: 'John', last_name: 'Stalingrad', title: 'Developer', language: 'Ruby', password: 'rubyroxx' },
+          { first_name: 'Steve', last_name: 'Romanoff', title: 'Designer', language: 'In Design', password: 'IHeartComputers' }
         ]
       }
     end
@@ -401,8 +413,10 @@ RSpec.describe Examples::Team do
     context 'avro' do
       let(:encoded) { kafka.encode_avro instance, schema_id: exp_schema_id }
       let(:exp_encoded) do
-        "\0\0\0\0\t\x14Duper Team\bKarl\bMarx\x02\x12Team Lead\x04\bJohn\x14Stalingrad\x02\x12Developer\bRuby\nSteve" \
-          "\x10Romanoff\x02\x10Designer\x12In Design\0"
+        "\u0000\u0000\u0000\u0000\u0005\u0014Duper Team\bKarl\bMarx\u0002\u0012" \
+          "Team Lead\u0004\bJohn\u0014Stalingrad\u0002\u0012Developer\bRuby2ENCRYPTED" \
+          ":dev_pw:rubyroxx\nSteve\u0010Romanoff\u0002\u0010Designer\u0012In Design@" \
+          "ENCRYPTED:dev_pw:IHeartComputers\u0000"
       end
       let(:exp_decoded) { instance.to_hash.deep_symbolize_keys }
       it('encodes properly') { compare encoded, exp_encoded }
@@ -412,8 +426,8 @@ RSpec.describe Examples::Team do
       let(:encoded) { kafka.encode_json instance }
       let(:exp_encoded) do
         '{"name":"Duper Team","leader":{"first_name":"Karl","last_name":"Marx","title":"Team Lead"},"members":[{' \
-          '"first_name":"John","last_name":"Stalingrad","title":"Developer","language":"Ruby"},{"first_name":"Steve"' \
-          ',"last_name":"Romanoff","title":"Designer","language":"In Design"}]}'
+          '"first_name":"John","last_name":"Stalingrad","title":"Developer","language":"Ruby","password":"rubyroxx"}' \
+          ',{"first_name":"Steve","last_name":"Romanoff","title":"Designer","language":"In Design","password":"IHeartComputers"}]}'
       end
       let(:exp_decoded) { JSON.parse instance.to_hash.to_json }
       it('encodes properly') { compare encoded, exp_encoded }

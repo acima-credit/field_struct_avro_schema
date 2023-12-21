@@ -15,24 +15,28 @@ require 'field_struct/avro_schema'
 
 class Friend < FieldStruct.strict
   include FieldStruct::AvroExtension
-  
+
   required :name, :string
   optional :age, :integer
   optional :balance_owed, :currency, default: 0.0
-  optional :gamer_level, :integer, enum: [1,2,3], default: -> { 1 }  
-  optional :zip_code, :string, format: /\A[0-9]{5}?\z/  
+  optional :gamer_level, :integer, enum: [1,2,3], default: -> { 1 }
+  optional :zip_code, :string, format: /\A[0-9]{5}?\z/
+  required :password, :string, avro: { logical_type: 'sensitive-data', field_id: 'friend_password' }
+  required :longitude, :binary, avro: { logical_type: 'decimal', precision: 6, scale: 2 }
 end
 
 puts Friend.metadata.as_avro_schema.inspect
 # {:type=>"record",
 #  :name=>"friend",
-#  :doc=>"| version 82f78509",
+#  :doc=>"| version 244c5813",
 #  :fields=>
-#    [{:name=>"name", :type=>"string", :doc=>"| type string"},
-#     {:name=>"age", :type=>["null", "int"], :default=>nil, :doc=>"| type integer"},
-#     {:name=>"balance_owed", :type=>["null", "float"], :default=>nil, :doc=>"| type currency"},
-#     {:name=>"gamer_level", :type=>["null", "int"], :default=>nil, :doc=>"| type integer"},
-#     {:name=>"zip_code", :type=>["null", "string"], :default=>nil, :doc=>"| type string"}]}
+#   [{:name=>"name", :type=>"string", :doc=>"| type string"},
+#    {:name=>"age", :type=>["null", "int"], :default=>nil, :doc=>"| type integer"},
+#    {:name=>"balance_owed", :type=>["null", "int"], :default=>nil, :doc=>"| type currency"},
+#    {:name=>"gamer_level", :type=>["null", "int"], :default=>nil, :doc=>"| type integer"},
+#    {:name=>"zip_code", :type=>["null", "string"], :default=>nil, :doc=>"| type string"},
+#    {:name=>"password", :type=>{:type=>"string", :logicalType=>"sensitive-data", :fieldId=>"friend_password"}, :doc=>"| type string"},
+#    {:name=>"longitude", :type=>{:type=>"bytes", :logicalType=>"decimal", :precision=>6, :scale=>2}, :doc=>"| type binary"}]}
 
 puts Friend.metadata.to_avro_json true
 # {

@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8081/schemas/ids/6
+    uri: http://localhost:8081/schemas/ids/3
     body:
       encoding: US-ASCII
       string: ''
@@ -12,10 +12,12 @@ http_interactions:
   response:
     status:
       code: 200
-      message: null
+      message:
     headers:
       Date:
-      - Thu, 03 Feb 2022 01:18:58 GMT
+      - Fri, 15 Dec 2023 16:21:13 GMT
+      X-Request-ID:
+      - 131d8bce-48ee-4059-9e85-14402bb1a08b
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
@@ -29,5 +31,5 @@ http_interactions:
         type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
         string\"},{\"name\":\"title\",\"type\":[\"null\",\"string\"],\"doc\":\"| type
         string\",\"default\":null}]}"}'
-  recorded_at: Thu, 03 Feb 2022 01:18:58 GMT
-recorded_with: VCR 6.0.0
+  recorded_at: Fri, 15 Dec 2023 16:21:13 GMT
+recorded_with: VCR 6.2.0

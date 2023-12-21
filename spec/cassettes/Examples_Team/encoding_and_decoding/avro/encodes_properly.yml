@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8081/schemas/ids/9
+    uri: http://localhost:8081/schemas/ids/5
     body:
       encoding: US-ASCII
       string: ''
@@ -12,29 +12,32 @@ http_interactions:
   response:
     status:
       code: 200
-      message: null
+      message:
     headers:
       Date:
-      - Thu, 03 Feb 2022 01:18:58 GMT
+      - Fri, 15 Dec 2023 16:21:13 GMT
+      X-Request-ID:
+      - 6fde3fd2-fd59-43bf-ae9e-6e6ee468c7d7
       Content-Type:
       - application/vnd.schemaregistry.v1+json
       Vary:
       - Accept-Encoding, User-Agent
       Content-Length:
-      - '1100'
+      - '1239'
     body:
       encoding: ASCII-8BIT
       string: '{"schema":"{\"type\":\"record\",\"name\":\"team\",\"namespace\":\"examples\",\"doc\":\"|
-        version c055f985\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
+        version 0f4f0194\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"leader\",\"type\":{\"type\":\"record\",\"name\":\"employee\",\"doc\":\"|
         version 115d6e02\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
         string\"},{\"name\":\"title\",\"type\":[\"null\",\"string\"],\"doc\":\"| type
         string\",\"default\":null}]},\"doc\":\"| type examples.employee\"},{\"name\":\"members\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"developer\",\"doc\":\"|
-        version 5251a97e\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
+        version 57552ad2\",\"fields\":[{\"name\":\"first_name\",\"type\":\"string\",\"doc\":\"|
         type string\"},{\"name\":\"last_name\",\"type\":\"string\",\"doc\":\"| type
         string\"},{\"name\":\"title\",\"type\":[\"null\",\"string\"],\"doc\":\"| type
         string\",\"default\":null},{\"name\":\"language\",\"type\":\"string\",\"doc\":\"|
+        type string\"},{\"name\":\"password\",\"type\":{\"type\":\"string\",\"logicalType\":\"sensitive-data\",\"fieldId\":\"dev_pw\"},\"doc\":\"|
         type string\"}]}},\"doc\":\"Team members | type array:examples.developer\"}]}"}'
-  recorded_at: Thu, 03 Feb 2022 01:18:58 GMT
-recorded_with: VCR 6.0.0
+  recorded_at: Fri, 15 Dec 2023 16:21:13 GMT
+recorded_with: VCR 6.2.0
