@@ -2,6 +2,6 @@
 
 module FieldStruct
   module AvroSchema
-    VERSION = '0.1.22'
+    VERSION = '0.1.23'
   end
 end
