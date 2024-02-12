@@ -22,8 +22,6 @@ module FieldStruct
               return decoded unless decoded == false
 
               raise params.raw_payload
-            rescue StandardError => e
-              raise ::Karafka::Errors::DeserializationError, e
             end
           end
         end
