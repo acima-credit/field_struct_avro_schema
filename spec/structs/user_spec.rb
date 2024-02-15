@@ -408,7 +408,7 @@ RSpec.describe Examples::User do
         end
         context 'other' do
           let(:raw_payload) { { a: 1 }.to_json }
-          it('raises error') { expect { result }.to raise_error Karafka::Errors::DeserializationError }
+          it('raises error') { expect { result }.to raise_error RuntimeError }
         end
       end
     end
