@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative 'kafka/in_memory_cache'
-require_relative 'kafka/schema_registry'
 require_relative 'kafka/cached_schema_registry'
 require_relative 'kafka/schema_store'
 
@@ -13,6 +12,7 @@ require_relative 'kafka/coders/json_decoder'
 require_relative 'kafka/coders/json_encoder'
 require_relative 'kafka/coders/string_decoder'
 require_relative 'kafka/coders/string_encoder'
+require_relative 'configuration'
 
 module FieldStruct
   module AvroSchema
@@ -34,6 +34,10 @@ module FieldStruct
         @logger = value
       end
 
+      def configuration
+        @configuration ||= Configuration.new
+      end
+
       def events
         @events ||= {}
       end
@@ -43,7 +47,12 @@ module FieldStruct
       end
 
       def base_schema_registry
-        @base_schema_registry ||= SchemaRegistry.new registry_url, logger: logger
+        @base_schema_registry ||=
+          AvroTurf::ConfluentSchemaRegistry.new configuration.schema_registry_base_url,
+                                                user: configuration.user_name,
+                                                password: configuration.password,
+                                                path_prefix: configuration.schema_registry_path_prefix,
+                                                logger: logger
       end
 
       def registry_url
@@ -99,7 +108,14 @@ module FieldStruct
       def register_event_schema(klass)
         return nil unless klass.publishable?
 
-        id = schema_registry.register build_subject_name(klass), klass.schema
+        id = if configuration.automatic_schema_registration
+               schema_registry.register build_subject_name(klass), klass.schema
+             else
+               data = schema_registry.check build_subject_name(klass), klass.schema
+               data&.fetch('id')
+             end
+        raise StandardError, "Schema Not Found -- Schema Name: #{klass.default_schema_record_name}" if id.blank?
+
         klass.schema_id id
         klass
       rescue StandardError => e

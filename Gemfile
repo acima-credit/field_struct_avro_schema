@@ -7,4 +7,6 @@ source 'https://rubygems.pkg.github.com/acima-credit/' do
   gem 'avro_acima', '0.3.1'
 end
 
+gem 'avro', '~> 1.11.0'
+
 gemspec

@@ -71,8 +71,14 @@ module FieldStruct
         def to_s
           format '#<%s upstream=%s cache=%s>',
                  self.class.name,
-                 @upstream.inspect,
+                 upstream_inspect,
                  @cache.inspect
+        end
+
+        def upstream_inspect
+          format '#<%s url=%s>',
+                 @upstream.class.name,
+                 @upstream.instance_variable_get(:@url).inspect
         end
 
         alias inspect to_s

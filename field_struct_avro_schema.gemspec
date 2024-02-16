@@ -39,6 +39,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activemodel'
   spec.add_dependency 'avro', '~> 1.11.0'
   spec.add_dependency 'avro-builder'
+  spec.add_dependency 'avro_turf'
   spec.add_dependency 'excon'
 
   spec.add_development_dependency 'bundler'
