@@ -108,13 +108,14 @@ module FieldStruct
       def register_event_schema(klass)
         return nil unless klass.publishable?
 
+        subject_name = build_subject_name(klass)
         id = if configuration.automatic_schema_registration
-               schema_registry.register build_subject_name(klass), klass.schema
+               schema_registry.register subject_name, klass.schema
              else
-               data = schema_registry.check build_subject_name(klass), klass.schema
+               data = schema_registry.check subject_name, klass.schema
                data&.fetch('id')
              end
-        raise StandardError, "Schema Not Found -- Schema Name: #{klass.default_schema_record_name}" if id.blank?
+        raise StandardError, "Schema Not Found -- Subject Name: #{subject_name}" if id.blank?
 
         klass.schema_id id
         klass
