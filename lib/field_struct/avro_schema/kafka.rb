@@ -115,7 +115,7 @@ module FieldStruct
                data = schema_registry.check subject_name, klass.schema
                data&.fetch('id')
              end
-        raise StandardError, "Schema Not Found -- Subject Name: #{subject_name}" if id.blank?
+        raise StandardError, "Schema Not Found for subject -- Subject Name: #{subject_name}" if id.blank?
 
         klass.schema_id id
         klass
