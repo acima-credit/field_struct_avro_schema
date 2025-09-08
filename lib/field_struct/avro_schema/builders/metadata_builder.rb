@@ -58,7 +58,7 @@ module FieldStruct
 
           build_attribute_doc attr, fields
           fields[:required] = true unless attr[:type].is_a?(Array)
-          if attr.keys.include?(:default) && (attr[:default] != '<proc>' && !attr[:default].nil?)
+          if attr.keys.include?(:default) && attr[:default] != '<proc>' && !attr[:default].nil?
             fields[:default] = attr[:default]
           end
           if attr.key? :default
