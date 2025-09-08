@@ -152,3 +152,6 @@ Security/MarshalLoad:
 
 Style/OpenStructUse:
   Enabled: false
+
+Naming/PredicateMethod:
+  Enabled: false

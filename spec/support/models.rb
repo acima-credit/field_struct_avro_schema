@@ -76,6 +76,7 @@ module ExampleApp
   module Examples
     class Friend < FieldStruct.flexible
       include FieldStruct::AvroSchema::Event
+
       topic_key :name
 
       required :name, :string
@@ -96,6 +97,7 @@ module PublishableApp
   module Examples
     class Address < FieldStruct.flexible
       include FieldStruct::AvroSchema::Event
+
       publishable false
 
       required :street, :string
@@ -104,6 +106,7 @@ module PublishableApp
 
     class Runner < FieldStruct.flexible
       include FieldStruct::AvroSchema::Event
+
       topic_key :name
 
       required :name, :string

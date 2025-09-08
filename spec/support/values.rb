@@ -2,6 +2,7 @@
 
 module ValueHelpers
   extend RSpec::Core::SharedContext
+
   let(:str) { 'string' }
   let(:int) { 3 }
   let(:flt) { 3.15 }
